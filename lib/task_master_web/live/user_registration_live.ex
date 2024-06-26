@@ -8,13 +8,12 @@ defmodule TaskMasterWeb.UserRegistrationLive do
     ~H"""
     <div class="mx-auto max-w-sm">
       <.header class="text-center">
-        Register for an account
+        <%= gettext("Register for an account") %>
         <:subtitle>
-          Already registered?
+          <%= gettext("Already registered?") %>
           <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-            Log in
+            ➜ <%= gettext("Log in") %>
           </.link>
-          to your account now.
         </:subtitle>
       </.header>
 
@@ -28,16 +27,22 @@ defmodule TaskMasterWeb.UserRegistrationLive do
         method="post"
       >
         <.error :if={@check_errors}>
-          Oops, something went wrong! Please check the errors below.
+          <%= gettext("Oops, something went wrong! Please check the errors below.") %>
         </.error>
-        <.input field={@form[:first_name]} type="text" label="First name" required />
-        <.input field={@form[:last_name]} type="text" label="Last name" required />
-        <.input field={@form[:nick_name]} type="text" label="Nick name" />
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
+        <.input field={@form[:first_name]} type="text" label={gettext("First name")} required />
+        <.input field={@form[:last_name]} type="text" label={gettext("Last name")} required />
+        <.input field={@form[:nick_name]} type="text" label={gettext("Nick name")} />
+        <.input field={@form[:email]} type="email" label={gettext("Email")} required />
+        <.input field={@form[:password]} type="password" label={gettext("Password")} required />
 
         <:actions>
-          <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
+          <.button
+            phx-disable-with="Creating account..."
+            class="w-full"
+            disabled={not @form.source.valid?}
+          >
+            <%= gettext("Create account") %>
+          </.button>
         </:actions>
       </.simple_form>
     </div>
@@ -73,7 +78,7 @@ defmodule TaskMasterWeb.UserRegistrationLive do
   end
 
   def handle_event("validate", %{"user" => user_params}, socket) do
-    changeset = Accounts.change_user_registration(%User{}, user_params)
+    changeset = Accounts.change_user_registration(%User{}, user_params) |> dbg()
     {:noreply, assign_form(socket, Map.put(changeset, :action, :validate))}
   end
 

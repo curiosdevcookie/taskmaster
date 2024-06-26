@@ -176,10 +176,10 @@ defmodule TaskMasterWeb.CoreComponents do
   ## Examples
 
       <.simple_form for={@form} phx-change="validate" phx-submit="save">
-        <.input field={@form[:email]} label="Email"/>
-        <.input field={@form[:username]} label="Username" />
+        <.input field={@form[:email]} label={gettext("Email"/>
+        <.input field={@form[:username]} label={gettext("Username" />
         <:actions>
-          <.button>Save</.button>
+          <.button><%=gettext("Save") %></.button>
         </:actions>
       </.simple_form>
   """
@@ -211,8 +211,8 @@ defmodule TaskMasterWeb.CoreComponents do
 
   ## Examples
 
-      <.button>Send!</.button>
-      <.button phx-click="go" class="ml-2">Send!</.button>
+      <.button><%=gettext("Send!") %></.button>
+      <.button phx-click="go" class="ml-2"><%=gettext("Send!") %></.button>
   """
   attr :type, :string, default: nil
   attr :class, :string, default: nil
@@ -227,6 +227,7 @@ defmodule TaskMasterWeb.CoreComponents do
       class={[
         "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
         "text-sm font-semibold leading-6 text-white active:text-white/80",
+        "disabled:opacity-30 disabled:bg-grey-100 disabled:cursor-not-allowed",
         @class
       ]}
       {@rest}
@@ -440,8 +441,8 @@ defmodule TaskMasterWeb.CoreComponents do
   ## Examples
 
       <.table id="users" rows={@users}>
-        <:col :let={user} label="id"><%= user.id %></:col>
-        <:col :let={user} label="username"><%= user.username %></:col>
+        <:col :let={user} label={gettext("id"><%= user.id %></:col>
+        <:col :let={user} label={gettext("username"><%= user.username %></:col>
       </.table>
   """
   attr :id, :string, required: true

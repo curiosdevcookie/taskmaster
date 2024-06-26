@@ -1,0 +1,314 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/task_master_web/components/core_components.ex:474
+#, elixir-autogen, elixir-format
+msgid "Actions"
+msgstr "Aktionen"
+
+#: lib/task_master_web/components/core_components.ex:76
+#: lib/task_master_web/components/core_components.ex:128
+#, elixir-autogen, elixir-format
+msgid "close"
+msgstr "Schließen"
+
+#: lib/task_master_web/live/user_registration_live.ex:32
+#, elixir-autogen, elixir-format
+msgid "First name"
+msgstr "Vorname"
+
+#: lib/task_master_web/live/user_login_live.ex:18
+#: lib/task_master_web/live/user_registration_live.ex:35
+#: lib/task_master_web/live/user_settings_live.ex:21
+#, elixir-autogen, elixir-format
+msgid "Email"
+msgstr "E-Mail"
+
+#: lib/task_master_web/live/user_registration_live.ex:33
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Last name"
+msgstr "Nachname"
+
+#: lib/task_master_web/live/user_registration_live.ex:34
+#, elixir-autogen, elixir-format
+msgid "Nick name"
+msgstr "Spitzname"
+
+#: lib/task_master_web/live/user_login_live.ex:19
+#: lib/task_master_web/live/user_registration_live.ex:36
+#, elixir-autogen, elixir-format
+msgid "Password"
+msgstr "Passwort"
+
+#: lib/task_master_web/live/user_registration_live.ex:40
+#, elixir-autogen, elixir-format
+msgid "Create account"
+msgstr "Account anlegen"
+
+#: lib/task_master_web/live/user_registration_live.ex:13
+#, elixir-autogen, elixir-format
+msgid "Already registered?"
+msgstr "Bereits registriert?"
+
+#: lib/task_master_web/components/layouts/root.html.heex:51
+#: lib/task_master_web/live/user_confirmation_instructions_live.ex:25
+#: lib/task_master_web/live/user_confirmation_live.ex:22
+#: lib/task_master_web/live/user_forgot_password_live.ex:24
+#: lib/task_master_web/live/user_login_live.ex:8
+#: lib/task_master_web/live/user_login_live.ex:29
+#: lib/task_master_web/live/user_registration_live.ex:15
+#: lib/task_master_web/live/user_reset_password_live.ex:37
+#, elixir-autogen, elixir-format
+msgid "Log in"
+msgstr "Einloggen"
+
+#: lib/task_master_web/live/user_registration_live.ex:30
+#: lib/task_master_web/live/user_reset_password_live.ex:18
+#, elixir-autogen, elixir-format
+msgid "Oops, something went wrong! Please check the errors below."
+msgstr "Da ist was schiefgelaufen! Bitte überprüfe die Fehler unten."
+
+#: lib/task_master_web/live/user_registration_live.ex:11
+#, elixir-autogen, elixir-format
+msgid "Register for an account"
+msgstr "Lege einen Account an"
+
+#: lib/task_master_web/live/user_login_live.ex:10
+#, elixir-autogen, elixir-format
+msgid "Don't have an account?"
+msgstr "Noch keinen Account?"
+
+#: lib/task_master_web/live/user_login_live.ex:12
+#, elixir-autogen, elixir-format
+msgid "Sign up"
+msgstr "Registrieren"
+
+#: lib/task_master_web/live/user_login_live.ex:22
+#, elixir-autogen, elixir-format
+msgid "Keep me logged in"
+msgstr "Angemeldet bleiben"
+
+#: lib/task_master_web/live/user_login_live.ex:28
+#, elixir-autogen, elixir-format
+msgid "Logging in..."
+msgstr "Anmelden..."
+
+#: lib/task_master_web/live/user_forgot_password_live.ex:10
+#: lib/task_master_web/live/user_login_live.ex:24
+#, elixir-autogen, elixir-format
+msgid "Forgot your password?"
+msgstr "Passwort vergessen?"
+
+#: lib/task_master_web/live/user_reset_password_live.ex:25
+#: lib/task_master_web/live/user_settings_live.ex:61
+#, elixir-autogen, elixir-format
+msgid "Confirm new password"
+msgstr "Bestätige Dein neues Passwort"
+
+#: lib/task_master_web/live/user_settings_live.ex:27
+#: lib/task_master_web/live/user_settings_live.ex:67
+#, elixir-autogen, elixir-format
+msgid "Current password"
+msgstr "Aktuelles Passwort"
+
+#: lib/task_master_web/live/user_reset_password_live.ex:21
+#: lib/task_master_web/live/user_settings_live.ex:55
+#, elixir-autogen, elixir-format
+msgid "New password"
+msgstr "Neues Passwort"
+
+#: lib/task_master_web/components/layouts/root.html.heex:43
+#: lib/task_master_web/live/user_confirmation_instructions_live.ex:24
+#: lib/task_master_web/live/user_confirmation_live.ex:21
+#: lib/task_master_web/live/user_forgot_password_live.ex:23
+#: lib/task_master_web/live/user_reset_password_live.ex:36
+#, elixir-autogen, elixir-format
+msgid "Register"
+msgstr "Registrieren"
+
+#: lib/task_master_web/live/user_reset_password_live.ex:30
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Reset Password"
+msgstr "Passwort"
+
+#: lib/task_master_web/components/layouts/root.html.heex:34
+#, elixir-autogen, elixir-format
+msgid "Log out"
+msgstr "Ausloggen"
+
+#: lib/task_master_web/components/layouts/root.html.heex:25
+#, elixir-autogen, elixir-format
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: lib/task_master_web/live/user_confirmation_live.ex:9
+#, elixir-autogen, elixir-format
+msgid "Confirm Account"
+msgstr "Account bestätigen"
+
+#: lib/task_master_web/live/user_confirmation_live.ex:15
+#, elixir-autogen, elixir-format
+msgid "Confirm account"
+msgstr "Account bestätigen"
+
+#: lib/task_master_web/live/user_confirmation_instructions_live.ex:44
+#, elixir-autogen, elixir-format
+msgid "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly."
+msgstr "Wenn Deine E-Mail-Adresse in unserem System ist und noch nicht bestätigt wurde, erhältst Du in Kürze eine E-Mail mit Anweisungen."
+
+#: lib/task_master_web/live/user_confirmation_instructions_live.ex:10
+#, elixir-autogen, elixir-format
+msgid "No confirmation instructions received?"
+msgstr "Keine Bestätigungsanweisungen erhalten?"
+
+#: lib/task_master_web/live/user_confirmation_instructions_live.ex:18
+#, elixir-autogen, elixir-format
+msgid "Resend confirmation instructions"
+msgstr "Bestätigungsanweisungen erneut senden"
+
+#: lib/task_master_web/live/user_confirmation_instructions_live.ex:11
+#, elixir-autogen, elixir-format
+msgid "We'll send a new confirmation link to your inbox"
+msgstr "Wir senden Dir einen neuen Bestätigungslink"
+
+#: lib/task_master_web/live/user_settings_live.ex:9
+#, elixir-autogen, elixir-format
+msgid "Account Settings"
+msgstr "Account-Einstellungen"
+
+#: lib/task_master_web/controllers/user_session_controller.ex:8
+#, elixir-autogen, elixir-format
+msgid "Account created successfully!"
+msgstr "Account erfolgreich angelegt!"
+
+#: lib/task_master_web/live/user_settings_live.ex:32
+#, elixir-autogen, elixir-format
+msgid "Change Email"
+msgstr "E-Mail ändern"
+
+#: lib/task_master_web/live/user_settings_live.ex:88
+#, elixir-autogen, elixir-format
+msgid "Email change link is invalid or it has expired."
+msgstr "Der Link zum Ändern der E-Mail-Adresse ist ungültig oder abgelaufen."
+
+#: lib/task_master_web/live/user_settings_live.ex:85
+#, elixir-autogen, elixir-format
+msgid "Email changed successfully."
+msgstr "E-Mail-Adresse erfolgreich geändert."
+
+#: lib/task_master_web/live/user_forgot_password_live.ex:43
+#, elixir-autogen, elixir-format
+msgid "If your email is in our system, you will receive instructions to reset your password shortly."
+msgstr "Wenn Deine E-Mail-Adresse in unserem System ist, erhältst Du in Kürze Anweisungen zum Zurücksetzen Deines Passworts."
+
+#: lib/task_master_web/controllers/user_session_controller.ex:31
+#, elixir-autogen, elixir-format
+msgid "Invalid email or password"
+msgstr "Ungültige E-Mail-Adresse oder Passwort"
+
+#: lib/task_master_web/controllers/user_session_controller.ex:39
+#, elixir-autogen, elixir-format
+msgid "Logged out successfully."
+msgstr "Erfolgreich ausgeloggt."
+
+#: lib/task_master_web/live/user_settings_live.ex:10
+#, elixir-autogen, elixir-format
+msgid "Manage your account email address and password settings"
+msgstr "Verwalte Deine Account-E-Mail-Adresse und Passworteinstellungen"
+
+#: lib/task_master_web/live/user_reset_password_live.ex:65
+#, elixir-autogen, elixir-format
+msgid "Password reset successfully."
+msgstr "Passwort erfolgreich zurückgesetzt."
+
+#: lib/task_master_web/controllers/user_session_controller.ex:14
+#, elixir-autogen, elixir-format
+msgid "Password updated successfully!"
+msgstr "Passwort erfolgreich aktualisiert!"
+
+#: lib/task_master_web/live/user_reset_password_live.ex:83
+#, elixir-autogen, elixir-format
+msgid "Reset password link is invalid or it has expired."
+msgstr "Der Link zum Zurücksetzen des Passworts ist ungültig oder abgelaufen."
+
+#: lib/task_master_web/live/user_forgot_password_live.ex:18
+#, elixir-autogen, elixir-format
+msgid "Reset password"
+msgstr "Zurücksetzen des Passworts"
+
+#: lib/task_master_web/live/user_confirmation_live.ex:55
+#, elixir-autogen, elixir-format
+msgid "User confirmation link is invalid or it has expired."
+msgstr "Der Bestätigungslink ist ungültig oder abgelaufen."
+
+#: lib/task_master_web/live/user_confirmation_live.ex:40
+#, elixir-autogen, elixir-format
+msgid "User confirmed successfully."
+msgstr "Nutzer erfolgreich bestätigt."
+
+#: lib/task_master_web/live/user_forgot_password_live.ex:11
+#, elixir-autogen, elixir-format, fuzzy
+msgid "We'll send a password reset link to your inbox"
+msgstr "Wir senden Dir neuen Bestätigungslink"
+
+#: lib/task_master_web/controllers/user_session_controller.ex:18
+#, elixir-autogen, elixir-format
+msgid "Welcome back!"
+msgstr "Willkommen zurück!"
+
+#: lib/task_master_web/user_auth.ex:163
+#: lib/task_master_web/user_auth.ex:213
+#, elixir-autogen, elixir-format
+msgid "You must log in to access this page."
+msgstr "Du musst Dich anmelden, um auf diese Seite zugreifen zu können."
+
+#: lib/task_master/accounts/user_notifier.ex:25
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Confirmation instructions"
+msgstr "Keine Bestätigungsanweisungen erhalten?"
+
+#: lib/task_master/accounts/user_notifier.ex:33
+#, elixir-autogen, elixir-format
+msgid "If you didn't create an account with us, please ignore this."
+msgstr "Falls Du keinen Account bei uns erstellt hast, ignoriere dies bitte."
+
+#: lib/task_master/accounts/user_notifier.ex:50
+#: lib/task_master/accounts/user_notifier.ex:67
+#, elixir-autogen, elixir-format
+msgid "If you didn't request this change, please ignore this."
+msgstr "Falls Du diese Änderung nicht angefordert hast, ignoriere dies bitte."
+
+#: lib/task_master/accounts/user_notifier.ex:42
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Reset password instructions"
+msgstr "Zurücksetzen des Passworts"
+
+#: lib/task_master/accounts/user_notifier.ex:59
+#, elixir-autogen, elixir-format
+msgid "Update email instructions"
+msgstr "Update E-Mail-Anweisungen"
+
+#: lib/task_master/accounts/user_notifier.ex:63
+#, elixir-autogen, elixir-format
+msgid "You can change your email by visiting the URL below:"
+msgstr "Du kannst Deine E-Mail-Adresse ändern, indem Du die URL unten besuchst:"
+
+#: lib/task_master/accounts/user_notifier.ex:29
+#, elixir-autogen, elixir-format
+msgid "You can confirm your account by visiting the URL below:"
+msgstr "Du kannst Deinen Account bestätigen, indem Du die URL unten besuchst:"
+
+#: lib/task_master/accounts/user_notifier.ex:46
+#, elixir-autogen, elixir-format
+msgid "You can reset your password by visiting the URL below:"
+msgstr "Du kannst Dein Passwort zurücksetzen, indem Du die URL unten besuchst:"
