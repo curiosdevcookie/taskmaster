@@ -2,6 +2,7 @@ defmodule TaskMaster.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, Ecto.UUID, autogenerate: true}
   schema "users" do
     field :first_name, :string
     field :last_name, :string
@@ -42,7 +43,8 @@ defmodule TaskMaster.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password])
+    |> cast(attrs, [:first_name, :last_name, :nick_name, :email, :password])
+    |> validate_required([:first_name, :last_name, :email, :password])
     |> validate_email(opts)
     |> validate_password(opts)
   end
