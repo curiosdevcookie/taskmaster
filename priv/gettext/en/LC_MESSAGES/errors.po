@@ -12,101 +12,102 @@ msgstr ""
 
 ## From Ecto.Changeset.cast/4
 msgid "can't be blank"
-msgstr ""
+msgstr "bitte ausfüllen"
 
 ## From Ecto.Changeset.unique_constraint/3
 msgid "has already been taken"
-msgstr ""
+msgstr "ist bereits vergeben"
 
 ## From Ecto.Changeset.put_change/3
 msgid "is invalid"
-msgstr ""
+msgstr "ist ungültig"
 
 ## From Ecto.Changeset.validate_acceptance/3
 msgid "must be accepted"
-msgstr ""
+msgstr "muss angenommen werden"
 
 ## From Ecto.Changeset.validate_format/3
 msgid "has invalid format"
-msgstr ""
+msgstr "hat ein ungültiges Format"
 
 ## From Ecto.Changeset.validate_subset/3
 msgid "has an invalid entry"
-msgstr ""
+msgstr "hat einen ungültigen Eintrag"
+
 
 ## From Ecto.Changeset.validate_exclusion/3
 msgid "is reserved"
-msgstr ""
+msgstr "ist reserviert"
 
 ## From Ecto.Changeset.validate_confirmation/3
 msgid "does not match confirmation"
-msgstr ""
+msgstr "stimmt nicht überein"
 
 ## From Ecto.Changeset.no_assoc_constraint/3
 msgid "is still associated with this entry"
-msgstr ""
+msgstr "wird immernoch mit diesem Eintrag assoziiert"
 
 msgid "are still associated with this entry"
-msgstr ""
+msgstr "werden immernoch mit diesem Eintrag assoziiert"
 
 ## From Ecto.Changeset.validate_length/3
 msgid "should have %{count} item(s)"
 msgid_plural "should have %{count} item(s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "sollte %{count} Element haben"
+msgstr[1] "sollten %{count} Elemente haben"
 
 msgid "should be %{count} character(s)"
 msgid_plural "should be %{count} character(s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "sollte %{count} Zeichen haben"
+msgstr[1] "sollten %{count} Zeichen haben"
 
 msgid "should be %{count} byte(s)"
 msgid_plural "should be %{count} byte(s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "sollte %{count} Byte haben"
+msgstr[1] "sollten %{count} Byte haben"
 
 msgid "should have at least %{count} item(s)"
 msgid_plural "should have at least %{count} item(s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "sollte mindestens %{count} Element haben"
+msgstr[1] "sollten mindestens %{count} Elemente haben"
 
 msgid "should be at least %{count} character(s)"
 msgid_plural "should be at least %{count} character(s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "sollte mindestens %{count} Zeichen haben"
+msgstr[1] "sollten mindestens %{count} Zeichen haben"
 
 msgid "should be at least %{count} byte(s)"
 msgid_plural "should be at least %{count} byte(s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "sollte mindestens %{count} Byte haben"
+msgstr[1] "sollten mindestens %{count} Bytes haben"
 
 msgid "should have at most %{count} item(s)"
 msgid_plural "should have at most %{count} item(s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "sollte maximal %{count} Element haben"
+msgstr[1] "sollten maximal %{count} Elemente haben"
 
 msgid "should be at most %{count} character(s)"
 msgid_plural "should be at most %{count} character(s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "sollte maximal %{count} Zeichen haben"
+msgstr[1] "sollten maximal %{count} Zeichen haben"
 
 msgid "should be at most %{count} byte(s)"
 msgid_plural "should be at most %{count} byte(s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "sollte maximal %{count} Byte haben"
+msgstr[1] "sollten maximal %{count} Bytes haben"
 
 ## From Ecto.Changeset.validate_number/3
 msgid "must be less than %{number}"
-msgstr ""
+msgstr "muss kleiner als %{number} sein"
 
 msgid "must be greater than %{number}"
-msgstr ""
+msgstr "muss größer als %{number} sein"
 
 msgid "must be less than or equal to %{number}"
-msgstr ""
+msgstr "muss kleiner oder gleich %{number} sein"
 
 msgid "must be greater than or equal to %{number}"
-msgstr ""
+msgstr "muss größer oder gleich %{number} sein"
 
 msgid "must be equal to %{number}"
-msgstr ""
+msgstr "muss gleich %{number} sein"
