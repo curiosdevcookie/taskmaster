@@ -9,11 +9,11 @@ defmodule TaskMaster.Accounts.User do
     field :nick_name, :string
     field :email, :string
     field :password, :string, virtual: true, redact: true
-    field(:password_confirmation, :string, virtual: true, redact: true)
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :naive_datetime
     field(:roles, {:array, :string}, default: ["editor"])
+    field :last_login_at, :naive_datetime
 
     timestamps()
   end

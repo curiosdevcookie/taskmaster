@@ -76,7 +76,7 @@ msgstr "Einloggen"
 #: lib/task_master_web/live/user_reset_password_live.ex:18
 #, elixir-autogen, elixir-format
 msgid "Oops, something went wrong! Please check the errors below."
-msgstr "Da ist was schiefgelaufen! Bitte überprüfe die Fehler unten."
+msgstr "Da ist was schiefgelaufen! Bitte überprüfe die Fehler unten"
 
 #: lib/task_master_web/live/user_registration_live.ex:11
 #, elixir-autogen, elixir-format
