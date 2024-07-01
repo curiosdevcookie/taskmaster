@@ -2,6 +2,9 @@ defmodule TaskMaster.Tasks.Task do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+  @foreign_key_type :binary_id
+
   schema "tasks" do
     field :priority, Ecto.Enum, values: [:low, :medium, :high], default: :medium
     field :status, Ecto.Enum, values: [:open, :progressing, :completed], default: :open

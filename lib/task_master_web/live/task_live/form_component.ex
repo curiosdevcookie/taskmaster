@@ -83,6 +83,8 @@ defmodule TaskMasterWeb.TaskLive.FormComponent do
   end
 
   defp save_task(socket, :new, task_params) do
+    task_params = Map.put(task_params, "created_by", socket.assigns.current_user.id)
+
     case Tasks.create_task(task_params) do
       {:ok, task} ->
         notify_parent({:saved, task})
