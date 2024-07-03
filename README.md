@@ -176,15 +176,4 @@ The `task_tags` table includes:
 
 A task can have multiple tags. A tag can be assigned to multiple tasks.
 
-### Task Assignments
 
-The `task_assignments` table includes:
-
-- `id`: UUID, PRIMARY KEY
-- `user_id`: UUID, FOREIGN KEY referencing `users(id)`, NULL: FALSE
-- `task_id`: UUID, FOREIGN KEY referencing `tasks(id)`, NULL: FALSE
-- `inserted_at`: TIMESTAMP without time zone, NOT NULL
-- `updated_at`: TIMESTAMP without time zone, NOT NULL
-- `UNIQUE(user_id, task_id)`
-
-A user can be assigned to a task. A task can have multiple assignments. A user can be assigned to multiple tasks.
