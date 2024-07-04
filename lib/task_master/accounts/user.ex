@@ -46,6 +46,8 @@ defmodule TaskMaster.Accounts.User do
     |> validate_required([:first_name, :last_name, :email, :password])
     |> validate_email(opts)
     |> validate_password(opts)
+    |> unique_constraint(:email)
+    |> unique_constraint(:nick_name)
   end
 
   defp validate_email(changeset, opts) do

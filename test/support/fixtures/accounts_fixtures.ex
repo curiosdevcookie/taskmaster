@@ -9,6 +9,7 @@ defmodule TaskMaster.AccountsFixtures do
 
   def valid_user_attributes(attrs \\ %{}) do
     Enum.into(attrs, %{
+      id: Ecto.UUID.generate(),
       email: unique_user_email(),
       password: valid_user_password()
     })
@@ -18,6 +19,7 @@ defmodule TaskMaster.AccountsFixtures do
     {:ok, user} =
       attrs
       |> Enum.into(%{
+        id: Ecto.UUID.generate(),
         email: unique_user_email(),
         password: valid_user_password(),
         first_name: "Test",

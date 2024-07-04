@@ -4,6 +4,7 @@ defmodule TaskMasterWeb.TaskLiveTest do
   import Phoenix.LiveViewTest
   import TaskMaster.TasksFixtures
   import TaskMaster.AccountsFixtures
+  import TaskMasterWeb.Gettext
 
   @create_attrs %{
     priority: :low,
@@ -92,7 +93,7 @@ defmodule TaskMasterWeb.TaskLiveTest do
     test "displays task", %{conn: conn, task: task, user: user} do
       {:ok, _show_live, html} = live(conn, ~p"/#{user.id}/tasks/#{task}")
 
-      assert html =~ "Show Task"
+      assert html =~ gettext("Show Task")
       assert html =~ task.description
     end
 
