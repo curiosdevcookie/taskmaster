@@ -1,4 +1,4 @@
-defmodule TaskMasterWeb.TaskLive.Index do
+defmodule TaskMasterWeb.TaskLive.TaskIndex do
   use TaskMasterWeb, :live_view
 
   alias TaskMaster.Tasks
@@ -6,7 +6,13 @@ defmodule TaskMasterWeb.TaskLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :tasks, Tasks.list_tasks())}
+    current_user = socket.assigns.current_user
+
+    socket
+    |> assign(:current_user, current_user)
+    |> assign(:page_title, "Listing Tasks")
+    |> stream(:tasks, Tasks.list_tasks())
+    |> ok()
   end
 
   @impl true

@@ -17,7 +17,13 @@ defmodule TaskMaster.AccountsFixtures do
   def user_fixture(attrs \\ %{}) do
     {:ok, user} =
       attrs
-      |> valid_user_attributes()
+      |> Enum.into(%{
+        email: unique_user_email(),
+        password: valid_user_password(),
+        first_name: "Test",
+        last_name: "User",
+        nick_name: "TUser"
+      })
       |> TaskMaster.Accounts.register_user()
 
     user

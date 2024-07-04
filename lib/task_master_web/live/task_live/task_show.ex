@@ -1,4 +1,4 @@
-defmodule TaskMasterWeb.TaskLive.Show do
+defmodule TaskMasterWeb.TaskLive.TaskShow do
   use TaskMasterWeb, :live_view
 
   alias TaskMaster.Tasks

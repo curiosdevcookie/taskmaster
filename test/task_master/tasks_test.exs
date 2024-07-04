@@ -8,7 +8,17 @@ defmodule TaskMaster.TasksTest do
 
     import TaskMaster.TasksFixtures
 
-    @invalid_attrs %{priority: nil, status: nil, description: nil, title: nil, due_date: nil, duration: nil, completed_at: nil, indoor: nil}
+    @invalid_attrs %{
+      priority: nil,
+      status: nil,
+      description: nil,
+      title: nil,
+      due_date: nil,
+      duration: nil,
+      completed_at: nil,
+      indoor: nil,
+      created_by: nil
+    }
 
     test "list_tasks/0 returns all tasks" do
       task = task_fixture()
@@ -21,7 +31,19 @@ defmodule TaskMaster.TasksTest do
     end
 
     test "create_task/1 with valid data creates a task" do
-      valid_attrs = %{priority: :low, status: :open, description: "some description", title: "some title", due_date: ~D[2024-06-28], duration: 42, completed_at: ~N[2024-06-28 13:17:00], indoor: true}
+      user = AccountsFixtures.user_fixture()
+
+      valid_attrs = %{
+        priority: :low,
+        status: :open,
+        description: "some description",
+        title: "some title",
+        due_date: ~D[2024-06-28],
+        duration: 42,
+        completed_at: ~N[2024-06-28 13:17:00],
+        indoor: true,
+        created_by: user.id
+      }
 
       assert {:ok, %Task{} = task} = Tasks.create_task(valid_attrs)
       assert task.priority == :low
@@ -40,7 +62,17 @@ defmodule TaskMaster.TasksTest do
 
     test "update_task/2 with valid data updates the task" do
       task = task_fixture()
-      update_attrs = %{priority: :medium, status: :progressing, description: "some updated description", title: "some updated title", due_date: ~D[2024-06-29], duration: 43, completed_at: ~N[2024-06-29 13:17:00], indoor: false}
+
+      update_attrs = %{
+        priority: :medium,
+        status: :progressing,
+        description: "some updated description",
+        title: "some updated title",
+        due_date: ~D[2024-06-29],
+        duration: 43,
+        completed_at: ~N[2024-06-29 13:17:00],
+        indoor: false
+      }
 
       assert {:ok, %Task{} = task} = Tasks.update_task(task, update_attrs)
       assert task.priority == :medium

@@ -1,4 +1,4 @@
-defmodule TaskMasterWeb.TaskLive.FormComponent do
+defmodule TaskMasterWeb.TaskLive.TaskComponent do
   use TaskMasterWeb, :live_component
 
   alias TaskMaster.Tasks
@@ -30,7 +30,6 @@ defmodule TaskMasterWeb.TaskLive.FormComponent do
           options={Ecto.Enum.values(TaskMaster.Tasks.Task, :status)}
         />
         <.input field={@form[:duration]} type="number" label="Duration" />
-        <.input field={@form[:completed_at]} type="datetime-local" label="Completed at" />
         <.input
           field={@form[:priority]}
           type="select"
@@ -49,9 +48,12 @@ defmodule TaskMasterWeb.TaskLive.FormComponent do
 
   @impl true
   def update(%{task: task} = assigns, socket) do
+    current_user = assigns.current_user |> dbg()
+
     {:ok,
      socket
      |> assign(assigns)
+     |> assign(:current_user, current_user)
      |> assign_new(:form, fn ->
        to_form(Tasks.change_task(task))
      end)}

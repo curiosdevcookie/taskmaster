@@ -38,7 +38,7 @@
 
 <.modal :if={@live_action in [:new, :edit]} id="task-modal" show on_cancel={JS.patch(~p"/tasks")}>
   <.live_component
-    module={TaskMasterWeb.TaskLive.FormComponent}
+    module={TaskMasterWeb.TaskLive.TaskComponent}
     id={@task.id || :new}
     title={@page_title}
     action={@live_action}

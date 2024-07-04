@@ -8,17 +8,20 @@ defmodule TaskMaster.TasksFixtures do
   Generate a task.
   """
   def task_fixture(attrs \\ %{}) do
+    user = TaskMaster.AccountsFixtures.user_fixture()
+
     {:ok, task} =
       attrs
       |> Enum.into(%{
-        completed_at: ~N[2024-06-28 13:17:00],
+        title: "some title",
         description: "some description",
         due_date: ~D[2024-06-28],
-        duration: 42,
-        indoor: true,
-        priority: :low,
         status: :open,
-        title: "some title"
+        priority: 42,
+        reminder_time: ~N[2024-06-28 13:17:00],
+        priority_level: :low,
+        is_recurring: true,
+        created_by: user.id
       })
       |> TaskMaster.Tasks.create_task()
 
