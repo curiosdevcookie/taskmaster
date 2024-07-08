@@ -30,9 +30,9 @@ defmodule TaskMaster.Tasks.Task do
       :due_date,
       :status,
       :duration,
-      :completed_at,
       :priority,
-      :indoor
+      :indoor,
+      :created_by
     ])
     |> validate_required([
       :title,

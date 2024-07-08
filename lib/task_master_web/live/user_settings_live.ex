@@ -129,7 +129,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
         Accounts.deliver_user_update_email_instructions(
           applied_user,
           user.email,
-          &url(~p"/#{user.id}/users/settings/confirm_email/#{&1}")
+          &url(~p"/#{user}/users/settings/confirm_email/#{&1}")
         )
 
         info = "A link to confirm your email change has been sent to the new address."

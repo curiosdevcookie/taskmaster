@@ -85,7 +85,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
   end
 
   defp save_task(socket, :new, task_params) do
-    task_params = Map.put(task_params, "created_by", socket.assigns.current_user.id)
+    task_params = Map.put(task_params, "created_by", socket.assigns.current_user.id) |> dbg()
 
     case Tasks.create_task(task_params) do
       {:ok, task} ->

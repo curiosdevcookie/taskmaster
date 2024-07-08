@@ -70,11 +70,11 @@ defmodule TaskMasterWeb.Router do
       live "/:current_user/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
 
       scope "/:current_user" do
-        live "/tasks", TaskLive.Index, :index
-        live "/tasks/new", TaskLive.Index, :new
-        live "/tasks/:id/edit", TaskLive.Index, :edit
-        live "/tasks/:id", TaskLive.Show, :show
-        live "/tasks/:id/show/edit", TaskLive.Show, :edit
+        live "/tasks", TaskLive.TaskIndex, :index
+        live "/tasks/new", TaskLive.TaskIndex, :new
+        live "/tasks/:id/edit", TaskLive.TaskIndex, :edit
+        live "/tasks/:id", TaskLive.TaskIndex, :show
+        live "/tasks/:id/show/edit", TaskLive.TaskIndex, :edit
       end
     end
   end

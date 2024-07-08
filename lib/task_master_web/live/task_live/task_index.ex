@@ -39,7 +39,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   end
 
   @impl true
-  def handle_info({TaskMasterWeb.TaskLive.FormComponent, {:saved, task}}, socket) do
+  def handle_info({TaskMasterWeb.TaskLive.TaskComponent, {:saved, task}}, socket) do
     {:noreply, stream_insert(socket, :tasks, task)}
   end
 

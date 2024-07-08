@@ -58,7 +58,9 @@ defmodule TaskMaster.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id) when is_binary(id) do
+    Repo.get!(User, id)
+  end
 
   ## User registration
 

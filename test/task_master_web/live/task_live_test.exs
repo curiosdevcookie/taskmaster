@@ -13,7 +13,6 @@ defmodule TaskMasterWeb.TaskLiveTest do
     title: "some title",
     due_date: "2024-06-28",
     duration: 42,
-    completed_at: "2024-06-28T13:17:00",
     indoor: true
   }
   @update_attrs %{
@@ -23,7 +22,6 @@ defmodule TaskMasterWeb.TaskLiveTest do
     title: "some updated title",
     due_date: "2024-06-29",
     duration: 43,
-    completed_at: "2024-06-29T13:17:00",
     indoor: false
   }
   @invalid_attrs %{
@@ -33,7 +31,6 @@ defmodule TaskMasterWeb.TaskLiveTest do
     title: nil,
     due_date: nil,
     duration: nil,
-    completed_at: nil,
     indoor: false
   }
 

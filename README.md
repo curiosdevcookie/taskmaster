@@ -175,5 +175,3 @@ The `task_tags` table includes:
 - `UNIQUE(tag_id, task_id)`
 
 A task can have multiple tags. A tag can be assigned to multiple tasks.
-
-

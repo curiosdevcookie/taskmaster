@@ -2,24 +2,30 @@ defmodule TaskMaster.TasksTest do
   use TaskMaster.DataCase
 
   alias TaskMaster.Tasks
+  alias TaskMaster.Tasks.Task
+  import TaskMaster.TasksFixtures
+  import TaskMaster.AccountsFixtures
+
+  @valid_attrs %{
+    priority: :medium,
+    status: :open,
+    description: "some description",
+    title: "some title",
+    due_date: ~D[2024-06-28],
+    duration: 42,
+    indoor: false
+  }
+  @invalid_attrs %{
+    priority: nil,
+    status: nil,
+    description: nil,
+    title: nil,
+    due_date: nil,
+    duration: nil,
+    indoor: nil
+  }
 
   describe "tasks" do
-    alias TaskMaster.Tasks.Task
-
-    import TaskMaster.TasksFixtures
-
-    @invalid_attrs %{
-      priority: nil,
-      status: nil,
-      description: nil,
-      title: nil,
-      due_date: nil,
-      duration: nil,
-      completed_at: nil,
-      indoor: nil,
-      created_by: nil
-    }
-
     test "list_tasks/0 returns all tasks" do
       task = task_fixture()
       assert Tasks.list_tasks() == [task]
@@ -31,29 +37,18 @@ defmodule TaskMaster.TasksTest do
     end
 
     test "create_task/1 with valid data creates a task" do
-      user = AccountsFixtures.user_fixture()
-
-      valid_attrs = %{
-        priority: :low,
-        status: :open,
-        description: "some description",
-        title: "some title",
-        due_date: ~D[2024-06-28],
-        duration: 42,
-        completed_at: ~N[2024-06-28 13:17:00],
-        indoor: true,
-        created_by: user.id
-      }
+      user = user_fixture()
+      valid_attrs = Map.put(@valid_attrs, :created_by, user.id)
 
       assert {:ok, %Task{} = task} = Tasks.create_task(valid_attrs)
-      assert task.priority == :low
+      assert task.priority == :medium
       assert task.status == :open
       assert task.description == "some description"
       assert task.title == "some title"
       assert task.due_date == ~D[2024-06-28]
       assert task.duration == 42
-      assert task.completed_at == ~N[2024-06-28 13:17:00]
-      assert task.indoor == true
+      assert task.indoor == false
+      assert task.created_by == user.id
     end
 
     test "create_task/1 with invalid data returns error changeset" do
@@ -64,25 +59,23 @@ defmodule TaskMaster.TasksTest do
       task = task_fixture()
 
       update_attrs = %{
-        priority: :medium,
+        priority: :high,
         status: :progressing,
-        description: "some updated description",
-        title: "some updated title",
+        description: "updated description",
+        title: "updated title",
         due_date: ~D[2024-06-29],
         duration: 43,
-        completed_at: ~N[2024-06-29 13:17:00],
-        indoor: false
+        indoor: true
       }
 
-      assert {:ok, %Task{} = task} = Tasks.update_task(task, update_attrs)
-      assert task.priority == :medium
-      assert task.status == :progressing
-      assert task.description == "some updated description"
-      assert task.title == "some updated title"
-      assert task.due_date == ~D[2024-06-29]
-      assert task.duration == 43
-      assert task.completed_at == ~N[2024-06-29 13:17:00]
-      assert task.indoor == false
+      assert {:ok, %Task{} = updated_task} = Tasks.update_task(task, update_attrs)
+      assert updated_task.priority == :high
+      assert updated_task.status == :progressing
+      assert updated_task.description == "updated description"
+      assert updated_task.title == "updated title"
+      assert updated_task.due_date == ~D[2024-06-29]
+      assert updated_task.duration == 43
+      assert updated_task.indoor == true
     end
 
     test "update_task/2 with invalid data returns error changeset" do

@@ -5,7 +5,6 @@ defmodule TaskMasterWeb.UserAuthTest do
   alias TaskMaster.Accounts
   alias TaskMasterWeb.UserAuth
   import TaskMaster.AccountsFixtures
-  import TaskMasterWeb.Gettext
 
   @remember_me_cookie "_task_master_web_user_remember_me"
 
@@ -187,7 +186,7 @@ defmodule TaskMasterWeb.UserAuthTest do
   end
 
   describe "on_mount :redirect_if_user_is_authenticated" do
-    test "redirects if there is an authenticated  user ", %{conn: conn, user: user} do
+    test "redirects if there is an authenticated user ", %{conn: conn, user: user} do
       user_token = Accounts.generate_user_session_token(user)
       session = conn |> put_session(:user_token, user_token) |> get_session()
 
@@ -235,7 +234,7 @@ defmodule TaskMasterWeb.UserAuthTest do
       assert redirected_to(conn) == ~p"/users/log_in"
 
       assert Phoenix.Flash.get(conn.assigns.flash, :error) ==
-               gettext("You must log in to access this page.")
+               "You must log in to access this page."
     end
 
     test "stores the path to redirect to on GET", %{conn: conn} do
