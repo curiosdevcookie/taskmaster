@@ -36,4 +36,4 @@ config :logger, level: :warning
 config :phoenix, :plug_init_mode, :runtime
 
 # Language
-config :task_master, TaskMaster.Gettext, default_locale: "en"
+config :task_master, TaskMasterWeb.Gettext, default_locale: "de"

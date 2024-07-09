@@ -11,7 +11,7 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/task_master_web/components/core_components.ex:474
+#: lib/task_master_web/components/core_components.ex:475
 #, elixir-autogen, elixir-format
 msgid "Actions"
 msgstr "Aktionen"
@@ -50,7 +50,7 @@ msgstr "Spitzname"
 msgid "Password"
 msgstr "Passwort"
 
-#: lib/task_master_web/live/user_registration_live.ex:40
+#: lib/task_master_web/live/user_registration_live.ex:44
 #, elixir-autogen, elixir-format
 msgid "Create account"
 msgstr "Account anlegen"
@@ -60,7 +60,7 @@ msgstr "Account anlegen"
 msgid "Already registered?"
 msgstr "Bereits registriert?"
 
-#: lib/task_master_web/components/layouts/root.html.heex:51
+#: lib/task_master_web/components/layouts/root.html.heex:57
 #: lib/task_master_web/live/user_confirmation_instructions_live.ex:25
 #: lib/task_master_web/live/user_confirmation_live.ex:22
 #: lib/task_master_web/live/user_forgot_password_live.ex:24
@@ -127,7 +127,7 @@ msgstr "Aktuelles Passwort"
 msgid "New password"
 msgstr "Neues Passwort"
 
-#: lib/task_master_web/components/layouts/root.html.heex:43
+#: lib/task_master_web/components/layouts/root.html.heex:49
 #: lib/task_master_web/live/user_confirmation_instructions_live.ex:24
 #: lib/task_master_web/live/user_confirmation_live.ex:21
 #: lib/task_master_web/live/user_forgot_password_live.ex:23
@@ -141,7 +141,7 @@ msgstr "Registrieren"
 msgid "Reset Password"
 msgstr "Passwort"
 
-#: lib/task_master_web/components/layouts/root.html.heex:34
+#: lib/task_master_web/components/layouts/root.html.heex:40
 #, elixir-autogen, elixir-format
 msgid "Log out"
 msgstr "Ausloggen"
@@ -312,3 +312,8 @@ msgstr "Du kannst Deinen Account bestätigen, indem Du die URL unten besuchst:"
 #, elixir-autogen, elixir-format
 msgid "You can reset your password by visiting the URL below:"
 msgstr "Du kannst Dein Passwort zurücksetzen, indem Du die URL unten besuchst:"
+
+#: lib/task_master_web/components/layouts/root.html.heex:32
+#, elixir-autogen, elixir-format
+msgid "TASKS"
+msgstr ""

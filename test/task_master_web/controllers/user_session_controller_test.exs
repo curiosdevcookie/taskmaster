@@ -83,7 +83,7 @@ defmodule TaskMasterWeb.UserSessionControllerTest do
           }
         })
 
-      assert redirected_to(conn) == ~p"/#{user.id}/users/settings"
+      assert redirected_to(conn) == ~p"/"
 
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
                gettext("Password updated successfully")

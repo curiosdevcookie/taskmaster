@@ -40,5 +40,6 @@ defmodule TaskMaster.Tasks.Task do
       :priority,
       :indoor
     ])
+    |> unique_constraint(:title, name: :tasks_title_index)
   end
 end

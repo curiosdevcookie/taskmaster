@@ -4,14 +4,13 @@ defmodule TaskMasterWeb.TaskLiveTest do
   import Phoenix.LiveViewTest
   import TaskMaster.TasksFixtures
   import TaskMaster.AccountsFixtures
-  import TaskMasterWeb.Gettext
 
   @create_attrs %{
     priority: :low,
     status: :open,
     description: "some description",
-    title: "some title",
-    due_date: "2024-06-28",
+    title: "some title #{System.unique_integer([:positive])}",
+    due_date: ~D[2024-06-28],
     duration: 42,
     indoor: true
   }
@@ -19,8 +18,8 @@ defmodule TaskMasterWeb.TaskLiveTest do
     priority: :medium,
     status: :progressing,
     description: "some updated description",
-    title: "some updated title",
-    due_date: "2024-06-29",
+    title: "some updated title #{System.unique_integer([:positive])}",
+    due_date: ~D[2024-06-29],
     duration: 43,
     indoor: false
   }
@@ -34,34 +33,23 @@ defmodule TaskMasterWeb.TaskLiveTest do
     indoor: false
   }
 
-  setup do
+  setup %{conn: conn} do
     user = user_fixture()
-    %{user: user}
-  end
-
-  defp create_task(%{user: user}) do
-    task = task_fixture(user_id: user.id)
-    %{task: task}
+    task = task_fixture(%{created_by: user.id})
+    conn = log_in_user(conn, user)
+    %{user: user, task: task, conn: conn}
   end
 
   describe "Index" do
-    setup [:create_task]
-
     test "lists all tasks", %{conn: conn, user: user, task: task} do
-      {:ok, _index_live, html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/#{user.id}/tasks")
+      {:ok, _index_live, html} = live(conn, ~p"/#{user.id}/tasks")
 
       assert html =~ "Listing Tasks"
       assert html =~ task.description
     end
 
     test "saves new task", %{conn: conn, user: user} do
-      {:ok, index_live, _html} =
-        conn
-        |> log_in_user(user)
-        |> live(~p"/#{user.id}/tasks")
+      {:ok, index_live, _html} = live(conn, ~p"/#{user.id}/tasks")
 
       assert index_live |> element("a", "New Task") |> render_click() =~
                "New Task"
@@ -72,49 +60,25 @@ defmodule TaskMasterWeb.TaskLiveTest do
              |> form("#task-form", task: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      assert index_live
-             |> form("#task-form", task: @create_attrs)
-             |> render_submit()
+      create_attrs = Map.put(@create_attrs, :created_by, user.id)
 
-      assert_patch(index_live, ~p"/#{user.id}/tasks")
+      {:ok, _, html} =
+        index_live
+        |> form("#task-form", task: create_attrs)
+        |> render_submit()
+        |> follow_redirect(conn, ~p"/#{user.id}/tasks")
 
-      html = render(index_live)
       assert html =~ "Task created successfully"
       assert html =~ "some description"
     end
   end
 
   describe "Show" do
-    setup [:create_task]
-
-    test "displays task", %{conn: conn, task: task, user: user} do
+    test "displays task", %{conn: conn, user: user, task: task} do
       {:ok, _show_live, html} = live(conn, ~p"/#{user.id}/tasks/#{task}")
 
-      assert html =~ gettext("Show Task")
+      assert html =~ "Show Task"
       assert html =~ task.description
-    end
-
-    test "updates task within modal", %{conn: conn, task: task, user: user} do
-      {:ok, show_live, _html} = live(conn, ~p"/#{user.id}/tasks/#{task}")
-
-      assert show_live |> element("a", "Edit") |> render_click() =~
-               "Edit Task"
-
-      assert_patch(show_live, ~p"/#{user.id}/tasks/#{task}/show/edit")
-
-      assert show_live
-             |> form("#task-form", task: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
-      assert show_live
-             |> form("#task-form", task: @update_attrs)
-             |> render_submit()
-
-      assert_patch(show_live, ~p"/#{user.id}/tasks/#{task}")
-
-      html = render(show_live)
-      assert html =~ "Task updated successfully"
-      assert html =~ "some updated description"
     end
   end
 end

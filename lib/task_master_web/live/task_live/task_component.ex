@@ -19,6 +19,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
         phx-change="validate"
         phx-submit="save"
       >
+        <input type="hidden" name="task[created_by]" value={@current_user.id} />
         <.input field={@form[:title]} type="text" label="Title" />
         <.input field={@form[:description]} type="text" label="Description" />
         <.input field={@form[:due_date]} type="date" label="Due date" />
@@ -48,21 +49,20 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
 
   @impl true
   def update(%{task: task} = assigns, socket) do
-    current_user = assigns.current_user |> dbg()
-
     {:ok,
      socket
      |> assign(assigns)
-     |> assign(:current_user, current_user)
-     |> assign_new(:form, fn ->
-       to_form(Tasks.change_task(task))
-     end)}
+     |> assign_form(Tasks.change_task(task))}
   end
 
   @impl true
   def handle_event("validate", %{"task" => task_params}, socket) do
-    changeset = Tasks.change_task(socket.assigns.task, task_params)
-    {:noreply, assign(socket, form: to_form(changeset, action: :validate))}
+    changeset =
+      socket.assigns.task
+      |> Tasks.change_task(task_params)
+      |> Map.put(:action, :validate)
+
+    {:noreply, assign_form(socket, changeset)}
   end
 
   def handle_event("save", %{"task" => task_params}, socket) do
@@ -80,13 +80,11 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, form: to_form(changeset))}
+        {:noreply, assign_form(socket, changeset)}
     end
   end
 
   defp save_task(socket, :new, task_params) do
-    task_params = Map.put(task_params, "created_by", socket.assigns.current_user.id) |> dbg()
-
     case Tasks.create_task(task_params) do
       {:ok, task} ->
         notify_parent({:saved, task})
@@ -94,11 +92,15 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Task created successfully")
-         |> push_patch(to: socket.assigns.patch)}
+         |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, form: to_form(changeset))}
+        {:noreply, assign_form(socket, changeset)}
     end
+  end
+
+  defp assign_form(socket, %Ecto.Changeset{} = changeset) do
+    assign(socket, :form, to_form(changeset))
   end
 
   defp notify_parent(msg), do: send(self(), {__MODULE__, msg})

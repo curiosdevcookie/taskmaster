@@ -1,5 +1,5 @@
 <.header>
-  Task <%= @task.id %>
+  Task
   <:subtitle>This is a task record from your database.</:subtitle>
   <:actions>
     <.link patch={~p"/#{@current_user.id}/tasks/#{@task}/show/edit"} phx-click={JS.push_focus()}>
@@ -20,7 +20,12 @@
 
 <.back navigate={~p"/#{@current_user.id}/tasks"}>Back to tasks</.back>
 
-<.modal :if={@live_action == :edit} id="task-modal" show on_cancel={JS.patch(~p"/tasks/#{@task}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="task-modal"
+  show
+  on_cancel={JS.patch(~p"/#{@current_user.id}/tasks/#{@task}")}
+>
   <.live_component
     module={TaskMasterWeb.TaskLive.TaskComponent}
     id={@task.id}

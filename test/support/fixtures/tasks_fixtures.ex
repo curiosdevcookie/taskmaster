@@ -7,11 +7,12 @@ defmodule TaskMaster.TasksFixtures do
   @doc """
   Generate a task.
   """
+
   def task_fixture(attrs \\ %{}) do
-    user = TaskMaster.AccountsFixtures.user_fixture()
+    user = attrs[:user] || TaskMaster.AccountsFixtures.user_fixture()
 
     valid_attrs = %{
-      title: "some title",
+      title: "some title #{System.unique_integer([:positive])}",
       description: "some description",
       due_date: ~D[2024-06-28],
       status: :open,
