@@ -88,7 +88,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
           put_flash(socket, :error, gettext("Email change link is invalid or it has expired."))
       end
 
-    {:ok, push_navigate(socket, to: ~p"/users/settings")}
+    {:ok, push_navigate(socket, to: ~p"/#{socket.assigns.current_user}/users/settings")}
   end
 
   def mount(_params, _session, socket) do
@@ -129,7 +129,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
         Accounts.deliver_user_update_email_instructions(
           applied_user,
           user.email,
-          &url(~p"/users/settings/confirm_email/#{&1}")
+          &url(~p"/#{user}/users/settings/confirm_email/#{&1}")
         )
 
         info = "A link to confirm your email change has been sent to the new address."

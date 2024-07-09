@@ -19,12 +19,18 @@
         </li>
         <li>
           <.link
-            href={~p"/users/settings"}
+            href={~p"/#{@current_user}/users/settings"}
             class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
           >
             <%= gettext("Settings") %>
           </.link>
         </li>
+        <.link
+          navigate={~p"/#{@current_user.id}/tasks"}
+          class="font-semibold text-zinc-900 hover:text-zinc-700"
+        >
+          ➜ <%= gettext("TASKS") %>
+        </.link>
         <li>
           <.link
             href={~p"/users/log_out"}

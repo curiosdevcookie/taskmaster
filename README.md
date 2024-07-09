@@ -22,7 +22,6 @@ The `users` table includes:
 - `last_name`: VARCHAR, NULL: FALSE
 - `nick_name`: CITEXT, UNIQUE
 - `email`: CITEXT, UNIQUE, NULL: FALSE
-- `roles`: ARRAY of VARCHAR, default `{"editor"}`, NULL: FALSE
 - `hashed_password`: VARCHAR (redacted), NULL: FALSE
 - `current_password`: VARCHAR (virtual field, redacted)
 - `confirmed_at`: TIMESTAMP without time zone
@@ -32,20 +31,7 @@ The `users` table includes:
 - `UNIQUE(email)`
 - `UNIQUE(nick_name)`
 
-Users can sign up and log in to the system. A user can have multiple roles. A user can have an avatar picture.
-
-### Roles
-
-The `roles` table includes:
-
-- `id`: UUID, PRIMARY KEY
-- `name`: VARCHAR
-- `description`: TEXT
-- `inserted_at`: TIMESTAMP without time zone, NOT NULL
-- `updated_at`: TIMESTAMP without time zone, NOT NULL
-- `UNIQUE(name)`
-
-Users can have multiple roles. Roles can be assigned to multiple users.
+Users can sign up and log in to the system. Users can have many tasks, comments, pictures, and avatars. Users can have many tags and locations. Users can have many participations. Users can have many task assignments.
 
 ### Avatars
 
@@ -54,6 +40,7 @@ The `avatars` table includes:
 - `id`: UUID, PRIMARY KEY
 - `path`: VARCHAR
 - `user_id`: UUID, FOREIGN KEY referencing `users(id)`, NULL: FALSE
+- `is_active`: BOOLEAN DEFAULT false
 - `inserted_at`: TIMESTAMP without time zone, NOT NULL
 - `updated_at`: TIMESTAMP without time zone, NOT NULL
 
@@ -188,16 +175,3 @@ The `task_tags` table includes:
 - `UNIQUE(tag_id, task_id)`
 
 A task can have multiple tags. A tag can be assigned to multiple tasks.
-
-### Task Assignments
-
-The `task_assignments` table includes:
-
-- `id`: UUID, PRIMARY KEY
-- `user_id`: UUID, FOREIGN KEY referencing `users(id)`, NULL: FALSE
-- `task_id`: UUID, FOREIGN KEY referencing `tasks(id)`, NULL: FALSE
-- `inserted_at`: TIMESTAMP without time zone, NOT NULL
-- `updated_at`: TIMESTAMP without time zone, NOT NULL
-- `UNIQUE(user_id, task_id)`
-
-A user can be assigned to a task. A task can have multiple assignments. A user can be assigned to multiple tasks.

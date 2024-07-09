@@ -20,5 +20,5 @@ defmodule TaskMasterWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :task_master
+  use Gettext, otp_app: :task_master, default_locale: "de"
 end

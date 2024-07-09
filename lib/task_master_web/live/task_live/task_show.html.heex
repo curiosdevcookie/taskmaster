@@ -1,0 +1,37 @@
+<.header>
+  Task
+  <:subtitle>This is a task record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/#{@current_user.id}/tasks/#{@task}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit task</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Title"><%= @task.title %></:item>
+  <:item title="Description"><%= @task.description %></:item>
+  <:item title="Due date"><%= @task.due_date %></:item>
+  <:item title="Status"><%= @task.status %></:item>
+  <:item title="Duration"><%= @task.duration %></:item>
+  <:item title="Priority"><%= @task.priority %></:item>
+  <:item title="Indoor"><%= @task.indoor %></:item>
+</.list>
+
+<.back navigate={~p"/#{@current_user.id}/tasks"}>Back to tasks</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="task-modal"
+  show
+  on_cancel={JS.patch(~p"/#{@current_user.id}/tasks/#{@task}")}
+>
+  <.live_component
+    module={TaskMasterWeb.TaskLive.TaskComponent}
+    id={@task.id}
+    title={@page_title}
+    action={@live_action}
+    task={@task}
+    patch={~p"/#{@current_user.id}/tasks/#{@task}"}
+  />
+</.modal>

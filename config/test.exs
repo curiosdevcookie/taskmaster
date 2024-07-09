@@ -34,3 +34,6 @@ config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Language
+config :task_master, TaskMasterWeb.Gettext, default_locale: "de"

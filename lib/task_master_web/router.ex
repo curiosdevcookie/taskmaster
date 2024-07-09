@@ -66,8 +66,16 @@ defmodule TaskMasterWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{TaskMasterWeb.UserAuth, :ensure_authenticated}] do
-      live "/users/settings", UserSettingsLive, :edit
-      live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+      live "/:current_user/users/settings", UserSettingsLive, :edit
+      live "/:current_user/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      scope "/:current_user" do
+        live "/tasks", TaskLive.TaskIndex, :index
+        live "/tasks/new", TaskLive.TaskIndex, :new
+        live "/tasks/:id/edit", TaskLive.TaskIndex, :edit
+        live "/tasks/:id", TaskLive.TaskShow, :show
+        live "/tasks/:id/show/edit", TaskLive.TaskIndex, :edit
+      end
     end
   end
 

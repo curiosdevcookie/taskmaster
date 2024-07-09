@@ -12,7 +12,6 @@ defmodule TaskMaster.Accounts.User do
     field :hashed_password, :string, redact: true
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :naive_datetime
-    field(:roles, {:array, :string}, default: ["editor"])
     field :last_login_at, :naive_datetime
 
     timestamps()
@@ -44,9 +43,11 @@ defmodule TaskMaster.Accounts.User do
   def registration_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:first_name, :last_name, :nick_name, :email, :password])
-    |> validate_required([:first_name, :last_name, :email, :password])
+    |> validate_required([:first_name, :last_name])
     |> validate_email(opts)
     |> validate_password(opts)
+    |> unique_constraint(:email)
+    |> unique_constraint(:nick_name)
   end
 
   defp validate_email(changeset, opts) do

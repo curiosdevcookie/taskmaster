@@ -34,7 +34,6 @@ msgstr "hat ein ungültiges Format"
 msgid "has an invalid entry"
 msgstr "hat einen ungültigen Eintrag"
 
-
 ## From Ecto.Changeset.validate_exclusion/3
 msgid "is reserved"
 msgstr "ist reserviert"
