@@ -19,7 +19,9 @@
   <:item title={gettext("Priority")}>
     <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@task.priority) %>
   </:item>
-  <:item title={gettext("Indoor")}><%= if @task.indoor, do: "✅", else: "❌" %></:item>
+  <:item title={gettext("Indoor")}>
+    <%= TaskMasterWeb.Helpers.IconHelper.boolean_icon(@task.indoor) %>
+  </:item>
 </.list>
 
 <.back navigate={~p"/#{@current_user.id}/tasks"}><%= gettext("Back") %></.back>
