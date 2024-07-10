@@ -10,7 +10,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
 
     socket
     |> assign(:current_user, current_user)
-    |> assign(:page_title, "Listing Tasks")
+    |> assign(:page_title, gettext("Listing Tasks"))
     |> stream(:tasks, Tasks.list_tasks())
     |> ok()
   end
@@ -22,19 +22,19 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
-    |> assign(:page_title, "Edit Task")
+    |> assign(:page_title, gettext("Edit Task"))
     |> assign(:task, Tasks.get_task!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Task")
+    |> assign(:page_title, gettext("New Task"))
     |> assign(:task, %Task{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
-    |> assign(:page_title, "Listing Tasks")
+    |> assign(:page_title, gettext("Listing Tasks"))
     |> assign(:task, nil)
   end
 

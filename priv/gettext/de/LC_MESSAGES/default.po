@@ -4,7 +4,7 @@
 ### they're tied to the ones in the corresponding POT file
 ### (with the same domain).
 ###
-### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### Use "mix gettext.extract --merge" or "mix gettext.merge" or "mix gettext.merge priv/gettext"
 ### to merge POT files into PO files.
 msgid ""
 msgstr ""
@@ -316,4 +316,166 @@ msgstr "Du kannst Dein Passwort zurücksetzen, indem Du die URL unten besuchst:"
 #: lib/task_master_web/components/layouts/root.html.heex:32
 #, elixir-autogen, elixir-format
 msgid "TASKS"
-msgstr ""
+msgstr "Tasks"
+
+#: lib/task_master_web/live/task_live/task_index.html.heex:37
+#, elixir-autogen, elixir-format
+msgid "Are you sure?"
+msgstr "Bist Du Dir sicher?"
+
+#: lib/task_master_web/live/task_live/task_index.html.heex:32
+#, elixir-autogen, elixir-format
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: lib/task_master_web/live/task_live/task_index.html.heex:30
+#, elixir-autogen, elixir-format
+msgid "Show"
+msgstr "Zeigen"
+
+#: lib/task_master_web/live/task_live/task_index.html.heex:39
+#, elixir-autogen, elixir-format
+msgid "Delete"
+msgstr "Löschen"
+
+#: lib/task_master_web/live/task_live/task_index.ex:13
+#: lib/task_master_web/live/task_live/task_index.ex:37
+#: lib/task_master_web/live/task_live/task_index.html.heex:2
+#, elixir-autogen, elixir-format
+msgid "Listing Tasks"
+msgstr "Tasks"
+
+#: lib/task_master_web/live/task_live/task_index.ex:31
+#: lib/task_master_web/live/task_live/task_index.html.heex:5
+#, elixir-autogen, elixir-format
+msgid "New Task"
+msgstr "Neue Task"
+
+#: lib/task_master_web/live/task_live/task_component.ex:32
+#: lib/task_master_web/live/task_live/task_component.ex:42
+#, elixir-autogen, elixir-format
+msgid "Choose a value"
+msgstr "Wähle einen Wert"
+
+#: lib/task_master_web/live/task_live/task_show.html.heex:6
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Edit task"
+msgstr "Bearbeiten"
+
+#: lib/task_master_web/live/task_live/task_component.ex:49
+#, elixir-autogen, elixir-format
+msgid "Save"
+msgstr "Speichern"
+
+#: lib/task_master_web/live/task_live/task_show.html.heex:2
+#, elixir-autogen, elixir-format
+msgid "Task"
+msgstr "Task"
+
+#: lib/task_master_web/live/task_live/task_component.ex:100
+#, elixir-autogen, elixir-format
+msgid "Task created successfully"
+msgstr "Task erfolgreich erstellt"
+
+#: lib/task_master_web/live/task_live/task_show.html.heex:3
+#, elixir-autogen, elixir-format
+msgid "This is a task record from your database."
+msgstr "Das ist ein Task-Eintrag aus Deiner Datenbank."
+
+#: lib/task_master_web/live/task_live/task_component.ex:13
+#, elixir-autogen, elixir-format
+msgid "Use this form to manage task records in your database."
+msgstr "Verwende dieses Formular, um Task-Einträge in Deiner Datenbank zu verwalten."
+
+#: lib/task_master_web/live/task_live/task_component.ex:26
+#: lib/task_master_web/live/task_live/task_index.html.heex:16
+#: lib/task_master_web/live/task_live/task_show.html.heex:13
+#, elixir-autogen, elixir-format
+msgid "Description"
+msgstr "Beschreibung"
+
+#: lib/task_master_web/live/task_live/task_component.ex:27
+#: lib/task_master_web/live/task_live/task_index.html.heex:17
+#: lib/task_master_web/live/task_live/task_show.html.heex:14
+#, elixir-autogen, elixir-format
+msgid "Due date"
+msgstr "Fälligkeit"
+
+#: lib/task_master_web/live/task_live/task_component.ex:37
+#: lib/task_master_web/live/task_live/task_index.html.heex:21
+#: lib/task_master_web/live/task_live/task_show.html.heex:18
+#, elixir-autogen, elixir-format
+msgid "Duration"
+msgstr "Dauer"
+
+#: lib/task_master_web/live/task_live/task_component.ex:47
+#: lib/task_master_web/live/task_live/task_index.html.heex:25
+#: lib/task_master_web/live/task_live/task_show.html.heex:22
+#, elixir-autogen, elixir-format
+msgid "Indoor"
+msgstr "Indoor"
+
+#: lib/task_master_web/live/task_live/task_component.ex:41
+#: lib/task_master_web/live/task_live/task_index.html.heex:22
+#: lib/task_master_web/live/task_live/task_show.html.heex:19
+#, elixir-autogen, elixir-format
+msgid "Priority"
+msgstr "Priorität"
+
+#: lib/task_master_web/live/task_live/task_component.ex:25
+#: lib/task_master_web/live/task_live/task_index.html.heex:15
+#: lib/task_master_web/live/task_live/task_show.html.heex:12
+#, elixir-autogen, elixir-format
+msgid "Title"
+msgstr "Titel"
+
+#: lib/task_master_web/live/task_live/task_index.ex:25
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Edit Task"
+msgstr "Bearbeiten"
+
+#: lib/task_master_web/live/task_live/task_index.html.heex:18
+#: lib/task_master_web/live/task_live/task_show.html.heex:15
+#, elixir-autogen, elixir-format
+msgid "Status"
+msgstr "Status"
+
+#: lib/task_master_web/live/task_live/task_component.ex:85
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Task updated successfully"
+msgstr "Task erfolgreich erstellt"
+
+#: lib/task_master_web/helpers/enum_translator.ex:23
+#, elixir-autogen, elixir-format
+msgid "Completed"
+msgstr "Fertig"
+
+#: lib/task_master_web/helpers/enum_translator.ex:26
+#, elixir-autogen, elixir-format
+msgid "High"
+msgstr "Hoch"
+
+#: lib/task_master_web/helpers/enum_translator.ex:24
+#, elixir-autogen, elixir-format
+msgid "Low"
+msgstr "Niedrig"
+
+#: lib/task_master_web/helpers/enum_translator.ex:25
+#, elixir-autogen, elixir-format
+msgid "Medium"
+msgstr "Mittel"
+
+#: lib/task_master_web/helpers/enum_translator.ex:21
+#, elixir-autogen, elixir-format
+msgid "Open"
+msgstr "Offen"
+
+#: lib/task_master_web/helpers/enum_translator.ex:22
+#, elixir-autogen, elixir-format
+msgid "Progressing"
+msgstr "In Bearbeitung"
+
+#: lib/task_master_web/live/task_live/task_show.html.heex:25
+#, elixir-autogen, elixir-format
+msgid "Back"
+msgstr "Zurück"

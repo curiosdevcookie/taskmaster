@@ -80,5 +80,29 @@ defmodule TaskMasterWeb.TaskLiveTest do
       assert html =~ "Show Task"
       assert html =~ task.description
     end
+
+    # test "updates task within modal", %{conn: conn, user: user, task: task} do
+    #   {:ok, show_live, _html} = live(conn, ~p"/#{user.id}/tasks/#{task}")
+
+    #   assert show_live |> element("a", "Edit") |> render_click() =~
+    #            "Edit Task"
+
+    #   assert_patch(show_live, ~p"/#{user.id}/tasks/#{task}/edit")
+
+    #   assert show_live
+    #          |> form("#task-form", task: @invalid_attrs)
+    #          |> render_change() =~ "can&#39;t be blank"
+
+    #   update_attrs = Map.put(@update_attrs, :created_by, user.id)
+
+    #   {:ok, _, html} =
+    #     show_live
+    #     |> form("#task-form", task: update_attrs)
+    #     |> render_submit()
+    #     |> follow_redirect(conn, ~p"/#{user.id}/tasks/#{task}")
+
+    #   assert html =~ "Task updated successfully"
+    #   assert html =~ "some updated description"
+    # end
   end
 end

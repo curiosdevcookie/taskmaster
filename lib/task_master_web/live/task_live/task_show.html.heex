@@ -1,24 +1,28 @@
 <.header>
-  Task
-  <:subtitle>This is a task record from your database.</:subtitle>
+  <%= gettext("Task") %>
+  <:subtitle><%= gettext("This is a task record from your database.") %></:subtitle>
   <:actions>
     <.link patch={~p"/#{@current_user.id}/tasks/#{@task}/show/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit task</.button>
+      <.button><%= gettext("Edit task") %></.button>
     </.link>
   </:actions>
 </.header>
 
 <.list>
-  <:item title="Title"><%= @task.title %></:item>
-  <:item title="Description"><%= @task.description %></:item>
-  <:item title="Due date"><%= @task.due_date %></:item>
-  <:item title="Status"><%= @task.status %></:item>
-  <:item title="Duration"><%= @task.duration %></:item>
-  <:item title="Priority"><%= @task.priority %></:item>
-  <:item title="Indoor"><%= @task.indoor %></:item>
+  <:item title={gettext("Title")}><%= @task.title %></:item>
+  <:item title={gettext("Description")}><%= @task.description %></:item>
+  <:item title={gettext("Due date")}><%= @task.due_date %></:item>
+  <:item title={gettext("Status")}>
+    <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@task.status) %>
+  </:item>
+  <:item title={gettext("Duration")}><%= @task.duration %></:item>
+  <:item title={gettext("Priority")}>
+    <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@task.priority) %>
+  </:item>
+  <:item title={gettext("Indoor")}><%= if @task.indoor, do: "✅", else: "❌" %></:item>
 </.list>
 
-<.back navigate={~p"/#{@current_user.id}/tasks"}>Back to tasks</.back>
+<.back navigate={~p"/#{@current_user.id}/tasks"}><%= gettext("Back") %></.back>
 
 <.modal
   :if={@live_action == :edit}
