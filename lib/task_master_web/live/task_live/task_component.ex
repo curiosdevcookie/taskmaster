@@ -9,7 +9,9 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage task records in your database.</:subtitle>
+        <:subtitle>
+          <%= gettext("Use this form to manage task records in your database.") %>
+        </:subtitle>
       </.header>
 
       <.simple_form
@@ -20,27 +22,31 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
         phx-submit="save"
       >
         <input type="hidden" name="task[created_by]" value={@current_user.id} />
-        <.input field={@form[:title]} type="text" label="Title" />
-        <.input field={@form[:description]} type="text" label="Description" />
-        <.input field={@form[:due_date]} type="date" label="Due date" />
+        <.input field={@form[:title]} type="text" label={gettext("Title")} />
+        <.input field={@form[:description]} type="text" label={gettext("Description")} />
+        <.input field={@form[:due_date]} type="date" label={gettext("Due date")} />
         <.input
           field={@form[:status]}
           type="select"
           label="Status"
-          prompt="Choose a value"
-          options={Ecto.Enum.values(TaskMaster.Tasks.Task, :status)}
+          prompt={gettext("Choose a value")}
+          options={
+            TaskMasterWeb.Helpers.EnumTranslator.translate_enum(TaskMaster.Tasks.Task, :status)
+          }
         />
-        <.input field={@form[:duration]} type="number" label="Duration" />
+        <.input field={@form[:duration]} type="number" label={gettext("Duration")} />
         <.input
           field={@form[:priority]}
           type="select"
-          label="Priority"
-          prompt="Choose a value"
-          options={Ecto.Enum.values(TaskMaster.Tasks.Task, :priority)}
+          label={gettext("Priority")}
+          prompt={gettext("Choose a value")}
+          options={
+            TaskMasterWeb.Helpers.EnumTranslator.translate_enum(TaskMaster.Tasks.Task, :priority)
+          }
         />
-        <.input field={@form[:indoor]} type="checkbox" label="Indoor" />
+        <.input field={@form[:indoor]} type="checkbox" label={gettext("Indoor")} />
         <:actions>
-          <.button phx-disable-with="Saving...">Save Task</.button>
+          <.button phx-disable-with="Saving..."><%= gettext("Save") %></.button>
         </:actions>
       </.simple_form>
     </div>
@@ -76,7 +82,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Task updated successfully")
+         |> put_flash(:info, gettext("Task updated successfully"))
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -91,7 +97,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Task created successfully")
+         |> put_flash(:info, gettext("Task created successfully"))
          |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
 
       {:error, %Ecto.Changeset{} = changeset} ->

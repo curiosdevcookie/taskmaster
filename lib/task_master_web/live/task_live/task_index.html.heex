@@ -1,8 +1,8 @@
 <.header>
-  Listing Tasks
+  <%= gettext("Listing Tasks") %>
   <:actions>
     <.link patch={~p"/#{@current_user.id}/tasks/new"}>
-      <.button>New Task</.button>
+      <.button><%= gettext("New Task") %></.button>
     </.link>
   </:actions>
 </.header>
@@ -12,25 +12,31 @@
   rows={@streams.tasks}
   row_click={fn {_id, task} -> JS.navigate(~p"/#{@current_user.id}/tasks/#{task}") end}
 >
-  <:col :let={{_id, task}} label="Title"><%= task.title %></:col>
-  <:col :let={{_id, task}} label="Description"><%= task.description %></:col>
-  <:col :let={{_id, task}} label="Due date"><%= task.due_date %></:col>
-  <:col :let={{_id, task}} label="Status"><%= task.status %></:col>
-  <:col :let={{_id, task}} label="Duration"><%= task.duration %></:col>
-  <:col :let={{_id, task}} label="Priority"><%= task.priority %></:col>
-  <:col :let={{_id, task}} label="Indoor"><%= task.indoor %></:col>
+  <:col :let={{_id, task}} label={gettext("Title")}><%= task.title %></:col>
+  <:col :let={{_id, task}} label={gettext("Description")}><%= task.description %></:col>
+  <:col :let={{_id, task}} label={gettext("Due date")}><%= task.due_date %></:col>
+  <:col :let={{_id, task}} label={gettext("Status")}>
+    <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(task.status) %>
+  </:col>
+  <:col :let={{_id, task}} label={gettext("Duration")}><%= task.duration %></:col>
+  <:col :let={{_id, task}} label={gettext("Priority")}>
+    <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(task.priority) %>
+  </:col>
+  <:col :let={{_id, task}} label={gettext("Indoor")}>
+    <%= if task.indoor, do: "✅", else: "❌" %>
+  </:col>
   <:action :let={{_id, task}}>
     <div class="sr-only">
-      <.link navigate={~p"/#{@current_user.id}/tasks/#{task}"}>Show</.link>
+      <.link navigate={~p"/#{@current_user.id}/tasks/#{task}"}><%= gettext("Show") %></.link>
     </div>
-    <.link patch={~p"/#{@current_user.id}/tasks/#{task}/edit"}>Edit</.link>
+    <.link patch={~p"/#{@current_user.id}/tasks/#{task}/edit"}><%= gettext("Edit") %></.link>
   </:action>
   <:action :let={{id, task}}>
     <.link
       phx-click={JS.push("delete", value: %{id: task.id}) |> hide("##{id}")}
-      data-confirm="Are you sure?"
+      data-confirm={gettext("Are you sure?")}
     >
-      Delete
+      <%= gettext("Delete") %>
     </.link>
   </:action>
 </.table>
