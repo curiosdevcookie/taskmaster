@@ -4,6 +4,7 @@ defmodule TaskMasterWeb.TaskLiveTest do
   import Phoenix.LiveViewTest
   import TaskMaster.TasksFixtures
   import TaskMaster.AccountsFixtures
+  import TaskMasterWeb.Gettext
 
   @create_attrs %{
     priority: :low,
@@ -44,7 +45,7 @@ defmodule TaskMasterWeb.TaskLiveTest do
     test "lists all tasks", %{conn: conn, user: user, task: task} do
       {:ok, _index_live, html} = live(conn, ~p"/#{user.id}/tasks")
 
-      assert html =~ "Listing Tasks"
+      assert html =~ gettext("Listing Tasks")
       assert html =~ task.description
     end
 
@@ -52,7 +53,7 @@ defmodule TaskMasterWeb.TaskLiveTest do
       {:ok, index_live, _html} = live(conn, ~p"/#{user.id}/tasks")
 
       assert index_live |> element("a", "New Task") |> render_click() =~
-               "New Task"
+               gettext("New Task")
 
       assert_patch(index_live, ~p"/#{user.id}/tasks/new")
 
