@@ -1,0 +1,36 @@
+<.header>
+  Avatar <%= @avatar.id %>
+  <:subtitle>This is a avatar record from your database.</:subtitle>
+  <:actions>
+    <.link
+      patch={~p"/#{@current_user.id}/avatars/#{@avatar}/show/edit"}
+      phx-click={JS.push_focus()}
+    >
+      <.button>Edit avatar</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Path"><%= @avatar.path %></:item>
+  <:item title="User"><%= @avatar.user_id %></:item>
+  <:item title="Is active"><%= @avatar.is_active %></:item>
+</.list>
+
+<.back navigate={~p"/#{@current_user.id}/avatars"}>Back to avatars</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="avatar-modal"
+  show
+  on_cancel={JS.patch(~p"/#{@current_user.id}/avatars/#{@avatar}")}
+>
+  <.live_component
+    module={TaskMasterWeb.AvatarLive.FormComponent}
+    id={@avatar.id}
+    title={@page_title}
+    action={@live_action}
+    avatar={@avatar}
+    patch={~p"/#{@current_user.id}/avatars/#{@avatar}"}
+  />
+</.modal>

@@ -20,17 +20,6 @@ defmodule TaskMaster.Repo.Migrations.CreateUsersAuthTables do
     create unique_index(:users, [:email])
     create unique_index(:users, [:nick_name])
 
-    create table(:avatars, primary_key: false) do
-      add :id, :uuid, primary_key: true, null: false
-      add :path, :string, null: false
-      add :is_active, :boolean, null: false
-      add :user_id, references(:users, type: :uuid, on_delete: :delete_all), null: false
-
-      timestamps()
-    end
-
-    create index(:avatars, [:user_id])
-
     create table(:users_tokens, primary_key: false) do
       add :id, :uuid, primary_key: true, null: false
       add :user_id, references(:users, on_delete: :delete_all, type: :uuid), null: false
