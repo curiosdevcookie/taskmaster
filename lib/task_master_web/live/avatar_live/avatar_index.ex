@@ -1,4 +1,4 @@
-defmodule TaskMasterWeb.AvatarLive.Index do
+defmodule TaskMasterWeb.AvatarLive.AvatarIndex do
   use TaskMasterWeb, :live_view
 
   alias TaskMaster.Accounts
@@ -6,7 +6,13 @@ defmodule TaskMasterWeb.AvatarLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :avatars, Accounts.list_avatars())}
+    current_user = socket.assigns.current_user
+    avatars = Accounts.list_avatars(current_user)
+
+    {:ok,
+     socket
+     |> stream(:avatars, avatars)
+     |> assign(:avatar, %Avatar{user_id: current_user.id})}
   end
 
   @impl true
@@ -23,7 +29,7 @@ defmodule TaskMasterWeb.AvatarLive.Index do
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Avatar")
-    |> assign(:avatar, %Avatar{})
+    |> assign(:avatar, %Avatar{user_id: socket.assigns.current_user.id})
   end
 
   defp apply_action(socket, :index, _params) do
@@ -33,7 +39,7 @@ defmodule TaskMasterWeb.AvatarLive.Index do
   end
 
   @impl true
-  def handle_info({TaskMasterWeb.AvatarLive.FormComponent, {:saved, avatar}}, socket) do
+  def handle_info({TaskMasterWeb.AvatarLive.AvatarComponent, {:saved, avatar}}, socket) do
     {:noreply, stream_insert(socket, :avatars, avatar)}
   end
 

@@ -358,13 +358,9 @@ defmodule TaskMaster.Accounts do
   @doc """
   Returns the list of avatars.
 
-  ## Examples
-
-      iex> list_avatars()
-      [%Avatar{}, ...]
 
   """
-  def list_avatars do
+  def list_avatars(user) do
     Repo.all(Avatar)
   end
 

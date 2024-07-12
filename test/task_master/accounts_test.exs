@@ -525,15 +525,17 @@ defmodule TaskMaster.AccountsTest do
     end
 
     test "create_avatar/1 with valid data creates a avatar" do
+      user = user_fixture()
+
       valid_attrs = %{
         path: "some path",
-        user_id: "7488a646-e31f-11e4-aace-600308960662",
+        user_id: user.id,
         is_active: true
       }
 
       assert {:ok, %Avatar{} = avatar} = Accounts.create_avatar(valid_attrs)
       assert avatar.path == "some path"
-      assert avatar.user_id == "7488a646-e31f-11e4-aace-600308960662"
+      assert avatar.user_id == user.id
       assert avatar.is_active == true
     end
 
@@ -542,17 +544,16 @@ defmodule TaskMaster.AccountsTest do
     end
 
     test "update_avatar/2 with valid data updates the avatar" do
-      avatar = avatar_fixture()
+      user = user_fixture()
+      avatar = avatar_fixture(%{user_id: user.id})
 
       update_attrs = %{
         path: "some updated path",
-        user_id: "7488a646-e31f-11e4-aace-600308960668",
         is_active: false
       }
 
       assert {:ok, %Avatar{} = avatar} = Accounts.update_avatar(avatar, update_attrs)
       assert avatar.path == "some updated path"
-      assert avatar.user_id == "7488a646-e31f-11e4-aace-600308960668"
       assert avatar.is_active == false
     end
 

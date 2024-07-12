@@ -1,8 +1,8 @@
 <.header>
-  Listing Avatars
+  <%= gettext("Listing Avatars") %>
   <:actions>
     <.link patch={~p"/#{@current_user.id}/avatars/new"}>
-      <.button>New Avatar</.button>
+      <.button><%= gettext("New Avatar") %></.button>
     </.link>
   </:actions>
 </.header>
@@ -12,21 +12,20 @@
   rows={@streams.avatars}
   row_click={fn {_id, avatar} -> JS.navigate(~p"/#{@current_user.id}/avatars/#{avatar}") end}
 >
-  <:col :let={{_id, avatar}} label="Path"><%= avatar.path %></:col>
-  <:col :let={{_id, avatar}} label="User"><%= avatar.user_id %></:col>
-  <:col :let={{_id, avatar}} label="Is active"><%= avatar.is_active %></:col>
+  <:col :let={{_id, avatar}} label={gettext("Path")}><%= avatar.path %></:col>
+  <:col :let={{_id, avatar}} label={gettext("Is active")}><%= avatar.is_active %></:col>
   <:action :let={{_id, avatar}}>
     <div class="sr-only">
-      <.link navigate={~p"/#{@current_user.id}/avatars/#{avatar}"}>Show</.link>
+      <.link navigate={~p"/#{@current_user.id}/avatars/#{avatar}"}><%= gettext("Show") %></.link>
     </div>
-    <.link patch={~p"/#{@current_user.id}/avatars/#{avatar}/edit"}>Edit</.link>
+    <.link patch={~p"/#{@current_user.id}/avatars/#{avatar}/edit"}><%= gettext("Edit") %></.link>
   </:action>
   <:action :let={{id, avatar}}>
     <.link
       phx-click={JS.push("delete", value: %{id: avatar.id}) |> hide("##{id}")}
-      data-confirm="Are you sure?"
+      data-confirm={gettext("Are you sure?")}
     >
-      Delete
+      <%= gettext("Delete") %>
     </.link>
   </:action>
 </.table>
@@ -38,11 +37,12 @@
   on_cancel={JS.patch(~p"/#{@current_user.id}/avatars")}
 >
   <.live_component
-    module={TaskMasterWeb.AvatarLive.FormComponent}
+    module={TaskMasterWeb.AvatarLive.AvatarComponent}
     id={@avatar.id || :new}
     title={@page_title}
     action={@live_action}
     avatar={@avatar}
+    current_user={@current_user}
     patch={~p"/#{@current_user.id}/avatars"}
   />
 </.modal>

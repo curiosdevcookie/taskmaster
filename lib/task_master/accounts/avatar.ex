@@ -6,7 +6,7 @@ defmodule TaskMaster.Accounts.Avatar do
   @foreign_key_type :binary_id
   schema "avatars" do
     field :path, :string
-    field :is_active, :boolean, default: false
+    field :is_active, :boolean, default: true
     belongs_to :user, TaskMaster.Accounts.User
 
     timestamps()
@@ -18,5 +18,6 @@ defmodule TaskMaster.Accounts.Avatar do
     |> cast(attrs, [:path, :user_id, :is_active])
     |> validate_required([:path, :user_id, :is_active])
     |> foreign_key_constraint(:user_id)
+    |> validate_inclusion(:is_active, [true, false])
   end
 end

@@ -318,21 +318,25 @@ msgstr ""
 msgid "TASKS"
 msgstr ""
 
+#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:33
 #: lib/task_master_web/live/task_live/task_index.html.heex:37
 #, elixir-autogen, elixir-format
 msgid "Are you sure?"
 msgstr ""
 
+#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:28
 #: lib/task_master_web/live/task_live/task_index.html.heex:32
 #, elixir-autogen, elixir-format
 msgid "Edit"
 msgstr ""
 
+#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:26
 #: lib/task_master_web/live/task_live/task_index.html.heex:30
 #, elixir-autogen, elixir-format
 msgid "Show"
 msgstr ""
 
+#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:35
 #: lib/task_master_web/live/task_live/task_index.html.heex:39
 #, elixir-autogen, elixir-format
 msgid "Delete"
@@ -475,7 +479,87 @@ msgstr ""
 msgid "Progressing"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_show.html.heex:25
+#: lib/task_master_web/live/avatar_live/avatar_show.html.heex:20
+#: lib/task_master_web/live/task_live/task_show.html.heex:27
 #, elixir-autogen, elixir-format
 msgid "Back"
+msgstr ""
+
+#: lib/task_master_web/components/core_components.ex:147
+#, elixir-autogen, elixir-format
+msgid "Error!"
+msgstr ""
+
+#: lib/task_master_web/components/core_components.ex:146
+#, elixir-autogen, elixir-format
+msgid "Success!"
+msgstr ""
+
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:26
+#: lib/task_master_web/live/avatar_live/avatar_show.html.heex:9
+#, elixir-autogen, elixir-format
+msgid "Edit Avatar"
+msgstr ""
+
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:13
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:38
+#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:2
+#, elixir-autogen, elixir-format
+msgid "Listing Avatars"
+msgstr ""
+
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:32
+#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:5
+#, elixir-autogen, elixir-format
+msgid "New Avatar"
+msgstr ""
+
+#: lib/task_master_web/live/avatar_live/avatar_show.html.heex:3
+#, elixir-autogen, elixir-format
+msgid "This is a avatar record from your database."
+msgstr ""
+
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:71
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:73
+#, elixir-autogen, elixir-format
+msgid "Avatar created successfully"
+msgstr ""
+
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:70
+#, elixir-autogen, elixir-format
+msgid "Avatar updated successfully"
+msgstr ""
+
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:94
+#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:23
+#, elixir-autogen, elixir-format
+msgid "Is active"
+msgstr ""
+
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:81
+#, elixir-autogen, elixir-format
+msgid "No file uploaded"
+msgstr ""
+
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:93
+#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:22
+#, elixir-autogen, elixir-format
+msgid "Path"
+msgstr ""
+
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:97
+#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:13
+#, elixir-autogen, elixir-format
+msgid "Save Avatar"
+msgstr ""
+
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:97
+#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:13
+#, elixir-autogen, elixir-format
+msgid "Saving..."
+msgstr ""
+
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:82
+#, elixir-autogen, elixir-format
+msgid "Use this form to manage avatar records in your database."
 msgstr ""

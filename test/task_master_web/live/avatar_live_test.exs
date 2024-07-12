@@ -4,6 +4,7 @@ defmodule TaskMasterWeb.AvatarLiveTest do
   import Phoenix.LiveViewTest
   import TaskMaster.AccountsFixtures
   import TaskMaster.AvatarFixtures
+  import TaskMasterWeb.Gettext
 
   @create_attrs %{path: "some path", is_active: true}
   @update_attrs %{path: "some updated path", is_active: false}
@@ -21,7 +22,7 @@ defmodule TaskMasterWeb.AvatarLiveTest do
     test "lists all avatars", %{conn: conn, user: user, avatar: avatar} do
       {:ok, _index_live, html} = live(conn, ~p"/#{user.id}/avatars")
 
-      assert html =~ "Listing Avatars"
+      assert html =~ gettext("Listing Avatars")
       assert html =~ avatar.path
     end
 
@@ -37,12 +38,13 @@ defmodule TaskMasterWeb.AvatarLiveTest do
              |> form("#avatar-form", avatar: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
 
-      upload = %Plug.Upload{path: "test/support/fixtures/avatar.jpg", filename: "avatar.jpg"}
-
-      attrs = Map.merge(@create_attrs, %{avatar: upload})
+      upload = %Plug.Upload{
+        path: "test/support/fixtures/avatar.jpg",
+        filename: "avatar.jpg"
+      }
 
       assert index_live
-             |> form("#avatar-form", avatar: attrs)
+             |> form("#avatar-form", avatar: %{@create_attrs | "avatar" => upload})
              |> render_submit()
 
       assert_patch(index_live, ~p"/#{user.id}/avatars")
@@ -65,21 +67,19 @@ defmodule TaskMasterWeb.AvatarLiveTest do
              |> render_change() =~ "can&#39;t be blank"
 
       upload = %Plug.Upload{
-        path: "test/support/fixtures/updated_avatar.jpg",
-        filename: "updated_avatar.jpg"
+        path: "test/support/fixtures/avatar.jpg",
+        filename: "avatar.jpg"
       }
 
-      attrs = Map.merge(@update_attrs, %{avatar: upload})
-
       assert index_live
-             |> form("#avatar-form", avatar: attrs)
+             |> form("#avatar-form", avatar: %{@update_attrs | "avatar" => upload})
              |> render_submit()
 
       assert_patch(index_live, ~p"/#{user.id}/avatars")
 
       html = render(index_live)
       assert html =~ "Avatar updated successfully"
-      assert html =~ "updated_avatar.jpg"
+      assert html =~ "avatar.jpg"
     end
 
     test "deletes avatar in listing", %{conn: conn, user: user, avatar: avatar} do
@@ -113,21 +113,19 @@ defmodule TaskMasterWeb.AvatarLiveTest do
              |> render_change() =~ "can&#39;t be blank"
 
       upload = %Plug.Upload{
-        path: "test/support/fixtures/updated_avatar.jpg",
-        filename: "updated_avatar.jpg"
+        path: "test/support/fixtures/avatar.jpg",
+        filename: "avatar.jpg"
       }
 
-      attrs = Map.merge(@update_attrs, %{avatar: upload})
-
       assert show_live
-             |> form("#avatar-form", avatar: attrs)
+             |> form("#avatar-form", avatar: %{@update_attrs | "avatar" => upload})
              |> render_submit()
 
       assert_patch(show_live, ~p"/#{user.id}/avatars/#{avatar.id}")
 
       html = render(show_live)
       assert html =~ "Avatar updated successfully"
-      assert html =~ "updated_avatar.jpg"
+      assert html =~ "avatar.jpg"
     end
   end
 end

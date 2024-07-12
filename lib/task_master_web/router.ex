@@ -76,13 +76,15 @@ defmodule TaskMasterWeb.Router do
         live "/tasks/:id", TaskLive.TaskShow, :show
         live "/tasks/:id/show/edit", TaskLive.TaskIndex, :edit
 
-        live "/avatars", AvatarLive.Index, :index
-        live "/avatars/new", AvatarLive.Index, :new
-        live "/avatars/:id/edit", AvatarLive.Index, :edit
+        live "/avatars", AvatarLive.AvatarIndex, :index
+        live "/avatars/new", AvatarLive.AvatarIndex, :new
+        live "/avatars/:id/edit", AvatarLive.AvatarIndex, :edit
 
-        live "/avatars/:id", AvatarLive.Show, :show
-        live "/avatars/:id/show/edit", AvatarLive.Show, :edit
+        live "/avatars/:id", AvatarLive.AvatarShow, :show
+        live "/avatars/:id/show/edit", AvatarLive.AvatarShow, :edit
       end
+
+      live "/uploads", AvatarLive.UploadLive, :index
     end
   end
 
