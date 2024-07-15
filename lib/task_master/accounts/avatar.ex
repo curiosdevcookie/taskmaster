@@ -6,14 +6,14 @@ defmodule TaskMaster.Accounts.Avatar do
   @foreign_key_type :binary_id
   schema "avatars" do
     field :path, :string
-    field :is_active, :boolean, default: true
+
     belongs_to :user, TaskMaster.Accounts.User
 
     timestamps()
   end
 
   @doc false
-  def changeset(avatar, attrs) do
+  def avatar_changeset(avatar, attrs \\ %{}) do
     avatar
     |> cast(attrs, [:path, :user_id, :is_active])
     |> validate_required([:path, :user_id, :is_active])

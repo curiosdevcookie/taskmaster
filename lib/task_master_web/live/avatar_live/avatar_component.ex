@@ -5,6 +5,7 @@ defmodule TaskMasterWeb.AvatarLive.AvatarComponent do
   alias TaskMaster.Accounts.Avatar
 
   @impl true
+  @impl true
   def update(%{avatar: avatar} = assigns, socket) do
     changeset = Accounts.change_avatar(avatar)
 
@@ -21,7 +22,7 @@ defmodule TaskMasterWeb.AvatarLive.AvatarComponent do
 
     changeset =
       %Avatar{}
-      |> Avatar.changeset(avatar_params)
+      |> Avatar.avatar_changeset(avatar_params)
       |> Map.put(:action, :validate)
 
     {:noreply, assign(socket, :form, to_form(changeset))}
@@ -60,7 +61,7 @@ defmodule TaskMasterWeb.AvatarLive.AvatarComponent do
         {:noreply,
          socket
          |> put_flash(:info, avatar_action_message(action))
-         |> push_patch(to: socket.assigns.patch)}
+         |> push_patch(to: ~p"/#{socket.assigns.current_user.id}/users/settings")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :form, to_form(changeset))}
@@ -78,10 +79,13 @@ defmodule TaskMasterWeb.AvatarLive.AvatarComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>
-          <%= gettext("Use this form to manage avatar records in your database.") %>
-        </:subtitle>
       </.header>
+
+      <%= if @avatar.path do %>
+        <div class="m-4">
+          <img src={@avatar.path} alt="Current Avatar" class="w-32 h-32 object-cover rounded-full" />
+        </div>
+      <% end %>
 
       <.simple_form
         for={@form}

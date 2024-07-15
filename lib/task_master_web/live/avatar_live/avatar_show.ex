@@ -4,24 +4,62 @@ defmodule TaskMasterWeb.AvatarLive.AvatarShow do
   alias TaskMaster.Accounts
 
   @impl true
-  def mount(%{"current_user" => current_user_id} = _params, _session, socket) do
-    current_user = TaskMaster.Accounts.get_user!(current_user_id)
-
+  def mount(_params, _session, socket) do
     {:ok,
      socket
-     |> assign(:current_user, current_user)
-     |> stream(:avatars, TaskMaster.Accounts.list_avatars(current_user))
+     |> assign(:uploaded_files, [])
      |> allow_upload(:avatar, accept: ~w(.jpg .jpeg .png), max_entries: 1)}
   end
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
+    avatar = Accounts.get_avatar!(id)
+
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:avatar, Accounts.get_avatar!(id))}
+     |> assign(:avatar, avatar)}
   end
 
   defp page_title(:show), do: "Show Avatar"
   defp page_title(:edit), do: "Edit Avatar"
+
+  def render(assigns) do
+    ~H"""
+    <.header>
+      Avatar <%= @avatar.id %>
+      <:actions>
+        <.link
+          patch={~p"/#{@current_user.id}/avatars/#{@avatar}/show/edit"}
+          phx-click={JS.push_focus()}
+        >
+          <.button><%= gettext("Edit Avatar") %></.button>
+        </.link>
+      </:actions>
+    </.header>
+
+    <div class="mt-8 mb-8">
+      <img src={@avatar.path} alt="Avatar" class="w-32 h-32 rounded-full object-cover mx-auto" />
+    </div>
+
+    <.back navigate={~p"/#{@current_user.id}/avatars"}><%= gettext("Back") %></.back>
+
+    <.modal
+      :if={@live_action == :edit}
+      id="avatar-modal"
+      show
+      on_cancel={JS.patch(~p"/#{@current_user.id}/avatars/#{@avatar}")}
+    >
+      <.live_component
+        module={TaskMasterWeb.AvatarLive.AvatarComponent}
+        id={@avatar.id}
+        title={@page_title}
+        action={@live_action}
+        avatar={@avatar}
+        current_user={@current_user}
+        patch={~p"/#{@current_user.id}/avatars/#{@avatar}"}
+      />
+    </.modal>
+    """
+  end
 end

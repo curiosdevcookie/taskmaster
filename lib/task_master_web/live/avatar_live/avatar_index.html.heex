@@ -1,10 +1,5 @@
 <.header>
   <%= gettext("Listing Avatars") %>
-  <:actions>
-    <.link patch={~p"/#{@current_user.id}/avatars/new"}>
-      <.button><%= gettext("New Avatar") %></.button>
-    </.link>
-  </:actions>
 </.header>
 
 <.table
@@ -13,6 +8,9 @@
   row_click={fn {_id, avatar} -> JS.navigate(~p"/#{@current_user.id}/avatars/#{avatar}") end}
 >
   <:col :let={{_id, avatar}} label={gettext("Path")}><%= avatar.path %></:col>
+  <:col :let={{_id, avatar}} label={gettext("Image")}>
+    <img src={avatar.path} alt="Avatar" style="width: 50px; height: 50px;" />
+  </:col>
   <:col :let={{_id, avatar}} label={gettext("Is active")}><%= avatar.is_active %></:col>
   <:action :let={{_id, avatar}}>
     <div class="sr-only">

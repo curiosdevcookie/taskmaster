@@ -7,6 +7,7 @@ defmodule TaskMaster.Accounts do
   alias TaskMaster.Repo
 
   alias TaskMaster.Accounts.{User, UserToken, UserNotifier}
+  alias TaskMaster.Accounts.Avatar
 
   ## Database getters
 
@@ -217,6 +218,38 @@ defmodule TaskMaster.Accounts do
     end
   end
 
+  @doc """
+  Creates a avatar for a user.
+  """
+  def create_user_avatar(user, attrs \\ %{}) do
+    %Avatar{}
+    |> Avatar.avatar_changeset(Map.put(attrs, "user_id", user.id))
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a user's avatar.
+  """
+  def update_user_avatar(%Avatar{} = avatar, attrs) do
+    avatar
+    |> Avatar.avatar_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Gets the active avatar for a user.
+  """
+  def get_active_avatar(user) do
+    Repo.get_by(Avatar, user_id: user.id, is_active: true)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking avatar changes.
+  """
+  def change_user_avatar(%User{} = user, %Avatar{} = avatar, attrs \\ %{}) do
+    Avatar.avatar_changeset(avatar, attrs)
+  end
+
   ## Session
 
   @doc """
@@ -394,7 +427,7 @@ defmodule TaskMaster.Accounts do
   """
   def create_avatar(attrs \\ %{}) do
     %Avatar{}
-    |> Avatar.changeset(attrs)
+    |> Avatar.avatar_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -412,7 +445,7 @@ defmodule TaskMaster.Accounts do
   """
   def update_avatar(%Avatar{} = avatar, attrs) do
     avatar
-    |> Avatar.changeset(attrs)
+    |> Avatar.avatar_changeset(attrs)
     |> Repo.update()
   end
 
@@ -442,6 +475,6 @@ defmodule TaskMaster.Accounts do
 
   """
   def change_avatar(%Avatar{} = avatar, attrs \\ %{}) do
-    Avatar.changeset(avatar, attrs)
+    Avatar.avatar_changeset(avatar, attrs)
   end
 end
