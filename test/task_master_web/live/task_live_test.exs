@@ -15,15 +15,6 @@ defmodule TaskMasterWeb.TaskLiveTest do
     duration: 42,
     indoor: true
   }
-  @update_attrs %{
-    priority: :medium,
-    status: :progressing,
-    description: "some updated description",
-    title: "some updated title #{System.unique_integer([:positive])}",
-    due_date: ~D[2024-06-29],
-    duration: 43,
-    indoor: false
-  }
   @invalid_attrs %{
     priority: nil,
     status: nil,

@@ -29,7 +29,7 @@ msgstr "Vorname"
 
 #: lib/task_master_web/live/user_login_live.ex:18
 #: lib/task_master_web/live/user_registration_live.ex:35
-#: lib/task_master_web/live/user_settings_live.ex:21
+#: lib/task_master_web/live/user_settings_live.ex:33
 #, elixir-autogen, elixir-format
 msgid "Email"
 msgstr "E-Mail"
@@ -110,19 +110,19 @@ msgid "Forgot your password?"
 msgstr "Passwort vergessen?"
 
 #: lib/task_master_web/live/user_reset_password_live.ex:25
-#: lib/task_master_web/live/user_settings_live.ex:61
+#: lib/task_master_web/live/user_settings_live.ex:73
 #, elixir-autogen, elixir-format
 msgid "Confirm new password"
 msgstr "Bestätige Dein neues Passwort"
 
-#: lib/task_master_web/live/user_settings_live.ex:27
-#: lib/task_master_web/live/user_settings_live.ex:67
+#: lib/task_master_web/live/user_settings_live.ex:39
+#: lib/task_master_web/live/user_settings_live.ex:79
 #, elixir-autogen, elixir-format
 msgid "Current password"
 msgstr "Aktuelles Passwort"
 
 #: lib/task_master_web/live/user_reset_password_live.ex:21
-#: lib/task_master_web/live/user_settings_live.ex:55
+#: lib/task_master_web/live/user_settings_live.ex:67
 #, elixir-autogen, elixir-format
 msgid "New password"
 msgstr "Neues Passwort"
@@ -181,7 +181,7 @@ msgstr "Bestätigungsanweisungen erneut senden"
 msgid "We'll send a new confirmation link to your inbox"
 msgstr "Wir senden Dir einen neuen Bestätigungslink"
 
-#: lib/task_master_web/live/user_settings_live.ex:9
+#: lib/task_master_web/live/user_settings_live.ex:11
 #, elixir-autogen, elixir-format
 msgid "Account Settings"
 msgstr "Account-Einstellungen"
@@ -191,17 +191,17 @@ msgstr "Account-Einstellungen"
 msgid "Account created successfully!"
 msgstr "Account erfolgreich angelegt!"
 
-#: lib/task_master_web/live/user_settings_live.ex:32
+#: lib/task_master_web/live/user_settings_live.ex:44
 #, elixir-autogen, elixir-format
 msgid "Change Email"
 msgstr "E-Mail ändern"
 
-#: lib/task_master_web/live/user_settings_live.ex:88
+#: lib/task_master_web/live/user_settings_live.ex:101
 #, elixir-autogen, elixir-format
 msgid "Email change link is invalid or it has expired."
 msgstr "Der Link zum Ändern der E-Mail-Adresse ist ungültig oder abgelaufen."
 
-#: lib/task_master_web/live/user_settings_live.ex:85
+#: lib/task_master_web/live/user_settings_live.ex:98
 #, elixir-autogen, elixir-format
 msgid "Email changed successfully."
 msgstr "E-Mail-Adresse erfolgreich geändert."
@@ -221,7 +221,7 @@ msgstr "Ungültige E-Mail-Adresse oder Passwort"
 msgid "Logged out successfully."
 msgstr "Erfolgreich ausgeloggt."
 
-#: lib/task_master_web/live/user_settings_live.ex:10
+#: lib/task_master_web/live/user_settings_live.ex:12
 #, elixir-autogen, elixir-format
 msgid "Manage your account email address and password settings"
 msgstr "Verwalte Deine Account-E-Mail-Adresse und Passworteinstellungen"
@@ -318,21 +318,25 @@ msgstr "Du kannst Dein Passwort zurücksetzen, indem Du die URL unten besuchst:"
 msgid "TASKS"
 msgstr "Tasks"
 
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:78
 #: lib/task_master_web/live/task_live/task_index.html.heex:37
 #, elixir-autogen, elixir-format
 msgid "Are you sure?"
 msgstr "Bist Du Dir sicher?"
 
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:73
 #: lib/task_master_web/live/task_live/task_index.html.heex:32
 #, elixir-autogen, elixir-format
 msgid "Edit"
 msgstr "Bearbeiten"
 
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:71
 #: lib/task_master_web/live/task_live/task_index.html.heex:30
 #, elixir-autogen, elixir-format
 msgid "Show"
 msgstr "Zeigen"
 
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:80
 #: lib/task_master_web/live/task_live/task_index.html.heex:39
 #, elixir-autogen, elixir-format
 msgid "Delete"
@@ -362,6 +366,7 @@ msgstr "Wähle einen Wert"
 msgid "Edit task"
 msgstr "Bearbeiten"
 
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:131
 #: lib/task_master_web/live/task_live/task_component.ex:49
 #, elixir-autogen, elixir-format
 msgid "Save"
@@ -475,7 +480,71 @@ msgstr "Offen"
 msgid "Progressing"
 msgstr "In Bearbeitung"
 
-#: lib/task_master_web/live/task_live/task_show.html.heex:25
+#: lib/task_master_web/live/avatar_live/avatar_show.ex:57
+#: lib/task_master_web/live/task_live/task_show.html.heex:27
 #, elixir-autogen, elixir-format
 msgid "Back"
 msgstr "Zurück"
+
+#: lib/task_master_web/components/core_components.ex:147
+#, elixir-autogen, elixir-format
+msgid "Error!"
+msgstr "Fehler!"
+
+#: lib/task_master_web/components/core_components.ex:146
+#, elixir-autogen, elixir-format
+msgid "Success!"
+msgstr "Erfolg!"
+
+#: lib/task_master_web/live/avatar_live/avatar_show.ex:26
+#: lib/task_master_web/live/avatar_live/avatar_show.ex:48
+#, elixir-autogen, elixir-format
+msgid "Edit Avatar"
+msgstr "Avatar bearbeiten"
+
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:57
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Listing Avatars"
+msgstr "Avatars"
+
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:74
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Avatar created successfully"
+msgstr "Avatar erfolgreich erstellt"
+
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:73
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Avatar updated successfully"
+msgstr "Avatar erfolgreich erstellt"
+
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:131
+#, elixir-autogen, elixir-format
+msgid "Saving..."
+msgstr "Speichern..."
+
+#: lib/task_master_web/live/avatar_live/avatar_show.ex:42
+#: lib/task_master_web/live/user_settings_live.ex:20
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Avatar"
+msgstr "Avatar"
+
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:97
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:101
+#, elixir-autogen, elixir-format
+msgid "Current Avatar"
+msgstr "Aktueller Avatar"
+
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:109
+#, elixir-autogen, elixir-format, fuzzy
+msgid "New Avatar"
+msgstr "Neuer Avatar"
+
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:124
+#, elixir-autogen, elixir-format
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: lib/task_master_web/live/avatar_live/avatar_show.ex:25
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Show Avatar"
+msgstr "Neuer Avatar"

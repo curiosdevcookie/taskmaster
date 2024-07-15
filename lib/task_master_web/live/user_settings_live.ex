@@ -2,7 +2,9 @@ defmodule TaskMasterWeb.UserSettingsLive do
   use TaskMasterWeb, :live_view
 
   alias TaskMaster.Accounts
+  alias TaskMasterWeb.AvatarLive.AvatarComponent
 
+  @impl true
   def render(assigns) do
     ~H"""
     <.header class="text-center">
@@ -11,6 +13,16 @@ defmodule TaskMasterWeb.UserSettingsLive do
     </.header>
 
     <div class="space-y-12 divide-y">
+      <div>
+        <.live_component
+          module={AvatarComponent}
+          id="avatar"
+          title={gettext("Avatar")}
+          action={if @avatar.id, do: :edit, else: :new}
+          avatar={@avatar}
+          current_user={@current_user}
+        />
+      </div>
       <div>
         <.simple_form
           for={@email_form}
@@ -78,6 +90,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
     """
   end
 
+  @impl true
   def mount(%{"token" => token}, _session, socket) do
     socket =
       case Accounts.update_user_email(socket.assigns.current_user, token) do
@@ -91,23 +104,76 @@ defmodule TaskMasterWeb.UserSettingsLive do
     {:ok, push_navigate(socket, to: ~p"/#{socket.assigns.current_user}/users/settings")}
   end
 
-  def mount(_params, _session, socket) do
-    user = socket.assigns.current_user
+  def mount(%{"current_user" => current_user_id}, _session, socket) do
+    user = Accounts.get_user!(current_user_id)
     email_changeset = Accounts.change_user_email(user)
     password_changeset = Accounts.change_user_password(user)
 
+    avatar = Accounts.get_active_avatar(user) || %TaskMaster.Accounts.Avatar{}
+
     socket =
       socket
+      |> assign(:current_user, user)
       |> assign(:current_password, nil)
       |> assign(:email_form_current_password, nil)
       |> assign(:current_email, user.email)
       |> assign(:email_form, to_form(email_changeset))
       |> assign(:password_form, to_form(password_changeset))
+      |> assign(:avatar, avatar)
       |> assign(:trigger_submit, false)
 
     {:ok, socket}
   end
 
+  @impl true
+  def handle_params(params, _url, socket) do
+    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+  end
+
+  defp apply_action(socket, :edit, _params) do
+    socket
+    |> assign(:page_title, "Edit User Settings")
+  end
+
+  defp apply_action(socket, :confirm_email, %{"token" => token}) do
+    current_user = socket.assigns.current_user
+
+    case Accounts.update_user_email(current_user, token) do
+      :ok ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Email changed successfully.")
+         |> push_redirect(to: ~p"/#{current_user.id}/users/settings")}
+
+      :error ->
+        {:noreply,
+         socket
+         |> put_flash(:error, "Email change link is invalid or it has expired.")}
+    end
+  end
+
+  @impl true
+  def handle_info({AvatarComponent, {:saved, avatar}}, socket) do
+    {:noreply, assign(socket, :avatar, avatar)}
+  end
+
+  @impl true
+  def handle_event("update_avatar", %{"avatar" => avatar_params}, socket) do
+    current_user = socket.assigns.current_user
+
+    case Accounts.create_user_avatar(current_user, avatar_params) do
+      {:ok, _avatar} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Avatar updated successfully")
+         |> push_navigate(to: ~p"/#{current_user.id}/users/settings")}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign(socket, avatar_form: to_form(changeset))}
+    end
+  end
+
+  @impl true
   def handle_event("validate_email", params, socket) do
     %{"current_password" => password, "user" => user_params} = params
 
@@ -120,6 +186,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
     {:noreply, assign(socket, email_form: email_form, email_form_current_password: password)}
   end
 
+  @impl true
   def handle_event("update_email", params, socket) do
     %{"current_password" => password, "user" => user_params} = params
     user = socket.assigns.current_user
@@ -140,6 +207,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
     end
   end
 
+  @impl true
   def handle_event("validate_password", params, socket) do
     %{"current_password" => password, "user" => user_params} = params
 
@@ -152,6 +220,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
     {:noreply, assign(socket, password_form: password_form, current_password: password)}
   end
 
+  @impl true
   def handle_event("update_password", params, socket) do
     %{"current_password" => password, "user" => user_params} = params
     user = socket.assigns.current_user

@@ -4,6 +4,7 @@ defmodule TaskMaster.AccountsTest do
   alias TaskMaster.Accounts
 
   import TaskMaster.AccountsFixtures
+  import TaskMaster.AvatarFixtures
   alias TaskMaster.Accounts.{User, UserToken}
 
   describe "get_user_by_email/1" do
@@ -503,6 +504,75 @@ defmodule TaskMaster.AccountsTest do
   describe "inspect/2 for the User module" do
     test "does not include password" do
       refute inspect(%User{password: "123456"}) =~ "password: \"123456\""
+    end
+  end
+
+  describe "avatars" do
+    alias TaskMaster.Accounts.Avatar
+
+    import TaskMaster.AccountsFixtures
+
+    @invalid_attrs %{path: nil, user_id: nil, is_active: nil}
+
+    test "list_avatars/1 returns all avatars" do
+      avatar = avatar_fixture()
+      user = user_fixture()
+      assert Accounts.list_avatars(user) == [avatar]
+    end
+
+    test "get_avatar!/1 returns the avatar with given id" do
+      avatar = avatar_fixture()
+      assert Accounts.get_avatar!(avatar.id) == avatar
+    end
+
+    test "create_avatar/1 with valid data creates a avatar" do
+      user = user_fixture()
+
+      valid_attrs = %{
+        path: "some path",
+        user_id: user.id,
+        is_active: true
+      }
+
+      assert {:ok, %Avatar{} = avatar} = Accounts.create_avatar(valid_attrs)
+      assert avatar.path == "some path"
+      assert avatar.user_id == user.id
+      assert avatar.is_active == true
+    end
+
+    test "create_avatar/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_avatar(@invalid_attrs)
+    end
+
+    test "update_avatar/2 with valid data updates the avatar" do
+      user = user_fixture()
+      avatar = avatar_fixture(%{user_id: user.id})
+
+      update_attrs = %{
+        path: "some updated path",
+        is_active: false
+      }
+
+      assert {:ok, %Avatar{} = avatar} = Accounts.update_avatar(avatar, update_attrs)
+      assert avatar.path == "some updated path"
+      assert avatar.is_active == false
+    end
+
+    test "update_avatar/2 with invalid data returns error changeset" do
+      avatar = avatar_fixture()
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_avatar(avatar, @invalid_attrs)
+      assert avatar == Accounts.get_avatar!(avatar.id)
+    end
+
+    test "delete_avatar/1 deletes the avatar" do
+      avatar = avatar_fixture()
+      assert {:ok, %Avatar{}} = Accounts.delete_avatar(avatar)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_avatar!(avatar.id) end
+    end
+
+    test "change_avatar/1 returns a avatar changeset" do
+      avatar = avatar_fixture()
+      assert %Ecto.Changeset{} = Accounts.change_avatar(avatar)
     end
   end
 end
