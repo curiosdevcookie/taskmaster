@@ -59,8 +59,11 @@ defmodule TaskMaster.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id) when is_binary(id) do
-    Repo.get!(User, id)
+  def get_user!(id) do
+    User
+    |> where(id: ^id)
+    |> preload(:avatar)
+    |> Repo.one!()
   end
 
   ## User registration
@@ -470,4 +473,7 @@ defmodule TaskMaster.Accounts do
   def change_avatar(%Avatar{} = avatar, attrs \\ %{}) do
     Avatar.avatar_changeset(avatar, attrs)
   end
+
+  def maybe_preload_avatar(nil), do: nil
+  def maybe_preload_avatar(user), do: Repo.preload(user, :avatar)
 end

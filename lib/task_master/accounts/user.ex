@@ -13,7 +13,7 @@ defmodule TaskMaster.Accounts.User do
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :naive_datetime
     field :last_login_at, :naive_datetime
-    has_many :avatars, TaskMaster.Accounts.Avatar
+    has_one :avatar, TaskMaster.Accounts.Avatar
 
     timestamps()
   end
