@@ -94,6 +94,7 @@ defmodule TaskMasterWeb.UserAuth do
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
     user = user_token && Accounts.get_user_by_session_token(user_token)
+    user = Accounts.maybe_preload_avatar(user)
     assign(conn, :current_user, user)
   end
 
@@ -181,7 +182,8 @@ defmodule TaskMasterWeb.UserAuth do
   defp mount_current_user(socket, session) do
     Phoenix.Component.assign_new(socket, :current_user, fn ->
       if user_token = session["user_token"] do
-        Accounts.get_user_by_session_token(user_token)
+        user = Accounts.get_user_by_session_token(user_token)
+        Accounts.maybe_preload_avatar(user)
       end
     end)
   end

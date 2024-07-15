@@ -14,17 +14,22 @@
   <body class="bg-white antialiased">
     <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
       <%= if @current_user do %>
-        <li class="text-[0.8125rem] leading-6 text-zinc-900">
-          <%= @current_user.email %>
-        </li>
-        <li>
-          <.link
-            href={~p"/#{@current_user}/users/settings"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            <%= gettext("Settings") %>
-          </.link>
-        </li>
+        <.link
+          href={~p"/#{@current_user}/users/settings"}
+          class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+        >
+          <li class="flex items-center gap-2">
+            <img
+              src={@current_user.avatar.path}
+              alt={@current_user.first_name}
+              class="w-6 h-6 rounded-full"
+            />
+            <span class="text-[0.8125rem] leading-6 text-zinc-900">
+              <%= @current_user.first_name %>
+            </span>
+          </li>
+        </.link>
+
         <.link
           navigate={~p"/#{@current_user.id}/tasks"}
           class="font-semibold text-zinc-900 hover:text-zinc-700"

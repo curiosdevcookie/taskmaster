@@ -22,9 +22,11 @@ defmodule TaskMasterWeb.UserSessionController do
     %{"email" => email, "password" => password} = user_params
 
     if user = Accounts.get_user_by_email_and_password(email, password) do
+      user_with_avatar = Accounts.maybe_preload_avatar(user)
+
       conn
       |> put_flash(:info, info)
-      |> UserAuth.log_in_user(user, user_params)
+      |> UserAuth.log_in_user(user_with_avatar, user_params)
     else
       # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
       conn

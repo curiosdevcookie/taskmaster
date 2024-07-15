@@ -9,7 +9,9 @@ defmodule TaskMasterWeb.UserSettingsLive do
     ~H"""
     <.header class="text-center">
       <%= gettext("Account Settings") %>
-      <:subtitle><%= gettext("Manage your account email address and password settings") %></:subtitle>
+      <:subtitle>
+        <%= gettext("Manage your account avatar, email address and password settings") %>
+      </:subtitle>
     </.header>
 
     <div class="space-y-12 divide-y">
@@ -17,9 +19,9 @@ defmodule TaskMasterWeb.UserSettingsLive do
         <.live_component
           module={AvatarComponent}
           id="avatar"
-          title={gettext("Avatar")}
+          title=""
           action={if @avatar.id, do: :edit, else: :new}
-          avatar={@avatar}
+          avatar={@current_user.avatar || %TaskMaster.Accounts.Avatar{}}
           current_user={@current_user}
         />
       </div>
