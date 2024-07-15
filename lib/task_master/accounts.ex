@@ -243,13 +243,6 @@ defmodule TaskMaster.Accounts do
     Repo.get_by(Avatar, user_id: user.id, is_active: true)
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking avatar changes.
-  """
-  def change_user_avatar(%User{} = user, %Avatar{} = avatar, attrs \\ %{}) do
-    Avatar.avatar_changeset(avatar, attrs)
-  end
-
   ## Session
 
   @doc """
@@ -393,7 +386,7 @@ defmodule TaskMaster.Accounts do
 
 
   """
-  def list_avatars(user) do
+  def list_avatars(%User{} = _user) do
     Repo.all(Avatar)
   end
 

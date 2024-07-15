@@ -8,7 +8,8 @@ defmodule TaskMasterWeb.AvatarLive.AvatarShow do
     {:ok,
      socket
      |> assign(:uploaded_files, [])
-     |> allow_upload(:avatar, accept: ~w(.jpg .jpeg .png), max_entries: 1)}
+     |> allow_upload(:avatar, accept: ~w(.jpg .jpeg .png), max_entries: 1)
+     |> clear_flash()}
   end
 
   @impl true
@@ -21,13 +22,24 @@ defmodule TaskMasterWeb.AvatarLive.AvatarShow do
      |> assign(:avatar, avatar)}
   end
 
-  defp page_title(:show), do: "Show Avatar"
-  defp page_title(:edit), do: "Edit Avatar"
+  defp page_title(:show), do: gettext("Show Avatar")
+  defp page_title(:edit), do: gettext("Edit Avatar")
 
+  @impl true
+  def handle_info({TaskMasterWeb.AvatarLive.AvatarComponent, {:saved, avatar}}, socket) do
+    {:noreply,
+     socket
+     |> assign(:avatar, avatar)
+     |> assign(:live_action, :show)
+     |> put_flash(:info, socket.assigns.flash[:info])
+     |> push_patch(to: ~p"/#{socket.assigns.current_user.id}/avatars/#{avatar}")}
+  end
+
+  @impl true
   def render(assigns) do
     ~H"""
     <.header>
-      Avatar <%= @avatar.id %>
+      <%= gettext("Avatar") %>
       <:actions>
         <.link
           patch={~p"/#{@current_user.id}/avatars/#{@avatar}/show/edit"}

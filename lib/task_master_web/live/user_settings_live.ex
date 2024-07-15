@@ -90,6 +90,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
     """
   end
 
+  @impl true
   def mount(%{"token" => token}, _session, socket) do
     socket =
       case Accounts.update_user_email(socket.assigns.current_user, token) do
@@ -158,14 +159,14 @@ defmodule TaskMasterWeb.UserSettingsLive do
 
   @impl true
   def handle_event("update_avatar", %{"avatar" => avatar_params}, socket) do
-    user = socket.assigns.current_user
+    current_user = socket.assigns.current_user
 
-    case Accounts.create_user_avatar(user, avatar_params) do
+    case Accounts.create_user_avatar(current_user, avatar_params) do
       {:ok, _avatar} ->
         {:noreply,
          socket
          |> put_flash(:info, "Avatar updated successfully")
-         |> push_navigate(to: ~p"/users/settings")}
+         |> push_navigate(to: ~p"/#{current_user.id}/users/settings")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, avatar_form: to_form(changeset))}

@@ -196,12 +196,12 @@ msgstr ""
 msgid "Change Email"
 msgstr ""
 
-#: lib/task_master_web/live/user_settings_live.ex:100
+#: lib/task_master_web/live/user_settings_live.ex:101
 #, elixir-autogen, elixir-format
 msgid "Email change link is invalid or it has expired."
 msgstr ""
 
-#: lib/task_master_web/live/user_settings_live.ex:97
+#: lib/task_master_web/live/user_settings_live.ex:98
 #, elixir-autogen, elixir-format
 msgid "Email changed successfully."
 msgstr ""
@@ -318,25 +318,25 @@ msgstr ""
 msgid "TASKS"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:24
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:78
 #: lib/task_master_web/live/task_live/task_index.html.heex:37
 #, elixir-autogen, elixir-format
 msgid "Are you sure?"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:19
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:73
 #: lib/task_master_web/live/task_live/task_index.html.heex:32
 #, elixir-autogen, elixir-format
 msgid "Edit"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:17
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:71
 #: lib/task_master_web/live/task_live/task_index.html.heex:30
 #, elixir-autogen, elixir-format
 msgid "Show"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:26
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:80
 #: lib/task_master_web/live/task_live/task_index.html.heex:39
 #, elixir-autogen, elixir-format
 msgid "Delete"
@@ -366,7 +366,7 @@ msgstr ""
 msgid "Edit task"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_component.ex:100
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:131
 #: lib/task_master_web/live/task_live/task_component.ex:49
 #, elixir-autogen, elixir-format
 msgid "Save"
@@ -480,7 +480,7 @@ msgstr ""
 msgid "Progressing"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_show.ex:51
+#: lib/task_master_web/live/avatar_live/avatar_show.ex:57
 #: lib/task_master_web/live/task_live/task_show.html.heex:27
 #, elixir-autogen, elixir-format
 msgid "Back"
@@ -496,62 +496,55 @@ msgstr ""
 msgid "Success!"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_show.ex:36
+#: lib/task_master_web/live/avatar_live/avatar_show.ex:26
+#: lib/task_master_web/live/avatar_live/avatar_show.ex:48
 #, elixir-autogen, elixir-format
 msgid "Edit Avatar"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:2
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:57
 #, elixir-autogen, elixir-format
 msgid "Listing Avatars"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_component.ex:72
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:74
 #, elixir-autogen, elixir-format
 msgid "Avatar created successfully"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_component.ex:71
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:73
 #, elixir-autogen, elixir-format
 msgid "Avatar updated successfully"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:14
-#, elixir-autogen, elixir-format
-msgid "Is active"
-msgstr ""
-
-#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:10
-#, elixir-autogen, elixir-format
-msgid "Path"
-msgstr ""
-
-#: lib/task_master_web/live/avatar_live/avatar_component.ex:100
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:131
 #, elixir-autogen, elixir-format
 msgid "Saving..."
 msgstr ""
 
+#: lib/task_master_web/live/avatar_live/avatar_show.ex:42
 #: lib/task_master_web/live/user_settings_live.ex:20
 #, elixir-autogen, elixir-format
 msgid "Avatar"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_show.ex:48
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:97
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:101
 #, elixir-autogen, elixir-format
-msgid "File Path"
+msgid "Current Avatar"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_index.html.heex:11
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:109
 #, elixir-autogen, elixir-format
-msgid "Image"
+msgid "New Avatar"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_show.ex:47
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:124
 #, elixir-autogen, elixir-format
-msgid "Is Active"
+msgid "Cancel"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_show.ex:46
+#: lib/task_master_web/live/avatar_live/avatar_show.ex:25
 #, elixir-autogen, elixir-format
-msgid "User ID"
+msgid "Show Avatar"
 msgstr ""
