@@ -514,9 +514,10 @@ defmodule TaskMaster.AccountsTest do
 
     @invalid_attrs %{path: nil, user_id: nil, is_active: nil}
 
-    test "list_avatars/0 returns all avatars" do
+    test "list_avatars/1 returns all avatars" do
       avatar = avatar_fixture()
-      assert Accounts.list_avatars() == [avatar]
+      user = user_fixture()
+      assert Accounts.list_avatars(user) == [avatar]
     end
 
     test "get_avatar!/1 returns the avatar with given id" do
