@@ -8,7 +8,7 @@ defmodule TaskMaster.Repo.Migrations.CreateUsersAuthTables do
       add :id, :uuid, primary_key: true, null: false
       add :first_name, :string, null: false
       add :last_name, :string, null: false
-      add :nick_name, :citext
+      add :nick_name, :citext, null: false
       add :email, :citext, null: false
       add :hashed_password, :string, null: false
       add :confirmed_at, :naive_datetime

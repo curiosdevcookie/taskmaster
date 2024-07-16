@@ -38,7 +38,6 @@ defmodule TaskMaster.Tasks.Task do
       :created_by,
       :parent_task_id
     ])
-    |> cast_assoc(:task_participations, with: &TaskMaster.Tasks.TaskParticipation.changeset/2)
     |> validate_required([
       :title,
       :status,

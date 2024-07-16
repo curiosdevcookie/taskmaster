@@ -44,38 +44,39 @@ defmodule TaskMaster.Tasks do
 
   @doc """
   Creates a task.
-
-  ## Examples
-
-      iex> create_task(%{field: value})
-      {:ok, %Task{}}
-
-      iex> create_task(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
   """
-  def create_task(attrs \\ %{}) do
+
+  def create_task(attrs \\ %{}, participants \\ []) do
     %Task{}
     |> Task.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, task} ->
+        add_participants(task, participants)
+        {:ok, Repo.preload(task, :participants)}
+
+      error ->
+        error
+    end
   end
 
   @doc """
   Updates a task.
 
-  ## Examples
-
-      iex> update_task(task, %{field: new_value})
-      {:ok, %Task{}}
-
-      iex> update_task(task, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
 
   """
-  def update_task(%Task{} = task, attrs) do
+  def update_task(%Task{} = task, attrs, participants \\ []) do
     task
     |> Task.changeset(attrs)
     |> Repo.update()
+    |> case do
+      {:ok, updated_task} ->
+        update_participants(updated_task, participants)
+        {:ok, Repo.preload(updated_task, :participants)}
+
+      error ->
+        error
+    end
   end
 
   @doc """
@@ -155,5 +156,34 @@ defmodule TaskMaster.Tasks do
     task
     |> Task.changeset(%{participants: participants})
     |> Repo.update()
+  end
+
+  defp add_participants(task, participants) do
+    Enum.each(participants, fn participant ->
+      %TaskParticipation{}
+      |> TaskParticipation.changeset(%{task_id: task.id, user_id: participant.id})
+      |> Repo.insert()
+    end)
+  end
+
+  defp update_participants(task, new_participants) do
+    current_participants = list_task_participants(task.id)
+
+    # Remove participants that are not in the new list
+    Enum.each(current_participants, fn participant ->
+      unless Enum.member?(new_participants, participant) do
+        get_task_participation!(participant.id, task.id)
+        |> Repo.delete()
+      end
+    end)
+
+    # Add new participants
+    Enum.each(new_participants, fn participant ->
+      unless Enum.member?(current_participants, participant) do
+        %TaskParticipation{}
+        |> TaskParticipation.changeset(%{task_id: task.id, user_id: participant.id})
+        |> Repo.insert()
+      end
+    end)
   end
 end

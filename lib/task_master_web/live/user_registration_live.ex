@@ -31,7 +31,7 @@ defmodule TaskMasterWeb.UserRegistrationLive do
         </.error>
         <.input field={@form[:first_name]} type="text" label={gettext("First name")} required />
         <.input field={@form[:last_name]} type="text" label={gettext("Last name")} required />
-        <.input field={@form[:nick_name]} type="text" label={gettext("Nick name")} />
+        <.input field={@form[:nick_name]} type="text" label={gettext("Nick name")} required />
         <.input field={@form[:email]} type="email" label={gettext("Email")} required />
         <.input field={@form[:password]} type="password" label={gettext("Password")} required />
 

@@ -3,6 +3,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
 
   alias TaskMaster.Tasks
   alias TaskMaster.Tasks.Task
+  import TaskMasterWeb.Components.TaskComponents
 
   @impl true
   def mount(_params, _session, socket) do
@@ -83,16 +84,10 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
       <:col :let={{_id, task}} label={gettext("Indoor")}>
         <%= TaskMasterWeb.Helpers.IconHelper.boolean_icon(task.indoor) %>
       </:col>
-      <:col :let={{_id, task}} label={gettext("Participants")}>
+      <:col :let={{_id, task}} label={gettext("Who?")}>
         <div class="flex flex-wrap gap-1">
           <%= for participant <- task.participants do %>
-            <span class="px-2 py-1 text-sm font-semibold text-blue-800 bg-blue-100 rounded-full">
-              <%= if participant.nick_name do %>
-                <%= participant.nick_name |> dbg %>
-              <% else %>
-                <%= participant.first_name %>
-              <% end %>
-            </span>
+            <.nick_name participant={participant.nick_name} />
           <% end %>
         </div>
       </:col>

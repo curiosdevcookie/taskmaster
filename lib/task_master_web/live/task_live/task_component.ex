@@ -48,11 +48,8 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
         <.input field={@form[:indoor]} type="checkbox" label={gettext("Indoor")} />
 
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700">
-            <%= gettext("Participants") %>
-          </label>
           <div class="mt-2 flex flex-wrap gap-2">
-            <%= for participant <- @participants do %>
+            <%= for participant <- Enum.sort(@participants) do %>
               <div class="flex items-center bg-blue-100 rounded-full px-3 py-1">
                 <span class="text-sm text-blue-800">
                   <%= participant.first_name %> <%= participant.last_name %>
@@ -71,31 +68,22 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
           </div>
         </div>
 
-        <div class="mb-4">
+        <div class="flex gap-4">
           <.input
+            type="select"
             id="participant-select"
             name="participant"
-            type="select"
-            label={gettext("Add Participant")}
-            prompt={gettext("Select a user")}
+            label={gettext("Who is participating?")}
+            prompt={gettext("Select")}
             options={
               Enum.map(@available_users, fn user ->
                 {user.first_name <> " " <> user.last_name, user.id}
               end)
             }
-            value={@selected_participant_id |> dbg()}
-            phx-change="select_participant"
+            value={@selected_participant_id}
+            phx-change="add_participant"
             phx-target={@myself}
           />
-          <button
-            type="button"
-            phx-click="add_participant"
-            phx-target={@myself}
-            phx-value-id={@selected_participant_id}
-            class="ml-2 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            <%= gettext("Add") %>
-          </button>
         </div>
 
         <:actions>
@@ -111,7 +99,10 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
     changeset = Tasks.change_task(task)
     participants = Tasks.list_task_participants(task.id)
     all_users = Accounts.list_users()
-    available_users = all_users -- participants
+    IO.inspect(participants, label: "Current Participants")
+    IO.inspect(all_users, label: "All Users")
+    available_users = Enum.filter(all_users, fn user -> not Enum.member?(participants, user) end)
+    IO.inspect(available_users, label: "Available Users")
 
     {:ok,
      socket
@@ -138,40 +129,38 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
   end
 
   @impl true
-  def handle_event("select_participant", %{"participant" => user_id}, socket) do
-    {:noreply, assign(socket, :selected_participant_id, user_id)}
-  end
-
-  @impl true
-  def handle_event("add_participant", _params, socket) do
-    case socket.assigns.selected_participant_id do
+  def handle_event("add_participant", %{"participant" => user_id}, socket) do
+    case Accounts.get_user!(user_id) do
       nil ->
-        {:noreply, put_flash(socket, :error, "Please select a user to add")}
+        {:noreply, put_flash(socket, :error, "Selected user not found")}
 
-      user_id ->
-        case Accounts.get_user!(user_id) do
-          nil ->
-            {:noreply, put_flash(socket, :error, "Selected user not found")}
+      user ->
+        updated_participants = [user | socket.assigns.participants] |> Enum.uniq_by(& &1.id)
 
-          user ->
-            updated_participants = [user | socket.assigns.participants]
-            updated_available_users = socket.assigns.available_users -- [user]
+        updated_available_users =
+          Enum.filter(socket.assigns.available_users, fn available_user ->
+            available_user.id != user.id
+          end)
 
-            {:noreply,
-             socket
-             |> assign(:participants, updated_participants)
-             |> assign(:available_users, updated_available_users)
-             |> assign(:selected_participant_id, nil)
-             |> put_flash(:info, "Participant added successfully")}
-        end
+        {:noreply,
+         socket
+         |> assign(:participants, updated_participants)
+         |> assign(:available_users, updated_available_users)
+         |> assign(:selected_participant_id, nil)
+         |> put_flash(:info, "Participant added successfully")}
     end
   end
 
   @impl true
   def handle_event("remove_participant", %{"id" => user_id}, socket) do
     user = Accounts.get_user!(user_id)
-    updated_participants = socket.assigns.participants -- [user]
-    updated_available_users = [user | socket.assigns.available_users]
+
+    updated_participants =
+      Enum.filter(socket.assigns.participants, fn participant -> participant.id != user.id end)
+
+    updated_available_users =
+      [user | socket.assigns.available_users]
+      |> Enum.uniq_by(& &1.id)
 
     {:noreply,
      socket
@@ -179,14 +168,22 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
      |> assign(:available_users, updated_available_users)}
   end
 
+  # defp update_task_changeset(socket) do
+  #   changeset =
+  #     socket.assigns.task
+  #     |> Tasks.change_task()
+
+  #   assign(socket, :form, to_form(changeset))
+  # end
+
   defp save_task(socket, :edit, task_params) do
-    case Tasks.update_task(socket.assigns.task, task_params) do
+    case Tasks.update_task(socket.assigns.task, task_params, socket.assigns.participants) do
       {:ok, task} ->
-        Tasks.update_task_participants(task, socket.assigns.participants)
         notify_parent({:saved, task})
 
         {:noreply,
          socket
+         |> assign(:task, task)
          |> put_flash(:info, "Task updated successfully")
          |> push_patch(to: socket.assigns.patch)}
 
@@ -196,9 +193,8 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
   end
 
   defp save_task(socket, :new, task_params) do
-    case Tasks.create_task(task_params) do
+    case Tasks.create_task(task_params, socket.assigns.participants) do
       {:ok, task} ->
-        Tasks.update_task_participants(task, socket.assigns.participants)
         notify_parent({:saved, task})
 
         {:noreply,

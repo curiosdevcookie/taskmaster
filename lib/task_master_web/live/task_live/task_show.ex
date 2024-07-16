@@ -2,7 +2,9 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
   use TaskMasterWeb, :live_view
 
   alias TaskMaster.Tasks
+  alias TaskMasterWeb.Helpers.Formatted
 
+  import TaskMasterWeb.Components.TaskComponents
   @impl true
   def mount(_params, _session, socket) do
     {:ok, socket}
@@ -48,16 +50,10 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
       <:item title={gettext("Indoor")}>
         <%= TaskMasterWeb.Helpers.IconHelper.boolean_icon(@task.indoor) %>
       </:item>
-      <:item title={gettext("Participants")}>
+      <:item title={gettext("Who?")}>
         <div class="flex flex-wrap gap-2">
           <%= for participant <- @task.participants do %>
-            <span class="px-2 py-1 text-sm font-semibold text-blue-800 bg-blue-100 rounded-full">
-              <%= if participant.nick_name do %>
-                <%= participant.nick_name %>
-              <% else %>
-                <%= participant.first_name %>
-              <% end %>
-            </span>
+            <.nick_name participant={participant.nick_name} />
           <% end %>
         </div>
       </:item>
