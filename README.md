@@ -30,6 +30,7 @@ The `users` table includes:
 - `updated_at`: TIMESTAMP without time zone, NOT NULL
 - `UNIQUE(email)`
 - `UNIQUE(nick_name)`
+- `avatar_id`: VARCHAR, FOREIGN KEY referencing `avatars(id)`
 
 Users can sign up and log in to the system. Users can have many tasks, comments, pictures, and avatars. Users can have many tags and locations. Users can have many participations. Users can have many task assignments.
 

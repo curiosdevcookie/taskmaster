@@ -31,7 +31,7 @@ defmodule TaskMasterWeb.UserRegistrationLive do
         </.error>
         <.input field={@form[:first_name]} type="text" label={gettext("First name")} required />
         <.input field={@form[:last_name]} type="text" label={gettext("Last name")} required />
-        <.input field={@form[:nick_name]} type="text" label={gettext("Nick name")} />
+        <.input field={@form[:nick_name]} type="text" label={gettext("Nick name")} required />
         <.input field={@form[:email]} type="email" label={gettext("Email")} required />
         <.input field={@form[:password]} type="password" label={gettext("Password")} required />
 
@@ -78,7 +78,7 @@ defmodule TaskMasterWeb.UserRegistrationLive do
   end
 
   def handle_event("validate", %{"user" => user_params}, socket) do
-    changeset = Accounts.change_user_registration(%User{}, user_params) |> dbg()
+    changeset = Accounts.change_user_registration(%User{}, user_params)
     {:noreply, assign_form(socket, Map.put(changeset, :action, :validate))}
   end
 

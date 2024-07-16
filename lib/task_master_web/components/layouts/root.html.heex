@@ -19,11 +19,19 @@
           class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
         >
           <li class="flex items-center gap-2">
-            <img
-              src={@current_user.avatar.path}
-              alt={@current_user.first_name}
-              class="w-6 h-6 rounded-full"
-            />
+            <%= if @current_user && @current_user.avatar do %>
+              <img
+                src={@current_user.avatar.path}
+                alt={@current_user.first_name}
+                class="w-6 h-6 rounded-full"
+              />
+            <% else %>
+              <img
+                src="/uploads/default_avatar.png"
+                alt={@current_user.first_name}
+                class="w-6 h-6 rounded-full"
+              />
+            <% end %>
             <span class="text-[0.8125rem] leading-6 text-zinc-900">
               <%= @current_user.first_name %>
             </span>

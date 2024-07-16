@@ -15,6 +15,8 @@ defmodule TaskMaster.Accounts.User do
     field :last_login_at, :naive_datetime
     has_one :avatar, TaskMaster.Accounts.Avatar
 
+    has_many :task_participations, TaskMaster.Tasks.TaskParticipation
+
     timestamps()
   end
 
@@ -44,7 +46,7 @@ defmodule TaskMaster.Accounts.User do
   def registration_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:first_name, :last_name, :nick_name, :email, :password])
-    |> validate_required([:first_name, :last_name])
+    |> validate_required([:first_name, :last_name, :nick_name, :email, :password])
     |> validate_email(opts)
     |> validate_password(opts)
     |> unique_constraint(:email)
