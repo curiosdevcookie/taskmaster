@@ -7,6 +7,7 @@ defmodule TaskMaster.Tasks do
   alias TaskMaster.Repo
 
   alias TaskMaster.Tasks.Task
+  alias TaskMaster.Tasks.TaskParticipation
 
   @doc """
   Returns the list of tasks.
@@ -35,7 +36,11 @@ defmodule TaskMaster.Tasks do
       ** (Ecto.NoResultsError)
 
   """
-  def get_task!(id), do: Repo.get!(Task, id)
+  def get_task!(id) do
+    Task
+    |> Repo.get!(id)
+    |> Repo.preload([:task_participations, :participants])
+  end
 
   @doc """
   Creates a task.
@@ -100,5 +105,55 @@ defmodule TaskMaster.Tasks do
   """
   def change_task(%Task{} = task, attrs \\ %{}) do
     Task.changeset(task, attrs)
+  end
+
+  @doc """
+  Task participations
+  """
+
+  def create_task_participation(attrs \\ %{}) do
+    %TaskParticipation{}
+    |> TaskParticipation.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def delete_task_participation(%TaskParticipation{} = task_participation) do
+    Repo.delete(task_participation)
+  end
+
+  def get_task_participation!(user_id, task_id) do
+    Repo.get_by!(TaskParticipation, user_id: user_id, task_id: task_id)
+  end
+
+  def list_task_participants(nil), do: []
+
+  def list_task_participants(task_id) do
+    Task
+    |> Repo.get!(task_id)
+    |> Repo.preload(:participants)
+    |> Map.get(:participants)
+  end
+
+  def list_user_participated_tasks(user_id) do
+    User
+    |> Repo.get!(user_id)
+    |> Repo.preload(:participated_tasks)
+    |> Map.get(:participated_tasks)
+  end
+
+  def list_tasks_with_participants do
+    Task
+    |> Repo.all()
+    |> Repo.preload(:participants)
+  end
+
+  def preload_task_participants(task) do
+    Repo.preload(task, :participants)
+  end
+
+  def update_task_participants(task, participants) do
+    task
+    |> Task.changeset(%{participants: participants})
+    |> Repo.update()
   end
 end

@@ -11,6 +11,10 @@ defmodule TaskMaster.Accounts do
 
   ## Database getters
 
+  def list_users() do
+    Repo.all(User)
+  end
+
   @doc """
   Gets a user by email.
 
@@ -59,12 +63,14 @@ defmodule TaskMaster.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id) do
+  def get_user!(id) when is_binary(id) do
     User
-    |> where(id: ^id)
+    |> where([u], u.id == ^id)
     |> preload(:avatar)
-    |> Repo.one!()
+    |> Repo.one()
   end
+
+  def get_user!(_), do: nil
 
   ## User registration
 

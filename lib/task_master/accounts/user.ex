@@ -15,6 +15,8 @@ defmodule TaskMaster.Accounts.User do
     field :last_login_at, :naive_datetime
     has_one :avatar, TaskMaster.Accounts.Avatar
 
+    has_many :task_participations, TaskMaster.Tasks.TaskParticipation
+
     timestamps()
   end
 

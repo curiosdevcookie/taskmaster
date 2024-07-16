@@ -18,6 +18,9 @@ defmodule TaskMaster.Tasks.Task do
     belongs_to :creator, TaskMaster.Accounts.User, foreign_key: :created_by
     belongs_to :parent_task, TaskMaster.Tasks.Task, foreign_key: :parent_task_id
 
+    has_many :task_participations, TaskMaster.Tasks.TaskParticipation
+    has_many :participants, through: [:task_participations, :user]
+
     timestamps()
   end
 
@@ -32,8 +35,10 @@ defmodule TaskMaster.Tasks.Task do
       :duration,
       :priority,
       :indoor,
-      :created_by
+      :created_by,
+      :parent_task_id
     ])
+    |> cast_assoc(:task_participations, with: &TaskMaster.Tasks.TaskParticipation.changeset/2)
     |> validate_required([
       :title,
       :status,
