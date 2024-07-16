@@ -1,9 +1,7 @@
 defmodule TaskMasterWeb.Components.TaskComponents do
   use Phoenix.Component
 
-  alias Phoenix.LiveView.JS
   alias TaskMasterWeb.Helpers.Formatted
-  import TaskMasterWeb.Gettext
 
   attr(:participant, :string, required: true)
 
