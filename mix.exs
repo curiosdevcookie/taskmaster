@@ -51,7 +51,8 @@ defmodule TaskMaster.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:dotenv, "~> 3.1.0"}
+      {:dotenv, "~> 3.1.0"},
+      {:hackney, "~> 1.20"}
     ]
   end
 

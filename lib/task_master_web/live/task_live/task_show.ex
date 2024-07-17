@@ -2,7 +2,6 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
   use TaskMasterWeb, :live_view
 
   alias TaskMaster.Tasks
-  alias TaskMasterWeb.Helpers.Formatted
 
   import TaskMasterWeb.Components.TaskComponents
   @impl true
