@@ -1,13 +1,14 @@
 <.flash_group flash={@flash} />
-
-<div class="flex items-center">
-  <TaskMasterWeb.Icons.logo_icon class="" />
-  <section class="bg-white flex flex-col gap-4 p-10">
-    <p class="text-[5rem] mt-4 font-semibold leading-10 tracking-tighter text-zinc-900">
-      TaskMaster
-    </p>
-    <p class="mt-4 text-[3rem] leading-7 text-zinc-600">
-      <%= gettext("Productivity Made Simple") %>
-    </p>
-  </section>
-</div>
+<main class="px-4 sm:px-6 lg:px-8">
+  <div id="main-part" class="relative">
+    <TaskMasterWeb.Icons.logo_icon class="" />
+    <section class="absolute bg-white flex flex-col gap-4 p-10 lg:left-[35%] lg:top-[27%]">
+      <p class="text-[5rem] mt-4 font-semibold leading-10 tracking-tighter text-zinc-900">
+        <%= gettext("TaskMaster") %>
+      </p>
+      <p class="mt-4 text-[3rem] leading-7 text-zinc-600">
+        <%= gettext("Productivity Made Simple") %>
+      </p>
+    </section>
+  </div>
+</main>
