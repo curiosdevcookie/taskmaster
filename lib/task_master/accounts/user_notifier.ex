@@ -24,7 +24,7 @@ defmodule TaskMaster.Accounts.UserNotifier do
   def deliver_confirmation_instructions(user, url) do
     deliver(user.email, gettext("Confirmation instructions"), """
 
-    "Hi #{user.first_name}",
+    Hi #{user.first_name},
 
     #{gettext("You can confirm your account by visiting the URL below:")}
 
@@ -41,7 +41,7 @@ defmodule TaskMaster.Accounts.UserNotifier do
   def deliver_reset_password_instructions(user, url) do
     deliver(user.email, gettext("Reset password instructions"), """
 
-    "Hi #{user.first_name}",
+    Hi #{user.first_name},
 
     #{gettext("You can reset your password by visiting the URL below:")}
 
@@ -58,7 +58,7 @@ defmodule TaskMaster.Accounts.UserNotifier do
   def deliver_update_email_instructions(user, url) do
     deliver(user.email, gettext("Update email instructions"), """
 
-    "Hi #{user.first_name}",
+    Hi #{user.first_name},
 
     #{gettext("You can change your email by visiting the URL below:")}
 

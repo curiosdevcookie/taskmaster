@@ -33,7 +33,8 @@ if config_env() == :prod do
   config :task_master, TaskMaster.Repo,
     url: database_url,
     socket_options: [:inet6],
-    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10")
+    pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+    socket_options: maybe_ipv6
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
   # A default value is used in config/dev.exs and config/test.exs but you
@@ -54,7 +55,9 @@ if config_env() == :prod do
       ip: {0, 0, 0, 0, 0, 0, 0, 0},
       port: String.to_integer(System.get_env("PORT") || "8080")
     ],
-    secret_key_base: secret_key_base
+    secret_key_base: secret_key_base,
+    static_url: [path: "/"],
+    check_origin: false
 
   # ## SSL Support
   #
@@ -98,7 +101,8 @@ if config_env() == :prod do
   config :task_master, TaskMaster.Mailer,
     adapter: Swoosh.Adapters.Mailgun,
     api_key: System.get_env("MAILGUN_API_KEY"),
-    domain: System.get_env("MAILGUN_DOMAIN")
+    domain: System.get_env("MAILGUN_DOMAIN"),
+    base_url: "https://api.mailgun.net/v3"
 
   #
   # For this example you need include a HTTP client required by Swoosh API client.

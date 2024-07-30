@@ -32,16 +32,21 @@ defmodule TaskMasterWeb.AvatarLive.AvatarComponent do
   end
 
   defp save_avatar(socket, action, avatar_params) do
+    IO.puts("Saving avatar: #{inspect(action)}, #{inspect(avatar_params)}")
+
     case uploaded_entries(socket, :avatar) do
       [] ->
         {:noreply, put_flash(socket, :error, "No file uploaded")}
 
       _entries ->
+        uploads_dir = Application.app_dir(:task_master, "priv/static/uploads")
+        File.mkdir_p!(uploads_dir)
+
         uploaded_files =
           consume_uploaded_entries(socket, :avatar, fn %{path: path}, entry ->
             ext = Path.extname(entry.client_name)
             file_name = "#{socket.assigns.current_user.id}_avatar#{ext}"
-            dest = Path.join("priv/static/uploads", file_name)
+            dest = Path.join(uploads_dir, file_name)
             File.cp!(path, dest)
             {:ok, "/uploads/#{file_name}"}
           end)
@@ -59,10 +64,7 @@ defmodule TaskMasterWeb.AvatarLive.AvatarComponent do
         |> case do
           {:ok, avatar} ->
             notify_parent({:saved, avatar})
-
-            {:noreply,
-             socket
-             |> put_flash(:info, avatar_action_message(action))}
+            {:noreply, socket |> put_flash(:info, avatar_action_message(action))}
 
           {:error, %Ecto.Changeset{} = changeset} ->
             {:noreply, assign(socket, :form, to_form(changeset))}
