@@ -192,11 +192,13 @@ msgid "Change Email"
 msgstr ""
 
 #: lib/task_master_web/live/user_settings_live.ex:103
+#: lib/task_master_web/live/user_settings_live.ex:153
 #, elixir-autogen, elixir-format
 msgid "Email change link is invalid or it has expired."
 msgstr ""
 
 #: lib/task_master_web/live/user_settings_live.ex:100
+#: lib/task_master_web/live/user_settings_live.ex:147
 #, elixir-autogen, elixir-format
 msgid "Email changed successfully."
 msgstr ""
@@ -356,7 +358,7 @@ msgstr ""
 msgid "Edit task"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_component.ex:132
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:134
 #: lib/task_master_web/live/task_live/task_component.ex:90
 #, elixir-autogen, elixir-format
 msgid "Save"
@@ -487,17 +489,18 @@ msgstr ""
 msgid "Listing Avatars"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_component.ex:74
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:76
 #, elixir-autogen, elixir-format
 msgid "Avatar created successfully"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_component.ex:73
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:75
+#: lib/task_master_web/live/user_settings_live.ex:170
 #, elixir-autogen, elixir-format
 msgid "Avatar updated successfully"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_component.ex:131
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:133
 #, elixir-autogen, elixir-format
 msgid "Saving..."
 msgstr ""
@@ -507,18 +510,18 @@ msgstr ""
 msgid "Avatar"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_component.ex:98
-#: lib/task_master_web/live/avatar_live/avatar_component.ex:102
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:100
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:104
 #, elixir-autogen, elixir-format
 msgid "Current Avatar"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_component.ex:112
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:114
 #, elixir-autogen, elixir-format
 msgid "New Avatar"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_component.ex:124
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:126
 #, elixir-autogen, elixir-format
 msgid "Cancel"
 msgstr ""
@@ -549,7 +552,77 @@ msgstr ""
 msgid "Who?"
 msgstr ""
 
-#: lib/task_master_web/controllers/page_html/home.html.heex:59
+#: lib/task_master_web/controllers/page_html/home.html.heex:10
 #, elixir-autogen, elixir-format
 msgid "Productivity Made Simple"
+msgstr ""
+
+#: lib/task_master_web/live/user_settings_live.ex:204
+#, elixir-autogen, elixir-format
+msgid "A link to confirm your email change has been sent to the new address."
+msgstr ""
+
+#: lib/task_master_web/live/user_settings_live.ex:87
+#, elixir-autogen, elixir-format
+msgid "Change Password"
+msgstr ""
+
+#: lib/task_master_web/live/user_settings_live.ex:137
+#, elixir-autogen, elixir-format
+msgid "Edit User Settings"
+msgstr ""
+
+#: lib/task_master_web/components/core_components.ex:167
+#, elixir-autogen, elixir-format
+msgid "Hang in there while we get back on track"
+msgstr ""
+
+#: lib/task_master_web/components/core_components.ex:162
+#, elixir-autogen, elixir-format
+msgid "Something went wrong!"
+msgstr ""
+
+#: lib/task_master_web/controllers/page_html/home.html.heex:7
+#, elixir-autogen, elixir-format
+msgid "TaskMaster"
+msgstr ""
+
+#: lib/task_master_web/components/core_components.ex:151
+#, elixir-autogen, elixir-format
+msgid "We can't find the internet"
+msgstr ""
+
+#: lib/task_master/accounts/user.ex:122
+#, elixir-autogen, elixir-format
+msgid "did not change"
+msgstr ""
+
+#: lib/task_master/accounts/user.ex:79
+#, elixir-autogen, elixir-format
+msgid "at least one digit or punctuation character"
+msgstr ""
+
+#: lib/task_master/accounts/user.ex:73
+#, elixir-autogen, elixir-format
+msgid "at least one lower case character"
+msgstr ""
+
+#: lib/task_master/accounts/user.ex:76
+#, elixir-autogen, elixir-format
+msgid "at least one upper case character"
+msgstr ""
+
+#: lib/task_master/accounts/user.ex:141
+#, elixir-autogen, elixir-format
+msgid "does not match password"
+msgstr ""
+
+#: lib/task_master/accounts/user.ex:61
+#, elixir-autogen, elixir-format
+msgid "must have the @ sign and no spaces"
+msgstr ""
+
+#: lib/task_master/accounts/user.ex:178
+#, elixir-autogen, elixir-format
+msgid "is not valid"
 msgstr ""

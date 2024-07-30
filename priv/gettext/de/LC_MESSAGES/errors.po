@@ -73,7 +73,7 @@ msgstr[1] "sollten mindestens %{count} Elemente haben"
 msgid "should be at least %{count} character(s)"
 msgid_plural "should be at least %{count} character(s)"
 msgstr[0] "sollte mindestens %{count} Zeichen haben"
-msgstr[1] "sollten mindestens %{count} Zeichen haben"
+msgstr[1] "sollten mindestens %{count} Zeichen sein"
 
 msgid "should be at least %{count} byte(s)"
 msgid_plural "should be at least %{count} byte(s)"

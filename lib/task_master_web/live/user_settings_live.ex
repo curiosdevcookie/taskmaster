@@ -84,7 +84,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Password</.button>
+            <.button phx-disable-with="Changing..."><%= gettext("Change Password") %></.button>
           </:actions>
         </.simple_form>
       </div>
@@ -134,7 +134,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
 
   defp apply_action(socket, :edit, _params) do
     socket
-    |> assign(:page_title, "Edit User Settings")
+    |> assign(:page_title, gettext("Edit User Settings"))
   end
 
   defp apply_action(socket, :confirm_email, %{"token" => token}) do
@@ -144,13 +144,13 @@ defmodule TaskMasterWeb.UserSettingsLive do
       :ok ->
         {:noreply,
          socket
-         |> put_flash(:info, "Email changed successfully.")
+         |> put_flash(:info, gettext("Email changed successfully."))
          |> push_redirect(to: ~p"/#{current_user.id}/users/settings")}
 
       :error ->
         {:noreply,
          socket
-         |> put_flash(:error, "Email change link is invalid or it has expired.")}
+         |> put_flash(:error, gettext("Email change link is invalid or it has expired."))}
     end
   end
 
@@ -167,7 +167,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
       {:ok, _avatar} ->
         {:noreply,
          socket
-         |> put_flash(:info, "Avatar updated successfully")
+         |> put_flash(:info, gettext("Avatar updated successfully"))
          |> push_navigate(to: ~p"/#{current_user.id}/users/settings")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -201,7 +201,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
           &url(~p"/#{user}/users/settings/confirm_email/#{&1}")
         )
 
-        info = "A link to confirm your email change has been sent to the new address."
+        info = gettext("A link to confirm your email change has been sent to the new address.")
         {:noreply, socket |> put_flash(:info, info) |> assign(email_form_current_password: nil)}
 
       {:error, changeset} ->
