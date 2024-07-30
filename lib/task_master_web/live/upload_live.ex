@@ -18,4 +18,11 @@ defmodule TaskMasterWeb.AvatarLive.UploadLive do
     # Handle the save event
     {:noreply, socket}
   end
+
+  @impl true
+  def render(assigns) do
+    ~H"""
+    <!-- Your HTML template goes here -->
+    """
+  end
 end
