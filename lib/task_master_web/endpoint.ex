@@ -48,4 +48,17 @@ defmodule TaskMasterWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
   plug TaskMasterWeb.Router
+
+  # Serve static files
+  plug Plug.Static,
+    at: "/",
+    from: :task_master,
+    gzip: false,
+    only: TaskMasterWeb.static_paths()
+
+  # Serve uploaded files
+  plug Plug.Static,
+    at: "/uploads",
+    from: Path.expand("priv/static/uploads", Application.app_dir(:task_master)),
+    gzip: false
 end
