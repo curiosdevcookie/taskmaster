@@ -67,7 +67,7 @@ defmodule TaskMaster.Accounts do
     User
     |> where([u], u.id == ^id)
     |> preload(:avatar)
-    |> Repo.one()
+    |> Repo.one!()
   end
 
   def get_user!(_), do: nil

@@ -19,7 +19,9 @@ defmodule TaskMaster.Tasks do
 
   """
   def list_tasks do
-    Repo.all(Task)
+    Task
+    |> Repo.all()
+    |> Repo.preload([:task_participations, :participants])
   end
 
   @doc """
