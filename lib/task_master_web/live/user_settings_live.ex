@@ -107,24 +107,34 @@ defmodule TaskMasterWeb.UserSettingsLive do
   end
 
   def mount(%{"current_user" => current_user_id}, _session, socket) do
-    user = Accounts.get_user!(current_user_id)
-    email_changeset = Accounts.change_user_email(user)
-    password_changeset = Accounts.change_user_password(user)
+    try do
+      user = Accounts.get_user!(current_user_id)
+      email_changeset = Accounts.change_user_email(user)
+      password_changeset = Accounts.change_user_password(user)
 
-    avatar = Accounts.get_active_avatar(user) || %TaskMaster.Accounts.Avatar{}
+      avatar = Accounts.get_active_avatar(user) || %TaskMaster.Accounts.Avatar{}
 
-    socket =
-      socket
-      |> assign(:current_user, user)
-      |> assign(:current_password, nil)
-      |> assign(:email_form_current_password, nil)
-      |> assign(:current_email, user.email)
-      |> assign(:email_form, to_form(email_changeset))
-      |> assign(:password_form, to_form(password_changeset))
-      |> assign(:avatar, avatar)
-      |> assign(:trigger_submit, false)
+      socket =
+        socket
+        |> assign(:current_user, user)
+        |> assign(:current_password, nil)
+        |> assign(:email_form_current_password, nil)
+        |> assign(:current_email, user.email)
+        |> assign(:email_form, to_form(email_changeset))
+        |> assign(:password_form, to_form(password_changeset))
+        |> assign(:avatar, avatar)
+        |> assign(:trigger_submit, false)
 
-    {:ok, socket}
+      {:ok, socket}
+    rescue
+      Ecto.NoResultsError ->
+        socket =
+          socket
+          |> put_flash(:error, "User not found")
+          |> redirect(to: ~p"/")
+
+        {:ok, socket}
+    end
   end
 
   @impl true
