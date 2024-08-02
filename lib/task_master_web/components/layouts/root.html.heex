@@ -14,12 +14,18 @@
   <body class="bg-white antialiased min-h-screen flex flex-col p-4">
     <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
       <%= if @current_user do %>
+        <%= if  @current_user.organization do %>
+          <span class="text-[0.8125rem] leading-6 border-zinc-900 border-2 py-1 px-2 rounded-full  text-zinc-900">
+            <%= @current_user.organization.name %>
+          </span>
+        <% end %>
         <.link
           navigate={~p"/#{@current_user.id}/tasks"}
           class="font-semibold text-zinc-900 hover:text-zinc-700"
         >
           ➜ <%= gettext("Tasks") %>
         </.link>
+
         <.link
           href={~p"/#{@current_user}/users/settings"}
           class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"

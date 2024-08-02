@@ -170,7 +170,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
   # end
 
   defp save_task(socket, :edit, task_params) do
-    org_id = socket.assigns.current_user.organization_id |> dbg()
+    org_id = socket.assigns.current_user.organization_id
 
     case Tasks.update_task(socket.assigns.task, task_params, socket.assigns.participants, org_id) do
       {:ok, task} ->
