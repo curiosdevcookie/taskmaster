@@ -33,15 +33,16 @@ defmodule TaskMaster.Tasks do
   end
 
   def create_task(attrs \\ %{}, participants \\ [], org_id) do
-    attrs = Map.put(attrs, :organization_id, org_id)
+    attrs = Map.put(attrs, "organization_id", org_id)
 
     %Task{}
     |> Task.changeset(attrs)
     |> Repo.insert()
     |> case do
       {:ok, task} ->
-        add_participants(task, participants, org_id)
-        {:ok, Repo.preload(task, :participants)}
+        task = add_participants(task, participants, org_id)
+        task = Repo.preload(task, :participants)
+        broadcast({:ok, task}, :task_created)
 
       error ->
         error
@@ -54,8 +55,9 @@ defmodule TaskMaster.Tasks do
     |> Repo.update()
     |> case do
       {:ok, updated_task} ->
-        update_participants(updated_task, participants, org_id)
-        {:ok, Repo.preload(updated_task, :participants)}
+        updated_task = update_participants(updated_task, participants, org_id)
+        updated_task = Repo.preload(updated_task, :participants)
+        broadcast({:ok, updated_task}, :task_updated)
 
       error ->
         error
@@ -64,7 +66,9 @@ defmodule TaskMaster.Tasks do
 
   def delete_task(%Task{} = task, org_id) do
     if task.organization_id == org_id do
-      Repo.delete(task)
+      task
+      |> Repo.delete()
+      |> broadcast(:task_deleted)
     else
       {:error, :unauthorized}
     end
@@ -117,8 +121,9 @@ defmodule TaskMaster.Tasks do
     |> Map.get(:participated_tasks)
   end
 
-  def list_tasks_with_participants do
+  def list_tasks_with_participants(org_id) do
     Task
+    |> Task.for_org(org_id)
     |> Repo.all()
     |> Repo.preload(:participants)
   end
@@ -141,6 +146,8 @@ defmodule TaskMaster.Tasks do
         |> Repo.insert()
       end
     end)
+
+    task
   end
 
   defp update_participants(task, new_participants, org_id) do
@@ -162,6 +169,8 @@ defmodule TaskMaster.Tasks do
         |> Repo.insert()
       end
     end)
+
+    task
   end
 
   def list_task_participants(task_id, org_id) do
@@ -181,4 +190,15 @@ defmodule TaskMaster.Tasks do
     |> Repo.all()
     |> Repo.preload(:participants)
   end
+
+  def subscribe(org_id) do
+    Phoenix.PubSub.subscribe(TaskMaster.PubSub, "tasks:#{org_id}")
+  end
+
+  defp broadcast({:ok, task}, event) do
+    Phoenix.PubSub.broadcast(TaskMaster.PubSub, "tasks:#{task.organization_id}", {event, task})
+    {:ok, task}
+  end
+
+  defp broadcast({:error, _} = error, _event), do: error
 end

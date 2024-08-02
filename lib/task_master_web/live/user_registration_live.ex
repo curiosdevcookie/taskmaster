@@ -29,11 +29,6 @@ defmodule TaskMasterWeb.UserRegistrationLive do
         <.error :if={@check_errors}>
           <%= gettext("Oops, something went wrong! Please check the errors below.") %>
         </.error>
-        <.input field={@form[:first_name]} type="text" label={gettext("First name")} required />
-        <.input field={@form[:last_name]} type="text" label={gettext("Last name")} required />
-        <.input field={@form[:nick_name]} type="text" label={gettext("Nick name")} required />
-        <.input field={@form[:email]} type="email" label={gettext("Email")} required />
-        <.input field={@form[:password]} type="password" label={gettext("Password")} required />
         <.input
           field={@form[:organization_name]}
           type="text"
@@ -41,6 +36,11 @@ defmodule TaskMasterWeb.UserRegistrationLive do
           required
           phx-debounce="blur"
         />
+        <.input field={@form[:first_name]} type="text" label={gettext("First name")} required />
+        <.input field={@form[:last_name]} type="text" label={gettext("Last name")} required />
+        <.input field={@form[:nick_name]} type="text" label={gettext("Nick name")} required />
+        <.input field={@form[:email]} type="email" label={gettext("Email")} required />
+        <.input field={@form[:password]} type="password" label={gettext("Password")} required />
 
         <:actions>
           <.button
@@ -89,7 +89,7 @@ defmodule TaskMasterWeb.UserRegistrationLive do
 
         {:noreply,
          socket
-         |> put_flash(:info, "User created successfully.")
+         |> put_flash(:info, gettext("User created successfully."))
          |> redirect(to: ~p"/users/log_in")}
 
       {:error, %Ecto.Changeset{} = changeset} ->

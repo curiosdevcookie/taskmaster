@@ -52,6 +52,6 @@ defmodule TaskMaster.Tasks.Task do
 
   def for_org(query, org_id) when is_binary(org_id) do
     query
-    |> where([organisations: o], o.id == ^org_id)
+    |> where([t], t.organization_id == ^org_id)
   end
 end

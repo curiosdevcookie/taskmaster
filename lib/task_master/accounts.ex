@@ -4,17 +4,21 @@ defmodule TaskMaster.Accounts do
   """
 
   import Ecto.Query, warn: false
+
   alias TaskMaster.Repo
 
   alias TaskMaster.Accounts.{User, UserToken, UserNotifier}
   alias TaskMaster.Accounts.Avatar
   alias TaskMaster.Accounts.User
   alias TaskMaster.Organizations
+  alias TaskMaster.Accounts.Organization
 
   ## Database getters
 
-  def list_users() do
-    Repo.all(User)
+  def list_users(org_id) do
+    User
+    |> Organization.for_org(org_id)
+    |> Repo.all()
   end
 
   @doc """
