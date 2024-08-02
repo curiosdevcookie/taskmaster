@@ -8,6 +8,8 @@ defmodule TaskMaster.Accounts do
 
   alias TaskMaster.Accounts.{User, UserToken, UserNotifier}
   alias TaskMaster.Accounts.Avatar
+  alias TaskMaster.Accounts.User
+  alias TaskMaster.Organizations
 
   ## Database getters
 
@@ -86,10 +88,45 @@ defmodule TaskMaster.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def register_user(attrs) do
-    %User{}
-    |> User.registration_changeset(attrs)
-    |> Repo.insert()
+  def register_user(attrs \\ %{}) do
+    Repo.transaction(fn ->
+      case %User{}
+           |> User.registration_changeset(attrs)
+           |> Repo.insert() do
+        {:ok, user} ->
+          case create_or_associate_organization(user, attrs["organization_name"]) do
+            {:ok, updated_user} -> updated_user
+            {:error, changeset} -> Repo.rollback(changeset)
+          end
+
+        {:error, changeset} ->
+          Repo.rollback(changeset)
+      end
+    end)
+  end
+
+  defp create_or_associate_organization(user, org_name) do
+    case Organizations.get_organization_by_name(org_name) do
+      nil ->
+        case Organizations.create_organization(%{name: org_name}) do
+          {:ok, organization} ->
+            associate_user_with_organization(user, organization)
+
+          {:error, _} ->
+            {:error,
+             User.change_user(user)
+             |> Ecto.Changeset.add_error(:organization_name, "could not create organization")}
+        end
+
+      organization ->
+        associate_user_with_organization(user, organization)
+    end
+  end
+
+  defp associate_user_with_organization(user, organization) do
+    user
+    |> User.change_user(%{organization_id: organization.id})
+    |> Repo.update()
   end
 
   @doc """
@@ -102,7 +139,10 @@ defmodule TaskMaster.Accounts do
 
   """
   def change_user_registration(%User{} = user, attrs \\ %{}) do
-    User.registration_changeset(user, attrs, hash_password: false, validate_email: false)
+    User.registration_changeset(user, attrs,
+      hash_password: false,
+      validate_email: false
+    )
   end
 
   ## Settings

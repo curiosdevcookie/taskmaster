@@ -14,9 +14,11 @@ defmodule TaskMaster.Accounts.User do
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :naive_datetime
     field :last_login_at, :naive_datetime
+    field :organization_name, :string, virtual: true
+    field :organization_status, :string, virtual: true
     has_one :avatar, TaskMaster.Accounts.Avatar
-
     has_many :task_participations, TaskMaster.Tasks.TaskParticipation
+    belongs_to :organization, TaskMaster.Accounts.Organization, type: :binary_id
 
     timestamps()
   end
@@ -46,10 +48,28 @@ defmodule TaskMaster.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:first_name, :last_name, :nick_name, :email, :password])
-    |> validate_required([:first_name, :last_name, :nick_name])
+    |> cast(attrs, [
+      :first_name,
+      :last_name,
+      :nick_name,
+      :email,
+      :password,
+      :organization_name,
+      :organization_status
+    ])
+    |> validate_required([:first_name, :last_name, :nick_name, :organization_name])
     |> validate_email(opts)
     |> validate_password(opts)
+    |> unique_constraint(:email)
+    |> unique_constraint(:nick_name)
+    |> maybe_create_organization()
+  end
+
+  def change_user(user, attrs \\ %{}) do
+    user
+    |> cast(attrs, [:first_name, :last_name, :nick_name, :email, :organization_id])
+    |> validate_required([:first_name, :last_name, :nick_name, :email])
+    |> validate_email([])
     |> unique_constraint(:email)
     |> unique_constraint(:nick_name)
   end
@@ -105,6 +125,27 @@ defmodule TaskMaster.Accounts.User do
       |> unique_constraint(:email)
     else
       changeset
+    end
+  end
+
+  defp maybe_create_organization(changeset) do
+    org_name = get_change(changeset, :organization_name)
+
+    cond do
+      is_nil(org_name) ->
+        add_error(changeset, :organization_name, "can't be blank")
+
+      org_name == "" ->
+        add_error(changeset, :organization_name, "can't be blank")
+
+      true ->
+        case TaskMaster.Organizations.get_organization_by_name(org_name) do
+          nil ->
+            put_change(changeset, :organization_status, "new")
+
+          _organization ->
+            put_change(changeset, :organization_status, "existing")
+        end
     end
   end
 
