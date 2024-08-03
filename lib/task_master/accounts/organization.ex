@@ -22,4 +22,10 @@ defmodule TaskMaster.Accounts.Organization do
     query
     |> where([t], t.organization_id == ^org_id)
   end
+
+  def for_org_with_preload(query, org_id) when is_binary(org_id) do
+    query
+    |> for_org(org_id)
+    |> preload(:organization)
+  end
 end

@@ -18,6 +18,7 @@ defmodule TaskMaster.Accounts do
   def list_users(org_id) do
     User
     |> Organization.for_org(org_id)
+    |> preload(:organization)
     |> Repo.all()
   end
 
@@ -51,8 +52,13 @@ defmodule TaskMaster.Accounts do
   """
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
-    user = Repo.get_by(User, email: email)
-    if User.valid_password?(user, password), do: user
+    user =
+      User
+      |> where([u], u.email == ^email)
+      |> preload(:organization)
+      |> Repo.one()
+
+    if user && User.valid_password?(user, password), do: user
   end
 
   @doc """
@@ -72,7 +78,7 @@ defmodule TaskMaster.Accounts do
   def get_user!(id) when is_binary(id) do
     User
     |> where([u], u.id == ^id)
-    |> preload(:avatar)
+    |> preload([:avatar, :organization])
     |> Repo.one!()
   end
 
@@ -99,8 +105,11 @@ defmodule TaskMaster.Accounts do
            |> Repo.insert() do
         {:ok, user} ->
           case create_or_associate_organization(user, attrs["organization_name"]) do
-            {:ok, updated_user} -> updated_user
-            {:error, changeset} -> Repo.rollback(changeset)
+            {:ok, updated_user} ->
+              Repo.preload(updated_user, :organization)
+
+            {:error, changeset} ->
+              Repo.rollback(changeset)
           end
 
         {:error, changeset} ->
@@ -313,8 +322,9 @@ defmodule TaskMaster.Accounts do
   def get_user_by_session_token(token) do
     {:ok, query} = UserToken.verify_session_token_query(token)
 
-    Repo.one(query)
-    |> Repo.preload(:organization)
+    query
+    |> preload(:organization)
+    |> Repo.one()
   end
 
   @doc """
