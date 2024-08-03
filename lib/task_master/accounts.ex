@@ -99,40 +99,57 @@ defmodule TaskMaster.Accounts do
 
   """
   def register_user(attrs \\ %{}) do
-    Repo.transaction(fn ->
-      case %User{}
-           |> User.registration_changeset(attrs)
-           |> Repo.insert() do
-        {:ok, user} ->
-          case create_or_associate_organization(user, attrs["organization_name"]) do
-            {:ok, updated_user} ->
-              Repo.preload(updated_user, :organization)
-
-            {:error, changeset} ->
-              Repo.rollback(changeset)
-          end
-
-        {:error, changeset} ->
-          Repo.rollback(changeset)
-      end
-    end)
+    %User{}
+    |> User.registration_changeset(attrs)
+    |> Repo.insert()
+    |> case do
+      {:ok, user} -> create_or_associate_organization(user, attrs)
+      error -> error
+    end
   end
 
-  defp create_or_associate_organization(user, org_name) do
-    case Organizations.get_organization_by_name(org_name) do
-      nil ->
-        case Organizations.create_organization(%{name: org_name}) do
-          {:ok, organization} ->
-            associate_user_with_organization(user, organization)
+  defp create_or_associate_organization(user, attrs) do
+    org_id = attrs[:organization_id] || attrs["organization_id"]
+    org_name = attrs[:organization_name] || attrs["organization_name"]
 
-          {:error, _} ->
+    cond do
+      is_binary(org_id) ->
+        case Organizations.get_organization!(org_id) do
+          nil ->
             {:error,
-             User.change_user(user)
-             |> Ecto.Changeset.add_error(:organization_name, "could not create organization")}
+             Ecto.Changeset.add_error(User.change_user(user), :organization_id, "does not exist")}
+
+          organization ->
+            associate_user_with_organization(user, organization)
         end
 
-      organization ->
-        associate_user_with_organization(user, organization)
+      is_binary(org_name) ->
+        case Organizations.get_organization_by_name(org_name) do
+          nil ->
+            case Organizations.create_organization(%{name: org_name}) do
+              {:ok, organization} ->
+                associate_user_with_organization(user, organization)
+
+              {:error, _} ->
+                {:error,
+                 Ecto.Changeset.add_error(
+                   User.change_user(user),
+                   :organization_name,
+                   "could not create organization"
+                 )}
+            end
+
+          organization ->
+            associate_user_with_organization(user, organization)
+        end
+
+      true ->
+        {:error,
+         Ecto.Changeset.add_error(
+           User.change_user(user),
+           :organization,
+           "invalid organization data"
+         )}
     end
   end
 

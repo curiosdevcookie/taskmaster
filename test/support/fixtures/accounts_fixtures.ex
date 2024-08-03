@@ -10,6 +10,8 @@ defmodule TaskMaster.AccountsFixtures do
   def unique_user_nick_name, do: "user#{System.unique_integer()}"
 
   def valid_user_attributes(attrs \\ %{}) do
+    organization = TaskMaster.OrganizationsFixtures.organization_fixture()
+
     Enum.into(attrs, %{
       id: Ecto.UUID.generate(),
       email: unique_user_email(),
@@ -17,7 +19,8 @@ defmodule TaskMaster.AccountsFixtures do
       last_name: "Doe",
       password: valid_user_password(),
       nick_name: unique_user_nick_name(),
-      organization_name: "Test organization"
+      organization_id: organization.id,
+      organization_name: organization.name
     })
   end
 

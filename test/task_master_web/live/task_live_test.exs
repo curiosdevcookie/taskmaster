@@ -31,18 +31,18 @@ defmodule TaskMasterWeb.TaskLiveTest do
     user = user_fixture(%{organization: organization})
     task = task_fixture(%{created_by: user.id, organization_id: organization.id})
     conn = log_in_user(conn, user)
-    %{user: user, task: task, conn: conn, organization: organization}
+    %{conn: conn, organization: organization, user: user, task: task}
   end
 
   describe "Index" do
-    test "lists all tasks", %{conn: conn, user: user, task: task} do
+    test "lists all tasks", %{conn: conn, organization: organization, user: user, task: task} do
       {:ok, _index_live, html} = live(conn, ~p"/#{user.id}/tasks")
 
       assert html =~ gettext("Listing Tasks")
       assert html =~ task.description
     end
 
-    test "saves new task", %{conn: conn, user: user} do
+    test "saves new task", %{conn: conn, organization: organization, user: user} do
       {:ok, index_live, _html} = live(conn, ~p"/#{user.id}/tasks")
 
       assert index_live |> element("a", "New Task") |> render_click() =~
@@ -68,7 +68,7 @@ defmodule TaskMasterWeb.TaskLiveTest do
   end
 
   describe "Show" do
-    test "displays task", %{conn: conn, user: user, task: task} do
+    test "displays task", %{conn: conn, organization: organization, user: user, task: task} do
       {:ok, _show_live, html} = live(conn, ~p"/#{user.id}/tasks/#{task}")
 
       assert html =~ "Show Task"

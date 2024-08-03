@@ -3,13 +3,15 @@ defmodule TaskMasterWeb.AvatarLiveTest do
 
   import Phoenix.LiveViewTest
   import TaskMaster.AccountsFixtures
+  import TaskMaster.OrganizationsFixtures
   import TaskMaster.AvatarFixtures
   import TaskMasterWeb.Gettext
 
   setup %{conn: conn} do
-    user = user_fixture()
+    organization = TaskMaster.OrganizationsFixtures.organization_fixture()
+    user = TaskMaster.AccountsFixtures.user_fixture(%{organization_id: organization.id})
     conn = log_in_user(conn, user)
-    %{conn: conn, user: user}
+    %{conn: conn, user: user, organization: organization}
   end
 
   describe "Index" do
