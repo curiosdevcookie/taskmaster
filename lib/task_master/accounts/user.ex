@@ -56,7 +56,7 @@ defmodule TaskMaster.Accounts.User do
       :organization_name,
       :organization_id
     ])
-    |> validate_required([:first_name, :last_name, :nick_name, :email, :password])
+    |> validate_required([:first_name, :last_name, :nick_name])
     |> validate_email(opts)
     |> validate_password(opts)
     |> unique_constraint(:email)
