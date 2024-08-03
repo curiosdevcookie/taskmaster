@@ -4,12 +4,15 @@ defmodule TaskMaster.TasksFixtures do
   entities via the `TaskMaster.Tasks` context.
   """
 
+  import TaskMaster.AccountsFixtures
+  import TaskMaster.OrganizationsFixtures
+
   @doc """
   Generate a task.
   """
-
   def task_fixture(attrs \\ %{}) do
-    user = attrs[:user] || TaskMaster.AccountsFixtures.user_fixture()
+    organization = attrs[:organization] || organization_fixture()
+    user = attrs[:user] || user_fixture(%{organization: organization})
 
     valid_attrs = %{
       title: "some title #{System.unique_integer([:positive])}",
@@ -18,7 +21,8 @@ defmodule TaskMaster.TasksFixtures do
       status: :open,
       priority: :medium,
       indoor: false,
-      created_by: user.id
+      created_by: user.id,
+      organization_id: organization.id
     }
 
     {:ok, task} =

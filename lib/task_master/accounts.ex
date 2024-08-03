@@ -319,13 +319,22 @@ defmodule TaskMaster.Accounts do
   @doc """
   Gets the user with the given signed token.
   """
-  def get_user_by_session_token(token) do
-    {:ok, query} = UserToken.verify_session_token_query(token)
+  def get_user_by_session_token(token) when is_binary(token) do
+    query =
+      from token in UserToken,
+        where: token.token == ^token,
+        where: token.context == "session",
+        where: token.inserted_at > ago(60, "day"),
+        join: user in assoc(token, :user),
+        preload: [user: [organization: []]]
 
-    query
-    |> preload(:organization)
-    |> Repo.one()
+    case Repo.one(query) do
+      nil -> nil
+      %{user: user} -> user
+    end
   end
+
+  def get_user_by_session_token(_), do: nil
 
   @doc """
   Deletes the signed token with the given context.

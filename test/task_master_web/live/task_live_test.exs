@@ -4,6 +4,7 @@ defmodule TaskMasterWeb.TaskLiveTest do
   import Phoenix.LiveViewTest
   import TaskMaster.TasksFixtures
   import TaskMaster.AccountsFixtures
+  import TaskMaster.OrganizationsFixtures
   import TaskMasterWeb.Gettext
 
   @create_attrs %{
@@ -26,10 +27,11 @@ defmodule TaskMasterWeb.TaskLiveTest do
   }
 
   setup %{conn: conn} do
-    user = user_fixture()
-    task = task_fixture(%{created_by: user.id})
+    organization = organization_fixture()
+    user = user_fixture(%{organization: organization})
+    task = task_fixture(%{created_by: user.id, organization_id: organization.id})
     conn = log_in_user(conn, user)
-    %{user: user, task: task, conn: conn}
+    %{user: user, task: task, conn: conn, organization: organization}
   end
 
   describe "Index" do
