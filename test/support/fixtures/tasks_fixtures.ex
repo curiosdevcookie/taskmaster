@@ -28,8 +28,8 @@ defmodule TaskMaster.TasksFixtures do
     attrs = for {key, val} <- attrs, into: %{}, do: {to_string(key), val}
     attrs = Map.merge(valid_attrs, attrs)
 
-    {:ok, task} = TaskMaster.Tasks.create_task(attrs, [], organization.id)
+    {:ok, task} = TaskMaster.Tasks.create_task(attrs, [], attrs["organization_id"])
 
-    task
+    TaskMaster.Tasks.get_task!(task.id, attrs["organization_id"])
   end
 end
