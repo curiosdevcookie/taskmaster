@@ -6,6 +6,10 @@ defmodule TaskMaster.Organizations do
     %Organization{}
     |> Organization.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, organization} -> {:ok, organization}
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   def get_organization!(id), do: Repo.get!(Organization, id)

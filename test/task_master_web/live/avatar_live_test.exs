@@ -8,8 +8,8 @@ defmodule TaskMasterWeb.AvatarLiveTest do
   import TaskMasterWeb.Gettext
 
   setup %{conn: conn} do
-    organization = TaskMaster.OrganizationsFixtures.organization_fixture()
-    user = TaskMaster.AccountsFixtures.user_fixture(%{organization_id: organization.id})
+    organization = organization_fixture()
+    user = user_fixture(%{organization_id: organization.id})
     conn = log_in_user(conn, user)
     %{conn: conn, user: user, organization: organization}
   end

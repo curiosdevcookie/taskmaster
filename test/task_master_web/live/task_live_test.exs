@@ -39,7 +39,7 @@ defmodule TaskMasterWeb.TaskLiveTest do
       assert html =~ task.description
     end
 
-    test "saves new task", %{conn: conn, organization: organization, user: user} do
+    test "saves new task", %{conn: conn, user: user} do
       {:ok, index_live, _html} = live(conn, ~p"/#{user.id}/tasks")
 
       assert index_live |> element("a", "New Task") |> render_click() =~
