@@ -8,7 +8,11 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   @impl true
   def mount(_params, _session, socket) do
     current_user = socket.assigns.current_user
-    tasks = Tasks.list_tasks_with_participants()
+    tasks = Tasks.list_tasks_with_participants(current_user.organization_id)
+
+    if connected?(socket) do
+      Tasks.subscribe(current_user.organization_id)
+    end
 
     socket
     |> assign(:current_user, current_user)
@@ -23,9 +27,11 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
+    org_id = socket.assigns.current_user.organization_id
+
     socket
     |> assign(:page_title, gettext("Edit Task"))
-    |> assign(:task, Tasks.get_task!(id))
+    |> assign(:task, Tasks.get_task!(id, org_id))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -42,14 +48,31 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
 
   @impl true
   def handle_info({TaskMasterWeb.TaskLive.TaskComponent, {:saved, task}}, socket) do
-    updated_task = Tasks.get_task!(task.id) |> Tasks.preload_task_participants()
+    org_id = socket.assigns.current_user.organization_id
+    updated_task = Tasks.get_task!(task.id, org_id) |> Tasks.preload_task_participants()
     {:noreply, stream_insert(socket, :tasks, updated_task)}
   end
 
   @impl true
+  def handle_info({:task_created, task}, socket) do
+    {:noreply, stream_insert(socket, :tasks, task)}
+  end
+
+  @impl true
+  def handle_info({:task_updated, task}, socket) do
+    {:noreply, stream_insert(socket, :tasks, task)}
+  end
+
+  @impl true
+  def handle_info({:task_deleted, task}, socket) do
+    {:noreply, stream_delete(socket, :tasks, task)}
+  end
+
+  @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    task = Tasks.get_task!(id)
-    {:ok, _} = Tasks.delete_task(task)
+    org_id = socket.assigns.current_user.organization_id
+    task = Tasks.get_task!(id, org_id)
+    {:ok, _} = Tasks.delete_task(task, org_id)
 
     {:noreply, stream_delete(socket, :tasks, task)}
   end

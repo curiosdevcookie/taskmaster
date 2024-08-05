@@ -29,6 +29,13 @@ defmodule TaskMasterWeb.UserRegistrationLive do
         <.error :if={@check_errors}>
           <%= gettext("Oops, something went wrong! Please check the errors below.") %>
         </.error>
+        <.input
+          field={@form[:organization_name]}
+          type="text"
+          label={gettext("Organization name")}
+          required
+          phx-debounce="blur"
+        />
         <.input field={@form[:first_name]} type="text" label={gettext("First name")} required />
         <.input field={@form[:last_name]} type="text" label={gettext("Last name")} required />
         <.input field={@form[:nick_name]} type="text" label={gettext("Nick name")} required />
@@ -39,7 +46,7 @@ defmodule TaskMasterWeb.UserRegistrationLive do
           <.button
             phx-disable-with="Creating account..."
             class="w-full"
-            disabled={not @form.source.valid?}
+            disabled={not @form.source.valid? |> dbg}
           >
             <%= gettext("Create account") %>
           </.button>
@@ -52,12 +59,23 @@ defmodule TaskMasterWeb.UserRegistrationLive do
   def mount(_params, _session, socket) do
     changeset = Accounts.change_user_registration(%User{})
 
-    socket =
-      socket
-      |> assign(trigger_submit: false, check_errors: false)
-      |> assign_form(changeset)
+    socket
+    |> assign_form(changeset)
+    |> assign(trigger_submit: false)
+    |> assign(check_errors: false)
+    |> ok()
+  end
 
-    {:ok, socket, temporary_assigns: [form: nil]}
+  def handle_event("validate", %{"user" => user_params}, socket) do
+    changeset =
+      %User{}
+      |> Accounts.change_user_registration(user_params)
+      |> Map.put(:action, :validate)
+      |> dbg()
+
+    socket
+    |> assign_form(changeset)
+    |> noreply()
   end
 
   def handle_event("save", %{"user" => user_params}, socket) do
@@ -69,17 +87,14 @@ defmodule TaskMasterWeb.UserRegistrationLive do
             &url(~p"/users/confirm/#{&1}")
           )
 
-        changeset = Accounts.change_user_registration(user)
-        {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("User created successfully."))
+         |> redirect(to: ~p"/users/log_in")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, socket |> assign(check_errors: true) |> assign_form(changeset)}
+        {:noreply, assign_form(socket, changeset)}
     end
-  end
-
-  def handle_event("validate", %{"user" => user_params}, socket) do
-    changeset = Accounts.change_user_registration(%User{}, user_params)
-    {:noreply, assign_form(socket, Map.put(changeset, :action, :validate))}
   end
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do

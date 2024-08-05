@@ -4,15 +4,22 @@ defmodule TaskMaster.Accounts do
   """
 
   import Ecto.Query, warn: false
+
   alias TaskMaster.Repo
 
   alias TaskMaster.Accounts.{User, UserToken, UserNotifier}
   alias TaskMaster.Accounts.Avatar
+  alias TaskMaster.Accounts.User
+  alias TaskMaster.Organizations
+  alias TaskMaster.Accounts.Organization
 
   ## Database getters
 
-  def list_users() do
-    Repo.all(User)
+  def list_users(org_id) do
+    User
+    |> Organization.for_org(org_id)
+    |> preload(:organization)
+    |> Repo.all()
   end
 
   @doc """
@@ -45,8 +52,13 @@ defmodule TaskMaster.Accounts do
   """
   def get_user_by_email_and_password(email, password)
       when is_binary(email) and is_binary(password) do
-    user = Repo.get_by(User, email: email)
-    if User.valid_password?(user, password), do: user
+    user =
+      User
+      |> where([u], u.email == ^email)
+      |> preload(:organization)
+      |> Repo.one()
+
+    if user && User.valid_password?(user, password), do: user
   end
 
   @doc """
@@ -66,7 +78,7 @@ defmodule TaskMaster.Accounts do
   def get_user!(id) when is_binary(id) do
     User
     |> where([u], u.id == ^id)
-    |> preload(:avatar)
+    |> preload([:avatar, :organization])
     |> Repo.one!()
   end
 
@@ -86,10 +98,65 @@ defmodule TaskMaster.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def register_user(attrs) do
+  def register_user(attrs \\ %{}) do
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, user} -> create_or_associate_organization(user, attrs)
+      error -> error
+    end
+  end
+
+  defp create_or_associate_organization(user, attrs) do
+    org_id = attrs[:organization_id] || attrs["organization_id"]
+    org_name = attrs[:organization_name] || attrs["organization_name"]
+
+    cond do
+      is_binary(org_id) ->
+        case Organizations.get_organization!(org_id) do
+          nil ->
+            {:error,
+             Ecto.Changeset.add_error(User.change_user(user), :organization_id, "does not exist")}
+
+          organization ->
+            associate_user_with_organization(user, organization)
+        end
+
+      is_binary(org_name) ->
+        case Organizations.get_organization_by_name(org_name) do
+          nil ->
+            case Organizations.create_organization(%{name: org_name}) do
+              {:ok, organization} ->
+                associate_user_with_organization(user, organization)
+
+              {:error, _} ->
+                {:error,
+                 Ecto.Changeset.add_error(
+                   User.change_user(user),
+                   :organization_name,
+                   "could not create organization"
+                 )}
+            end
+
+          organization ->
+            associate_user_with_organization(user, organization)
+        end
+
+      true ->
+        {:error,
+         Ecto.Changeset.add_error(
+           User.change_user(user),
+           :organization,
+           "invalid organization data"
+         )}
+    end
+  end
+
+  defp associate_user_with_organization(user, organization) do
+    user
+    |> User.change_user(%{organization_id: organization.id})
+    |> Repo.update()
   end
 
   @doc """
@@ -102,7 +169,10 @@ defmodule TaskMaster.Accounts do
 
   """
   def change_user_registration(%User{} = user, attrs \\ %{}) do
-    User.registration_changeset(user, attrs, hash_password: false, validate_email: false)
+    User.registration_changeset(user, attrs,
+      hash_password: false,
+      validate_email: false
+    )
   end
 
   ## Settings
@@ -266,10 +336,22 @@ defmodule TaskMaster.Accounts do
   @doc """
   Gets the user with the given signed token.
   """
-  def get_user_by_session_token(token) do
-    {:ok, query} = UserToken.verify_session_token_query(token)
-    Repo.one(query)
+  def get_user_by_session_token(token) when is_binary(token) do
+    query =
+      from token in UserToken,
+        where: token.token == ^token,
+        where: token.context == "session",
+        where: token.inserted_at > ago(60, "day"),
+        join: user in assoc(token, :user),
+        preload: [user: [organization: []]]
+
+    case Repo.one(query) do
+      nil -> nil
+      %{user: user} -> user
+    end
   end
+
+  def get_user_by_session_token(_), do: nil
 
   @doc """
   Deletes the signed token with the given context.

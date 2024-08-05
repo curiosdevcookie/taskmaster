@@ -4,19 +4,46 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
   alias TaskMaster.Tasks
 
   import TaskMasterWeb.Components.TaskComponents
+
   @impl true
   def mount(_params, _session, socket) do
+    if connected?(socket) do
+      Tasks.subscribe(socket.assigns.current_user.organization_id)
+    end
+
     {:ok, socket}
   end
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    task = Tasks.get_task!(id) |> Tasks.preload_task_participants()
+    org_id = socket.assigns.current_user.organization_id
+    task = Tasks.get_task!(id, org_id) |> Tasks.preload_task_participants()
 
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
      |> assign(:task, task)}
+  end
+
+  @impl true
+  def handle_info({:task_updated, updated_task}, socket) do
+    if updated_task.id == socket.assigns.task.id do
+      {:noreply, assign(socket, :task, updated_task)}
+    else
+      {:noreply, socket}
+    end
+  end
+
+  @impl true
+  def handle_info({:task_deleted, deleted_task}, socket) do
+    if deleted_task.id == socket.assigns.task.id do
+      {:noreply,
+       socket
+       |> put_flash(:info, "This task has been deleted.")
+       |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
+    else
+      {:noreply, socket}
+    end
   end
 
   defp page_title(:show), do: "Show Task"

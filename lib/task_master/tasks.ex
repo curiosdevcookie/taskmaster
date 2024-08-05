@@ -18,83 +18,60 @@ defmodule TaskMaster.Tasks do
       [%Task{}, ...]
 
   """
-  def list_tasks do
+  def list_tasks(org_id) do
     Task
+    |> Task.for_org(org_id)
     |> Repo.all()
     |> Repo.preload([:task_participations, :participants])
   end
 
-  @doc """
-  Gets a single task.
-
-  Raises `Ecto.NoResultsError` if the Task does not exist.
-
-  ## Examples
-
-      iex> get_task!(123)
-      %Task{}
-
-      iex> get_task!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_task!(id) do
+  def get_task!(id, org_id) do
     Task
+    |> Task.for_org(org_id)
     |> Repo.get!(id)
     |> Repo.preload([:task_participations, :participants])
   end
 
-  @doc """
-  Creates a task.
-  """
+  def create_task(attrs \\ %{}, participants \\ [], org_id) do
+    attrs = Map.put(attrs, "organization_id", org_id)
 
-  def create_task(attrs \\ %{}, participants \\ []) do
     %Task{}
     |> Task.changeset(attrs)
     |> Repo.insert()
     |> case do
       {:ok, task} ->
-        add_participants(task, participants)
-        {:ok, Repo.preload(task, :participants)}
+        task = add_participants(task, participants, org_id)
+        task = Repo.preload(task, :participants)
+        broadcast({:ok, task}, :task_created)
 
       error ->
         error
     end
   end
 
-  @doc """
-  Updates a task.
-
-
-  """
-  def update_task(%Task{} = task, attrs, participants \\ []) do
+  def update_task(%Task{} = task, attrs, participants \\ [], org_id) do
     task
     |> Task.changeset(attrs)
     |> Repo.update()
     |> case do
       {:ok, updated_task} ->
-        update_participants(updated_task, participants)
-        {:ok, Repo.preload(updated_task, :participants)}
+        updated_task = update_participants(updated_task, participants, org_id)
+        updated_task = Repo.preload(updated_task, :participants)
+        broadcast({:ok, updated_task}, :task_updated)
 
       error ->
         error
     end
   end
 
-  @doc """
-  Deletes a task.
-
-  ## Examples
-
-      iex> delete_task(task)
-      {:ok, %Task{}}
-
-      iex> delete_task(task)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_task(%Task{} = task) do
-    Repo.delete(task)
+  def delete_task(%Task{} = task, org_id) do
+    if task.organization_id == org_id do
+      task
+      |> Repo.delete()
+      |> broadcast(:task_deleted)
+    else
+      {:error, :unauthorized}
+    end
   end
 
   @doc """
@@ -144,8 +121,9 @@ defmodule TaskMaster.Tasks do
     |> Map.get(:participated_tasks)
   end
 
-  def list_tasks_with_participants do
+  def list_tasks_with_participants(org_id) do
     Task
+    |> Task.for_org(org_id)
     |> Repo.all()
     |> Repo.preload(:participants)
   end
@@ -160,15 +138,19 @@ defmodule TaskMaster.Tasks do
     |> Repo.update()
   end
 
-  defp add_participants(task, participants) do
+  defp add_participants(task, participants, org_id) do
     Enum.each(participants, fn participant ->
-      %TaskParticipation{}
-      |> TaskParticipation.changeset(%{task_id: task.id, user_id: participant.id})
-      |> Repo.insert()
+      if participant.organization_id == org_id do
+        %TaskParticipation{}
+        |> TaskParticipation.changeset(%{task_id: task.id, user_id: participant.id})
+        |> Repo.insert()
+      end
     end)
+
+    task
   end
 
-  defp update_participants(task, new_participants) do
+  defp update_participants(task, new_participants, org_id) do
     current_participants = list_task_participants(task.id)
 
     # Remove participants that are not in the new list
@@ -181,11 +163,42 @@ defmodule TaskMaster.Tasks do
 
     # Add new participants
     Enum.each(new_participants, fn participant ->
-      unless Enum.member?(current_participants, participant) do
+      if participant.organization_id == org_id && !Enum.member?(current_participants, participant) do
         %TaskParticipation{}
         |> TaskParticipation.changeset(%{task_id: task.id, user_id: participant.id})
         |> Repo.insert()
       end
     end)
+
+    task
   end
+
+  def list_task_participants(task_id, org_id) do
+    Task
+    |> Task.for_org(org_id)
+    |> Repo.get!(task_id)
+    |> Repo.preload(:participants)
+    |> Map.get(:participants)
+  end
+
+  def list_user_participated_tasks(user_id, org_id) do
+    from(t in Task,
+      join: tp in TaskParticipation,
+      on: t.id == tp.task_id,
+      where: tp.user_id == ^user_id and t.organization_id == ^org_id
+    )
+    |> Repo.all()
+    |> Repo.preload(:participants)
+  end
+
+  def subscribe(org_id) do
+    Phoenix.PubSub.subscribe(TaskMaster.PubSub, "tasks:#{org_id}")
+  end
+
+  defp broadcast({:ok, task}, event) do
+    Phoenix.PubSub.broadcast(TaskMaster.PubSub, "tasks:#{task.organization_id}", {event, task})
+    {:ok, task}
+  end
+
+  defp broadcast({:error, _} = error, _event), do: error
 end

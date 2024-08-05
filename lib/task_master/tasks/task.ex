@@ -1,6 +1,7 @@
 defmodule TaskMaster.Tasks.Task do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -17,6 +18,7 @@ defmodule TaskMaster.Tasks.Task do
 
     belongs_to :creator, TaskMaster.Accounts.User, foreign_key: :created_by
     belongs_to :parent_task, TaskMaster.Tasks.Task, foreign_key: :parent_task_id
+    belongs_to :organization, TaskMaster.Accounts.Organization, type: :binary_id
 
     has_many :task_participations, TaskMaster.Tasks.TaskParticipation
     has_many :participants, through: [:task_participations, :user]
@@ -36,7 +38,8 @@ defmodule TaskMaster.Tasks.Task do
       :priority,
       :indoor,
       :created_by,
-      :parent_task_id
+      :parent_task_id,
+      :organization_id
     ])
     |> validate_required([
       :title,
@@ -45,5 +48,10 @@ defmodule TaskMaster.Tasks.Task do
       :indoor
     ])
     |> unique_constraint(:title, name: :tasks_title_index)
+  end
+
+  def for_org(query, org_id) when is_binary(org_id) do
+    query
+    |> where([t], t.organization_id == ^org_id)
   end
 end

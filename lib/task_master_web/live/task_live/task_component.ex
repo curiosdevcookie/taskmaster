@@ -23,6 +23,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
         phx-submit="save"
       >
         <input type="hidden" name="task[created_by]" value={@current_user.id} />
+        <input type="hidden" name="task[organization_id]" value={@current_user.organization_id} />
         <.input field={@form[:title]} type="text" label={gettext("Title")} />
         <.input field={@form[:description]} type="text" label={gettext("Description")} />
         <.input field={@form[:due_date]} type="date" label={gettext("Due date")} />
@@ -98,11 +99,9 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
   def update(%{task: task} = assigns, socket) do
     changeset = Tasks.change_task(task)
     participants = Tasks.list_task_participants(task.id)
-    all_users = Accounts.list_users()
-    IO.inspect(participants, label: "Current Participants")
-    IO.inspect(all_users, label: "All Users")
+    org_id = assigns.current_user.organization_id
+    all_users = Accounts.list_users(org_id)
     available_users = Enum.filter(all_users, fn user -> not Enum.member?(participants, user) end)
-    IO.inspect(available_users, label: "Available Users")
 
     {:ok,
      socket
@@ -137,15 +136,9 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
       user ->
         updated_participants = [user | socket.assigns.participants] |> Enum.uniq_by(& &1.id)
 
-        updated_available_users =
-          Enum.filter(socket.assigns.available_users, fn available_user ->
-            available_user.id != user.id
-          end)
-
         {:noreply,
          socket
          |> assign(:participants, updated_participants)
-         |> assign(:available_users, updated_available_users)
          |> assign(:selected_participant_id, nil)
          |> put_flash(:info, "Participant added successfully")}
     end
@@ -177,14 +170,16 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
   # end
 
   defp save_task(socket, :edit, task_params) do
-    case Tasks.update_task(socket.assigns.task, task_params, socket.assigns.participants) do
+    org_id = socket.assigns.current_user.organization_id
+
+    case Tasks.update_task(socket.assigns.task, task_params, socket.assigns.participants, org_id) do
       {:ok, task} ->
         notify_parent({:saved, task})
 
         {:noreply,
          socket
          |> assign(:task, task)
-         |> put_flash(:info, "Task updated successfully")
+         |> put_flash(:info, gettext("Task updated successfully"))
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -193,13 +188,15 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
   end
 
   defp save_task(socket, :new, task_params) do
-    case Tasks.create_task(task_params, socket.assigns.participants) do
+    org_id = socket.assigns.current_user.organization_id |> dbg()
+
+    case Tasks.create_task(task_params, socket.assigns.participants, org_id) do
       {:ok, task} ->
         notify_parent({:saved, task})
 
         {:noreply,
          socket
-         |> put_flash(:info, "Task created successfully")
+         |> put_flash(:info, gettext("Task created successfully"))
          |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
 
       {:error, %Ecto.Changeset{} = changeset} ->

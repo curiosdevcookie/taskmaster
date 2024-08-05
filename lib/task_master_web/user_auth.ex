@@ -6,6 +6,7 @@ defmodule TaskMasterWeb.UserAuth do
   import TaskMasterWeb.Gettext
 
   alias TaskMaster.Accounts
+  alias TaskMaster.Repo
 
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
@@ -93,9 +94,17 @@ defmodule TaskMasterWeb.UserAuth do
   """
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
-    user = user_token && Accounts.get_user_by_session_token(user_token)
-    user = Accounts.maybe_preload_avatar(user)
-    assign(conn, :current_user, user)
+
+    if user_token do
+      user =
+        Accounts.get_user_by_session_token(user_token)
+        |> Repo.preload(:organization)
+        |> Accounts.maybe_preload_avatar()
+
+      assign(conn, :current_user, user)
+    else
+      assign(conn, :current_user, nil)
+    end
   end
 
   defp ensure_user_token(conn) do
