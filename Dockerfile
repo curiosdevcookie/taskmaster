@@ -82,17 +82,17 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 WORKDIR "/app"
-RUN chown nobody /app
+RUN useradd -m -d /app -s /bin/bash elixir_user
 
 # set runner ENV
 ENV MIX_ENV="prod"
 
 # Only copy the final release from the build stage
-COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/task_master ./
+COPY --from=builder /app/_build/${MIX_ENV}/rel/task_master ./
 
 RUN mkdir -p /app/priv/static/uploads && chmod 777 /app/priv/static/uploads
 
-USER nobody
+USER elixir_user
 
 # If using an environment that doesn't automatically reap zombie processes, it is
 # advised to add an init process such as tini via `apt-get install`
