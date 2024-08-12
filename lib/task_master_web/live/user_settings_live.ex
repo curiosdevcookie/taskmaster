@@ -43,7 +43,9 @@ defmodule TaskMasterWeb.UserSettingsLive do
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing..."><%= gettext("Change Email") %></.button>
+            <.button class="btn-primary" phx-disable-with="Changing...">
+              <%= gettext("Change Email") %>
+            </.button>
           </:actions>
         </.simple_form>
       </div>
@@ -84,7 +86,9 @@ defmodule TaskMasterWeb.UserSettingsLive do
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing..."><%= gettext("Change Password") %></.button>
+            <.button class="btn-primary" phx-disable-with="Changing...">
+              <%= gettext("Change Password") %>
+            </.button>
           </:actions>
         </.simple_form>
       </div>

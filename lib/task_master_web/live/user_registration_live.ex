@@ -45,8 +45,8 @@ defmodule TaskMasterWeb.UserRegistrationLive do
         <:actions>
           <.button
             phx-disable-with="Creating account..."
-            class="w-full"
-            disabled={not @form.source.valid? |> dbg}
+            class="btn-primary"
+            disabled={not @form.source.valid?}
           >
             <%= gettext("Create account") %>
           </.button>
@@ -71,7 +71,6 @@ defmodule TaskMasterWeb.UserRegistrationLive do
       %User{}
       |> Accounts.change_user_registration(user_params)
       |> Map.put(:action, :validate)
-      |> dbg()
 
     socket
     |> assign_form(changeset)

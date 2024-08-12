@@ -25,7 +25,7 @@ defmodule TaskMasterWeb.UserLoginLive do
           </.link>
         </:actions>
         <:actions>
-          <.button phx-disable-with={gettext("Logging in...")} class="w-full">
+          <.button class="btn-primary" phx-disable-with={gettext("Logging in...")}>
             <%= gettext("Log in") %>
           </.button>
         </:actions>

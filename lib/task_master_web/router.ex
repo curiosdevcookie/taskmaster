@@ -72,6 +72,7 @@ defmodule TaskMasterWeb.Router do
       scope "/:current_user" do
         live "/tasks", TaskLive.TaskIndex, :index
         live "/tasks/new", TaskLive.TaskIndex, :new
+        live "/tasks/:parent_id/new_subtask", TaskLive.TaskIndex, :new_subtask
         live "/tasks/:id/edit", TaskLive.TaskIndex, :edit
         live "/tasks/:id", TaskLive.TaskShow, :show
         live "/tasks/:id/show/edit", TaskLive.TaskIndex, :edit

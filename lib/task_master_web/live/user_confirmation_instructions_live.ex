@@ -14,7 +14,7 @@ defmodule TaskMasterWeb.UserConfirmationInstructionsLive do
       <.simple_form for={@form} id="resend_confirmation_form" phx-submit="send_instructions">
         <.input field={@form[:email]} type="email" placeholder="Email" required />
         <:actions>
-          <.button phx-disable-with="Sending..." class="w-full">
+          <.button class="btn-primary w-full" phx-disable-with="Sending...">
             <%= gettext("Resend confirmation instructions") %>
           </.button>
         </:actions>

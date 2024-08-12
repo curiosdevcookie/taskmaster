@@ -26,7 +26,7 @@ defmodule TaskMasterWeb.UserResetPasswordLive do
           required
         />
         <:actions>
-          <.button phx-disable-with="Resetting..." class="w-full">
+          <.button class="btn-primary" phx-disable-with="Resetting...">
             <%= gettext("Reset Password") %>
           </.button>
         </:actions>

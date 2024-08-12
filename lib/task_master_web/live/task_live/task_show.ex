@@ -48,6 +48,7 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
 
   defp page_title(:show), do: "Show Task"
   defp page_title(:edit), do: "Edit Task"
+  defp page_title(:new_subtask), do: "New Subtask"
 
   @impl true
   def render(assigns) do
@@ -57,7 +58,7 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
       <:subtitle><%= gettext("This is a task record from your database.") %></:subtitle>
       <:actions>
         <.link patch={~p"/#{@current_user.id}/tasks/#{@task}/show/edit"} phx-click={JS.push_focus()}>
-          <.button><%= gettext("Edit task") %></.button>
+          <.button class="btn-primary"><%= gettext("Edit task") %></.button>
         </.link>
       </:actions>
     </.header>
@@ -69,7 +70,9 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
       <:item title={gettext("Status")}>
         <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@task.status) %>
       </:item>
-      <:item title={gettext("Duration")}><%= @task.duration %></:item>
+      <:item title={gettext("Duration")}>
+        <%= TaskMasterWeb.Helpers.Formatted.format_duration(@task.duration) %>
+      </:item>
       <:item title={gettext("Priority")}>
         <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@task.priority) %>
       </:item>

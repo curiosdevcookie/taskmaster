@@ -45,7 +45,7 @@ defmodule TaskMasterWeb.AvatarLive.AvatarShow do
           patch={~p"/#{@current_user.id}/avatars/#{@avatar}/show/edit"}
           phx-click={JS.push_focus()}
         >
-          <.button><%= gettext("Edit Avatar") %></.button>
+          <.button class="btn-primary"><%= gettext("Edit Avatar") %></.button>
         </.link>
       </:actions>
     </.header>

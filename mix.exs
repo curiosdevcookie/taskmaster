@@ -52,7 +52,8 @@ defmodule TaskMaster.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:dotenv, "~> 3.1.0"},
-      {:hackney, "~> 1.20"}
+      {:hackney, "~> 1.20"},
+      {:ex_heroicons, "~> 2.0.0"}
     ]
   end
 

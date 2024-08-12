@@ -226,8 +226,6 @@ defmodule TaskMasterWeb.CoreComponents do
       <button
         type={@type}
         class={[
-          "phx-submit-loading:opacity-75 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3",
-          "text-sm font-semibold leading-6 text-white active:text-white/80",
           "disabled:opacity-30 disabled:bg-grey-100 disabled:cursor-not-allowed",
           @class
         ]}
@@ -496,7 +494,7 @@ defmodule TaskMasterWeb.CoreComponents do
               </div>
             </td>
             <td :if={@action != []} class="relative w-14 p-0">
-              <div class="relative whitespace-nowrap py-4 text-right text-sm font-medium">
+              <div class="relative whitespace-nowrap py-4 text-sm font-medium flex items-center">
                 <span class="absolute -inset-y-px -right-4 left-0 group-hover:bg-zinc-50 sm:rounded-r-xl" />
                 <span
                   :for={action <- @action}

@@ -25,6 +25,24 @@ defmodule TaskMaster.Tasks do
     |> Repo.preload([:task_participations, :participants])
   end
 
+  def list_parent_tasks(org_id) do
+    Task
+    |> Task.for_org(org_id)
+    |> where([t], is_nil(t.parent_task_id))
+    |> Repo.all()
+    |> Repo.preload([:task_participations, :participants])
+  end
+
+  def list_subtasks(org_id) do
+    Task
+    |> Task.for_org(org_id)
+    |> where([t], not is_nil(t.parent_task_id))
+    |> Repo.all()
+    |> Repo.preload([:task_participations, :participants])
+  end
+
+  def get_task!(id, org_id) when is_nil(id), do: %Task{}
+
   def get_task!(id, org_id) do
     Task
     |> Task.for_org(org_id)
@@ -32,8 +50,8 @@ defmodule TaskMaster.Tasks do
     |> Repo.preload([:task_participations, :participants])
   end
 
-  def create_task(attrs \\ %{}, participants \\ [], org_id) do
-    attrs = Map.put(attrs, "organization_id", org_id)
+  def create_task(attrs \\ %{}, participants \\ [], org_id, parent_id \\ nil) do
+    attrs = Map.merge(attrs, %{"parent_task_id" => parent_id})
 
     %Task{}
     |> Task.changeset(attrs)

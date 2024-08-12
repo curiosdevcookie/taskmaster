@@ -22,6 +22,16 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
         phx-change="validate"
         phx-submit="save"
       >
+        <%= if @task.parent_task_id do %>
+          <input type="hidden" name="task[parent_task_id]" value={@task.parent_task_id} />
+          <.input
+            field={@form[:parent_task_id]}
+            type="text"
+            label={gettext("Parent Task")}
+            value={@parent_task.title}
+            disabled
+          />
+        <% end %>
         <input type="hidden" name="task[created_by]" value={@current_user.id} />
         <input type="hidden" name="task[organization_id]" value={@current_user.organization_id} />
         <.input field={@form[:title]} type="text" label={gettext("Title")} />
@@ -53,7 +63,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
             <%= for participant <- Enum.sort(@participants) do %>
               <div class="flex items-center bg-blue-100 rounded-full px-3 py-1">
                 <span class="text-sm text-blue-800">
-                  <%= participant.first_name %> <%= participant.last_name %>
+                  <%= participant.nick_name %>
                 </span>
                 <button
                   type="button"
@@ -88,7 +98,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
         </div>
 
         <:actions>
-          <.button phx-disable-with="Saving..."><%= gettext("Save") %></.button>
+          <.button class="btn-primary" phx-disable-with="Saving..."><%= gettext("Save") %></.button>
         </:actions>
       </.simple_form>
     </div>
@@ -103,21 +113,31 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
     all_users = Accounts.list_users(org_id)
     available_users = Enum.filter(all_users, fn user -> not Enum.member?(participants, user) end)
 
+    parent_task =
+      if task.parent_task_id,
+        do: Tasks.get_task!(task.parent_task_id, org_id),
+        else: nil
+
     {:ok,
      socket
      |> assign(assigns)
      |> assign(:participants, participants)
      |> assign(:available_users, available_users)
      |> assign(:selected_participant_id, nil)
+     |> assign(:task, task)
+     |> assign(:parent_task, parent_task)
      |> assign_form(changeset)}
   end
 
   @impl true
   def handle_event("validate", %{"task" => task_params}, socket) do
+    task_params |> dbg()
+
     changeset =
       socket.assigns.task
       |> Tasks.change_task(task_params)
       |> Map.put(:action, :validate)
+      |> dbg()
 
     {:noreply, assign_form(socket, changeset)}
   end
@@ -188,7 +208,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
   end
 
   defp save_task(socket, :new, task_params) do
-    org_id = socket.assigns.current_user.organization_id |> dbg()
+    org_id = socket.assigns.current_user.organization_id
 
     case Tasks.create_task(task_params, socket.assigns.participants, org_id) do
       {:ok, task} ->
@@ -200,6 +220,28 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
          |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        {:noreply, assign_form(socket, changeset)}
+    end
+  end
+
+  defp save_task(socket, :new_subtask, task_params) do
+    org_id = socket.assigns.current_user.organization_id
+    parent_id = socket.assigns.task.parent_task_id
+
+    IO.puts("Saving new subtask with parent_id: #{parent_id}")
+
+    case Tasks.create_task(task_params, socket.assigns.participants, org_id) do
+      {:ok, task} ->
+        IO.puts("Subtask created successfully: #{inspect(task)}")
+        notify_parent({:saved, task})
+
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Subtask created successfully"))
+         |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        IO.puts("Error creating subtask: #{inspect(changeset)}")
         {:noreply, assign_form(socket, changeset)}
     end
   end

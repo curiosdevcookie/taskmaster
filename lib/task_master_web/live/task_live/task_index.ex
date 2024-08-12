@@ -10,6 +10,9 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     current_user = socket.assigns.current_user
     tasks = Tasks.list_tasks_with_participants(current_user.organization_id)
 
+    parent_tasks = Tasks.list_parent_tasks(current_user.organization_id)
+    subtasks = Tasks.list_subtasks(current_user.organization_id)
+
     if connected?(socket) do
       Tasks.subscribe(current_user.organization_id)
     end
@@ -18,6 +21,8 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     |> assign(:current_user, current_user)
     |> assign(:page_title, gettext("Listing Tasks"))
     |> stream(:tasks, tasks)
+    |> assign(:parent_tasks, parent_tasks)
+    |> assign(:subtasks, subtasks)
     |> ok()
   end
 
@@ -37,7 +42,20 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, gettext("New Task"))
-    |> assign(:task, %Task{})
+    |> assign(:task, %Task{organization_id: socket.assigns.current_user.organization_id})
+  end
+
+  defp apply_action(socket, :new_subtask, %{"parent_id" => parent_id}) do
+    org_id = socket.assigns.current_user.organization_id
+    parent_task = Tasks.get_task!(parent_id, org_id)
+
+    socket
+    |> assign(:page_title, gettext("New Subtask"))
+    |> assign(:task, %Task{
+      parent_task_id: parent_id,
+      organization_id: org_id
+    })
+    |> assign(:parent_task, parent_task)
   end
 
   defp apply_action(socket, :index, _params) do
@@ -50,7 +68,11 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   def handle_info({TaskMasterWeb.TaskLive.TaskComponent, {:saved, task}}, socket) do
     org_id = socket.assigns.current_user.organization_id
     updated_task = Tasks.get_task!(task.id, org_id) |> Tasks.preload_task_participants()
-    {:noreply, stream_insert(socket, :tasks, updated_task)}
+
+    {:noreply,
+     socket
+     |> stream_insert(:tasks, updated_task)
+     |> push_patch(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
   end
 
   @impl true
@@ -78,13 +100,26 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   end
 
   @impl true
+  def handle_event("add_subtask", %{"parent_id" => parent_id}, socket) do
+    org_id = socket.assigns.current_user.organization_id
+    parent_id |> dbg()
+    parent_task = Tasks.get_task!(parent_id, org_id)
+
+    {:noreply,
+     socket
+     |> assign(:parent_task, parent_task)
+     |> assign(:page_title, gettext("New Subtask"))
+     |> push_patch(to: ~p"/#{socket.assigns.current_user.id}/tasks/#{parent_task.id}/new_subtask")}
+  end
+
+  @impl true
   def render(assigns) do
     ~H"""
     <.header>
       <%= gettext("Listing Tasks") %>
       <:actions>
         <.link patch={~p"/#{@current_user.id}/tasks/new"}>
-          <.button><%= gettext("New Task") %></.button>
+          <.button class="btn-primary"><%= gettext("New Task") %></.button>
         </.link>
       </:actions>
     </.header>
@@ -100,7 +135,9 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
       <:col :let={{_id, task}} label={gettext("Status")}>
         <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(task.status) %>
       </:col>
-      <:col :let={{_id, task}} label={gettext("Duration")}><%= task.duration %></:col>
+      <:col :let={{_id, task}} label={gettext("Duration in minutes")}>
+        <%= TaskMasterWeb.Helpers.Formatted.format_duration(task.duration) %>
+      </:col>
       <:col :let={{_id, task}} label={gettext("Priority")}>
         <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(task.priority) %>
       </:col>
@@ -109,11 +146,22 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
       </:col>
       <:col :let={{_id, task}} label={gettext("Who?")}>
         <div class="flex flex-wrap gap-1">
-          <%= for participant <- task.participants do %>
+          <%= for participant <- Enum.sort_by(task.participants, & &1.nick_name) do %>
             <.nick_name participant={participant.nick_name} />
           <% end %>
         </div>
       </:col>
+      <:action :let={{_id, task}}>
+        <%!-- SUBTASKS --%>
+        <.link patch={~p"/#{@current_user.id}/tasks/#{task.id}/new_subtask"}>
+          <.button
+            class="btn-secondary"
+            phx-click={JS.push("add_subtask", value: %{parent_id: task.id})}
+          >
+            <.icon name="hero-plus" />
+          </.button>
+        </.link>
+      </:action>
       <:action :let={{_id, task}}>
         <div class="sr-only">
           <.link navigate={~p"/#{@current_user.id}/tasks/#{task}"}><%= gettext("Show") %></.link>
@@ -131,7 +179,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     </.table>
 
     <.modal
-      :if={@live_action in [:new, :edit]}
+      :if={@live_action in [:new, :edit, :new_subtask]}
       id="task-modal"
       show
       on_cancel={JS.patch(~p"/#{@current_user.id}/tasks")}
@@ -142,6 +190,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
         title={@page_title}
         action={@live_action}
         task={@task}
+        parent_id={{@task.parent_task_id, @task.id}}
         current_user={@current_user}
         patch={~p"/#{@current_user.id}/tasks"}
       />
