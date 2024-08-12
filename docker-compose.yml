@@ -9,11 +9,8 @@ services:
 
   backend:
     image: docker.io/postgres:13
+    env_file: .env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: task_master
-      POSTGRES_HOST: backend
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - db_data:/var/lib/postgresql/data
@@ -30,14 +27,12 @@ services:
     hostname: backend
 
   frontend:
-    image: ghcr.io/curiosdevcookie/task_master/irgendwas:alpha
+    image: ghcr.io/curiosdevcookie/taskmaster-app:latest
+    env_file: .env
     environment:
-      PHX_HOST: test.taskmaster.studio
-      PHX_CHECK_ORIGIN: https://test.taskmaster.studio
+      PHX_CHECK_ORIGIN: https://$PHX_HOST
       POOL_SIZE: 10
       PORT: 8080
-      SECRET_KEY_BASE: "Mjk0MDcwNTI2MTYxMjc3ODI0OTYxNDYzNjM5NDg1NDc0MDI3MzQ1NjY1MTQzNDQyMDA0NzYzMjkxMzIyNzI4MAo"
-      DATABASE_URL: "ecto://postgres:postgres@backend:5432/task_master"
     networks:
       - traefik_default
       - internal
@@ -59,7 +54,17 @@ services:
       - "traefik.http.routers.taskmaster-studio.entrypoints=websecure"
       - "traefik.http.routers.taskmaster-studio.tls=true"
       - "traefik.http.routers.taskmaster-studio.tls.certresolver=leresolver"
-
+  migration:
+    image: ghcr.io/curiosdevcookie/taskmaster-app:latest
+    depends_on:
+      backend:
+        condition: service_healthy
+    command: ["mix", "ecto.migrate"]
+    env_file:
+      - .env
+    container_name: taskmaster-migration
+    networks:
+      - internal
 volumes:
   db_data:
   app_data:
