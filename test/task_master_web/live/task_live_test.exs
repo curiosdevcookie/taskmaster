@@ -67,7 +67,7 @@ defmodule TaskMasterWeb.TaskLiveTest do
   end
 
   describe "Show" do
-    test "displays task", %{conn: conn, organization: organization, user: user, task: task} do
+    test "displays task", %{conn: conn, user: user, task: task} do
       {:ok, _show_live, html} = live(conn, ~p"/#{user.id}/tasks/#{task}")
 
       assert html =~ "Show Task"

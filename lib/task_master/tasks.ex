@@ -41,7 +41,7 @@ defmodule TaskMaster.Tasks do
     |> Repo.preload([:task_participations, :participants])
   end
 
-  def get_task!(id, org_id) when is_nil(id), do: %Task{}
+  def get_task!(id, _org_id) when is_nil(id), do: %Task{}
 
   def get_task!(id, org_id) do
     Task
