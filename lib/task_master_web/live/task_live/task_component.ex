@@ -230,7 +230,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
 
     IO.puts("Saving new subtask with parent_id: #{parent_id}")
 
-    case Tasks.create_task(task_params, socket.assigns.participants, org_id) do
+    case Tasks.create_task(task_params, socket.assigns.participants, org_id, parent_id) do
       {:ok, task} ->
         IO.puts("Subtask created successfully: #{inspect(task)}")
         notify_parent({:saved, task})
