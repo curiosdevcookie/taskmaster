@@ -8,7 +8,7 @@ on:
     branches:
       - main
   workflow_run:
-    workflows: ["Run Tests"]
+    workflows: ["Build"]
     types:
       - completed
 
@@ -47,3 +47,21 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}-app:${{ github.sha }}
             ghcr.io/${{ github.repository }}-app:latest
+  
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up SSH key
+        run: |
+          env
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ARTIFACT_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p 22 ${{ secrets.ARTIFACT_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Test SSH
+        run: |
+          ssh -i ~/.ssh/id_rsa -p 22 ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} ls -al
