@@ -22,7 +22,17 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:task, task)}
+     |> assign(:task, task)
+     |> assign(:live_action, socket.assigns.live_action)}
+  end
+
+  @impl true
+  def handle_info({TaskMasterWeb.TaskLive.TaskComponent, {:saved, updated_task}}, socket) do
+    {:noreply,
+     socket
+     |> assign(:task, updated_task)
+     |> assign(:live_action, :show)
+     |> put_flash(:info, gettext("Task updated successfully"))}
   end
 
   @impl true
@@ -39,7 +49,7 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
     if deleted_task.id == socket.assigns.task.id do
       {:noreply,
        socket
-       |> put_flash(:info, "This task has been deleted.")
+       |> put_flash(:info, gettext("Task deleted successfully"))
        |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
     else
       {:noreply, socket}
@@ -81,7 +91,7 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
       </:item>
       <:item title={gettext("Who?")}>
         <div class="flex flex-wrap gap-2">
-          <%= for participant <- @task.participants do %>
+          <%= for participant <- Enum.sort_by(@task.participants, & &1.nick_name) do %>
             <.nick_name participant={participant.nick_name} />
           <% end %>
         </div>
@@ -98,10 +108,11 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
     >
       <.live_component
         module={TaskMasterWeb.TaskLive.TaskComponent}
-        id={@task.id}
+        id={@task.id || :new}
         title={@page_title}
         action={@live_action}
         task={@task}
+        parent_id={{@task.parent_task_id, @task.id}}
         current_user={@current_user}
         patch={~p"/#{@current_user.id}/tasks/#{@task}"}
       />

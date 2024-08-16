@@ -33,10 +33,11 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     org_id = socket.assigns.current_user.organization_id
+    task = Tasks.get_task!(id, org_id)
 
     socket
     |> assign(:page_title, gettext("Edit Task"))
-    |> assign(:task, Tasks.get_task!(id, org_id))
+    |> assign(:task, task)
   end
 
   defp apply_action(socket, :new, _params) do
@@ -123,7 +124,34 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
         </.link>
       </:actions>
     </.header>
+    <div class="flex flex-col gap-4">
+      <%= for parent_task <- @parent_tasks do %>
+        <div class="border border-gray-600 p-2 rounded-lg p-4">
+          <div class="flex items-center gap-2">
+            <.icon name="hero-chevron-double-right" />
+            <.link navigate={~p"/#{@current_user.id}/tasks/#{parent_task}"}>
+              <%= parent_task.title %>
+            </.link>
+          </div>
 
+          <.link patch={~p"/#{@current_user.id}/tasks/#{parent_task.id}/new_subtask"}>
+            <.button
+              class="btn-secondary"
+              phx-click={JS.push("add_subtask", value: %{parent_id: parent_task.id})}
+            >
+              <.icon name="hero-plus" />
+            </.button>
+          </.link>
+          <div class="flex flex-col gap-2">
+            <%= for subtask <- Enum.filter(@subtasks, & &1.parent_task_id == parent_task.id) do %>
+              <.link navigate={~p"/#{@current_user.id}/tasks/#{subtask}"}>
+                <%= subtask.title %>
+              </.link>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
     <.table
       id="tasks"
       rows={@streams.tasks}

@@ -75,7 +75,7 @@ defmodule TaskMasterWeb.Router do
         live "/tasks/:parent_id/new_subtask", TaskLive.TaskIndex, :new_subtask
         live "/tasks/:id/edit", TaskLive.TaskIndex, :edit
         live "/tasks/:id", TaskLive.TaskShow, :show
-        live "/tasks/:id/show/edit", TaskLive.TaskIndex, :edit
+        live "/tasks/:id/show/edit", TaskLive.TaskShow, :edit
 
         live "/avatars", AvatarLive.AvatarIndex, :index
         live "/avatars/new", AvatarLive.AvatarIndex, :new
