@@ -113,27 +113,24 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     <ul class="space-y-8">
       <%= for parent_task <- @parent_tasks do %>
         <li class="border border-gray-600 p-4 rounded-lg">
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center gap-2">
-              <%!-- Don't show this button if task has no subtasks: --%>
-              <%= if Enum.any?(@subtasks, & &1.parent_task_id == parent_task.id) do %>
-                <.button
-                  class="w-8 h-8 relative rounded-lg "
-                  phx-click={
-                    JS.toggle(
-                      to: "#dropdown_id_#{parent_task.id}",
-                      in: {"ease-out duration-100", "opacity-0 scale-95", "opacity-100 scale-100"},
-                      out: {"ease-out duration-75", "opacity-100 scale-100", "opacity-0 scale-95"}
-                    )
-                    |> JS.toggle_class("rotate-90", to: "#chevron_id_#{parent_task.id}")
-                  }
-                >
-                  <.icon name="hero-chevron-double-right" id={"chevron_id_#{parent_task.id}"} />
-                </.button>
-              <% end %>
+          <div class="flex items-center justify-between mb-2 gap-1">
+            <div class="flex items-center gap-1 truncate">
+              <.button
+                :if={Enum.any?(@subtasks, &(&1.parent_task_id == parent_task.id))}
+                phx-click={
+                  JS.toggle(
+                    to: "#dropdown_id_#{parent_task.id}",
+                    in: {"ease-out duration-100", "opacity-0 scale-95", "opacity-100 scale-100"},
+                    out: {"ease-out duration-75", "opacity-100 scale-100", "opacity-0 scale-95"}
+                  )
+                  |> JS.toggle_class("rotate-90", to: "#chevron_id_#{parent_task.id}")
+                }
+              >
+                <.icon name="hero-chevron-double-right" id={"chevron_id_#{parent_task.id}"} />
+              </.button>
               <.link
                 navigate={~p"/#{@current_user.id}/tasks/#{parent_task}"}
-                class="text-lg font-semibold"
+                class="font-semibold tracking-tighter truncate"
               >
                 <%= parent_task.title %>
               </.link>
