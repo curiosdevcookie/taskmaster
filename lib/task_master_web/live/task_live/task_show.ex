@@ -45,6 +45,16 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
   end
 
   @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    org_id = socket.assigns.current_user.organization_id
+    task = socket.assigns.task
+
+    Tasks.delete_task(task, org_id)
+
+    {:noreply, socket}
+  end
+
+  @impl true
   def handle_info({:task_deleted, deleted_task}, socket) do
     if deleted_task.id == socket.assigns.task.id do
       {:noreply,
@@ -69,6 +79,13 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
       <:actions>
         <.link patch={~p"/#{@current_user.id}/tasks/#{@task}/show/edit"} phx-click={JS.push_focus()}>
           <.button class="btn-primary"><%= gettext("Edit task") %></.button>
+        </.link>
+        <.link
+          phx-click={JS.push("delete", value: %{id: @task.id})}
+          data-confirm={gettext("Are you sure?")}
+          class="text-red-600 hover:underline"
+        >
+          <%= gettext("Delete") %>
         </.link>
       </:actions>
     </.header>

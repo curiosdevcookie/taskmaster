@@ -87,20 +87,6 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   end
 
   @impl true
-  def handle_info({:task_deleted, task}, socket) do
-    {:noreply, stream_delete(socket, :tasks, task)}
-  end
-
-  @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    org_id = socket.assigns.current_user.organization_id
-    task = Tasks.get_task!(id, org_id)
-    {:ok, _} = Tasks.delete_task(task, org_id)
-
-    {:noreply, stream_delete(socket, :tasks, task)}
-  end
-
-  @impl true
   def handle_event("add_subtask", %{"parent_id" => parent_id}, socket) do
     org_id = socket.assigns.current_user.organization_id
     parent_id |> dbg()
@@ -124,34 +110,131 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
         </.link>
       </:actions>
     </.header>
-    <div class="flex flex-col gap-4">
+    <ul class="space-y-8">
       <%= for parent_task <- @parent_tasks do %>
-        <div class="border border-gray-600 p-2 rounded-lg p-4">
-          <div class="flex items-center gap-2">
-            <.icon name="hero-chevron-double-right" />
-            <.link navigate={~p"/#{@current_user.id}/tasks/#{parent_task}"}>
-              <%= parent_task.title %>
+        <li class="border border-gray-600 p-4 rounded-lg">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-2">
+              <%!-- Don't show this button if task has no subtasks: --%>
+              <%= if Enum.any?(@subtasks, & &1.parent_task_id == parent_task.id) do %>
+                <.button
+                  class="w-8 h-8 relative rounded-lg "
+                  phx-click={
+                    JS.toggle(
+                      to: "#dropdown_id_#{parent_task.id}",
+                      in: {"ease-out duration-100", "opacity-0 scale-95", "opacity-100 scale-100"},
+                      out: {"ease-out duration-75", "opacity-100 scale-100", "opacity-0 scale-95"}
+                    )
+                    |> JS.toggle_class("rotate-90", to: "#chevron_id_#{parent_task.id}")
+                  }
+                >
+                  <.icon name="hero-chevron-double-right" id={"chevron_id_#{parent_task.id}"} />
+                </.button>
+              <% end %>
+              <.link
+                navigate={~p"/#{@current_user.id}/tasks/#{parent_task}"}
+                class="text-lg font-semibold"
+              >
+                <%= parent_task.title %>
+              </.link>
+            </div>
+            <.link patch={~p"/#{@current_user.id}/tasks/#{parent_task.id}/new_subtask"}>
+              <.button
+                class="btn-secondary"
+                phx-click={JS.push("add_subtask", value: %{parent_id: parent_task.id})}
+              >
+                <.icon name="hero-plus" />
+              </.button>
             </.link>
           </div>
-
-          <.link patch={~p"/#{@current_user.id}/tasks/#{parent_task.id}/new_subtask"}>
-            <.button
-              class="btn-secondary"
-              phx-click={JS.push("add_subtask", value: %{parent_id: parent_task.id})}
-            >
-              <.icon name="hero-plus" />
-            </.button>
-          </.link>
-          <div class="flex flex-col gap-2">
-            <%= for subtask <- Enum.filter(@subtasks, & &1.parent_task_id == parent_task.id) do %>
-              <.link navigate={~p"/#{@current_user.id}/tasks/#{subtask}"}>
-                <%= subtask.title %>
-              </.link>
-            <% end %>
+          <div class="grid grid-cols-2 gap-2 text-sm">
+            <div><strong><%= gettext("Description") %>:</strong> <%= parent_task.description %></div>
+            <div><strong><%= gettext("Due date") %>:</strong> <%= parent_task.due_date %></div>
+            <div>
+              <strong><%= gettext("Status") %>:</strong> <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(
+                parent_task.status
+              ) %>
+            </div>
+            <div>
+              <strong><%= gettext("Duration") %>:</strong> <%= TaskMasterWeb.Helpers.Formatted.format_duration(
+                parent_task.duration
+              ) %>
+            </div>
+            <div>
+              <strong><%= gettext("Priority") %>:</strong> <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(
+                parent_task.priority
+              ) %>
+            </div>
+            <div>
+              <strong><%= gettext("Indoor") %>:</strong> <%= TaskMasterWeb.Helpers.IconHelper.boolean_icon(
+                parent_task.indoor
+              ) %>
+            </div>
+            <div class="col-span-2">
+              <strong><%= gettext("Who?") %></strong>
+              <div class="flex flex-wrap gap-1">
+                <%= for participant <- Enum.sort_by(parent_task.participants, & &1.nick_name) do %>
+                  <.nick_name participant={participant.nick_name} />
+                <% end %>
+              </div>
+            </div>
           </div>
-        </div>
+          <ul
+            id={"dropdown_id_#{parent_task.id}"}
+            class="hidden space-y-2"
+            phx-click-away={
+              JS.hide(
+                to: "#dropdown_id_#{parent_task.id}",
+                transition: {"ease-out duration-75", "opacity-100 scale-100", "opacity-0 scale-95"}
+              )
+              |> JS.toggle_class("rotate-90", to: "#chevron_id_#{parent_task.id}")
+            }
+          >
+            <%= for subtask <- Enum.filter(@subtasks, & &1.parent_task_id == parent_task.id) do %>
+              <li class="border border-gray-300 p-2 rounded">
+                <.link navigate={~p"/#{@current_user.id}/tasks/#{subtask}"} class="font-medium">
+                  <%= subtask.title %>
+                </.link>
+                <div class="grid grid-cols-2 gap-2 text-sm mt-2">
+                  <div>
+                    <strong><%= gettext("Description") %>:</strong> <%= subtask.description %>
+                  </div>
+                  <div><strong><%= gettext("Due date") %>:</strong> <%= subtask.due_date %></div>
+                  <div>
+                    <strong><%= gettext("Status") %>:</strong> <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(
+                      subtask.status
+                    ) %>
+                  </div>
+                  <div>
+                    <strong><%= gettext("Duration") %>:</strong> <%= TaskMasterWeb.Helpers.Formatted.format_duration(
+                      subtask.duration
+                    ) %>
+                  </div>
+                  <div>
+                    <strong><%= gettext("Priority") %>:</strong> <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(
+                      subtask.priority
+                    ) %>
+                  </div>
+                  <div>
+                    <strong><%= gettext("Indoor") %>:</strong> <%= TaskMasterWeb.Helpers.IconHelper.boolean_icon(
+                      subtask.indoor
+                    ) %>
+                  </div>
+                  <div class="col-span-2">
+                    <strong><%= gettext("Who?") %></strong>
+                    <div class="flex flex-wrap gap-1">
+                      <%= for participant <- Enum.sort_by(subtask.participants, & &1.nick_name) do %>
+                        <.nick_name participant={participant.nick_name} />
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        </li>
       <% end %>
-    </div>
+    </ul>
     <.table
       id="tasks"
       rows={@streams.tasks}
