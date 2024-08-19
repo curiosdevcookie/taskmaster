@@ -659,4 +659,4 @@ msgstr "Aufgabe erfolgreich erstellt"
 #: lib/task_master_web/live/task_live/task_show.ex:63
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Task deleted successfully"
-msgstr "Aufgabe erfolgreich erstellt"
+msgstr "Aufgabe erfolgreich gelöscht"
