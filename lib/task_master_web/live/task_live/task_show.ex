@@ -27,6 +27,17 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
   end
 
   @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    org_id = socket.assigns.current_user.organization_id
+    task = Tasks.get_task!(id, org_id)
+
+    Tasks.delete_task(task, org_id)
+
+    socket
+    |> noreply()
+  end
+
+  @impl true
   def handle_info({TaskMasterWeb.TaskLive.TaskComponent, {:saved, updated_task}}, socket) do
     {:noreply,
      socket
@@ -42,16 +53,6 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
     else
       {:noreply, socket}
     end
-  end
-
-  @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    org_id = socket.assigns.current_user.organization_id
-    task = socket.assigns.task
-
-    Tasks.delete_task(task, org_id)
-
-    {:noreply, socket}
   end
 
   @impl true

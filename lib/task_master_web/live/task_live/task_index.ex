@@ -103,7 +103,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   def render(assigns) do
     ~H"""
     <.header>
-      <%= gettext("Listing Tasks") %>
+      <%= gettext("Open Tasks") %>
       <:actions>
         <.link patch={~p"/#{@current_user.id}/tasks/new"}>
           <.button class="btn-primary"><%= gettext("New Task") %></.button>
@@ -126,7 +126,11 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
                   |> JS.toggle_class("rotate-90", to: "#chevron_id_#{parent_task.id}")
                 }
               >
-                <.icon name="hero-chevron-double-right" id={"chevron_id_#{parent_task.id}"} />
+                <.icon
+                  name="hero-chevron-right"
+                  id={"chevron_id_#{parent_task.id}"}
+                  class="bg-brand-700 h-6 w-6"
+                />
               </.button>
               <.link
                 navigate={~p"/#{@current_user.id}/tasks/#{parent_task}"}
@@ -169,7 +173,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
             </div>
             <div class="col-span-2">
               <strong><%= gettext("Who?") %></strong>
-              <div class="flex flex-wrap gap-1">
+              <div class="flex flex-wrap gap-1 mt-2">
                 <%= for participant <- Enum.sort_by(parent_task.participants, & &1.nick_name) do %>
                   <.nick_name participant={participant.nick_name} />
                 <% end %>
@@ -178,7 +182,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
           </div>
           <ul
             id={"dropdown_id_#{parent_task.id}"}
-            class="hidden space-y-2"
+            class="hidden space-y-2 mt-4"
             phx-click-away={
               JS.hide(
                 to: "#dropdown_id_#{parent_task.id}",
@@ -219,7 +223,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
                   </div>
                   <div class="col-span-2">
                     <strong><%= gettext("Who?") %></strong>
-                    <div class="flex flex-wrap gap-1">
+                    <div class="flex flex-wrap gap-1 mt-2">
                       <%= for participant <- Enum.sort_by(subtask.participants, & &1.nick_name) do %>
                         <.nick_name participant={participant.nick_name} />
                       <% end %>
@@ -232,59 +236,6 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
         </li>
       <% end %>
     </ul>
-    <.table
-      id="tasks"
-      rows={@streams.tasks}
-      row_click={fn {_id, task} -> JS.navigate(~p"/#{@current_user.id}/tasks/#{task}") end}
-    >
-      <:col :let={{_id, task}} label={gettext("Title")}><%= task.title %></:col>
-      <:col :let={{_id, task}} label={gettext("Description")}><%= task.description %></:col>
-      <:col :let={{_id, task}} label={gettext("Due date")}><%= task.due_date %></:col>
-      <:col :let={{_id, task}} label={gettext("Status")}>
-        <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(task.status) %>
-      </:col>
-      <:col :let={{_id, task}} label={gettext("Duration in minutes")}>
-        <%= TaskMasterWeb.Helpers.Formatted.format_duration(task.duration) %>
-      </:col>
-      <:col :let={{_id, task}} label={gettext("Priority")}>
-        <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(task.priority) %>
-      </:col>
-      <:col :let={{_id, task}} label={gettext("Indoor")}>
-        <%= TaskMasterWeb.Helpers.IconHelper.boolean_icon(task.indoor) %>
-      </:col>
-      <:col :let={{_id, task}} label={gettext("Who?")}>
-        <div class="flex flex-wrap gap-1">
-          <%= for participant <- Enum.sort_by(task.participants, & &1.nick_name) do %>
-            <.nick_name participant={participant.nick_name} />
-          <% end %>
-        </div>
-      </:col>
-      <:action :let={{_id, task}}>
-        <%!-- SUBTASKS --%>
-        <.link patch={~p"/#{@current_user.id}/tasks/#{task.id}/new_subtask"}>
-          <.button
-            class="btn-secondary"
-            phx-click={JS.push("add_subtask", value: %{parent_id: task.id})}
-          >
-            <.icon name="hero-plus" />
-          </.button>
-        </.link>
-      </:action>
-      <:action :let={{_id, task}}>
-        <div class="sr-only">
-          <.link navigate={~p"/#{@current_user.id}/tasks/#{task}"}><%= gettext("Show") %></.link>
-        </div>
-        <.link patch={~p"/#{@current_user.id}/tasks/#{task}/edit"}><%= gettext("Edit") %></.link>
-      </:action>
-      <:action :let={{id, task}}>
-        <.link
-          phx-click={JS.push("delete", value: %{id: task.id}) |> hide("##{id}")}
-          data-confirm={gettext("Are you sure?")}
-        >
-          <%= gettext("Delete") %>
-        </.link>
-      </:action>
-    </.table>
 
     <.modal
       :if={@live_action in [:new, :edit, :new_subtask]}
