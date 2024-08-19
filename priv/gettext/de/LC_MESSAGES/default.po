@@ -654,7 +654,7 @@ msgstr "Übergeordnete Aufgabe"
 #: lib/task_master_web/live/task_live/task_component.ex:240
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Subtask created successfully"
-msgstr "Aufgabe erfolgreich erstellt"
+msgstr "Unteraufgabe erfolgreich erstellt"
 
 #: lib/task_master_web/live/task_live/task_show.ex:63
 #, elixir-autogen, elixir-format, fuzzy
