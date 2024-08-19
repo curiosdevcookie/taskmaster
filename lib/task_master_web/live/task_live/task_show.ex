@@ -27,6 +27,17 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
   end
 
   @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    org_id = socket.assigns.current_user.organization_id
+    task = Tasks.get_task!(id, org_id)
+
+    Tasks.delete_task(task, org_id)
+
+    socket
+    |> noreply()
+  end
+
+  @impl true
   def handle_info({TaskMasterWeb.TaskLive.TaskComponent, {:saved, updated_task}}, socket) do
     {:noreply,
      socket
@@ -64,12 +75,20 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
   def render(assigns) do
     ~H"""
     <.header>
-      <%= gettext("Task") %>
-      <:subtitle><%= gettext("This is a task record from your database.") %></:subtitle>
+      <%= @task.title %>
       <:actions>
-        <.link patch={~p"/#{@current_user.id}/tasks/#{@task}/show/edit"} phx-click={JS.push_focus()}>
-          <.button class="btn-primary"><%= gettext("Edit task") %></.button>
-        </.link>
+        <section class="flex gap-1">
+          <.link patch={~p"/#{@current_user.id}/tasks/#{@task}/show/edit"} phx-click={JS.push_focus()}>
+            <.button class="btn-primary"><.icon name="hero-pencil" /></.button>
+          </.link>
+          <.link
+            phx-click={JS.push("delete", value: %{id: @task.id})}
+            data-confirm={gettext("Are you sure?")}
+            class="btn-danger"
+          >
+            <.icon name="hero-trash" />
+          </.link>
+        </section>
       </:actions>
     </.header>
 

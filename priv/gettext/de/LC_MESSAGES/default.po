@@ -11,7 +11,7 @@ msgstr ""
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/task_master_web/components/core_components.ex:477
+#: lib/task_master_web/components/core_components.ex:475
 #, elixir-autogen, elixir-format
 msgid "Actions"
 msgstr "Aktionen"
@@ -110,19 +110,19 @@ msgid "Forgot your password?"
 msgstr "Passwort vergessen?"
 
 #: lib/task_master_web/live/user_reset_password_live.ex:25
-#: lib/task_master_web/live/user_settings_live.ex:75
+#: lib/task_master_web/live/user_settings_live.ex:77
 #, elixir-autogen, elixir-format
 msgid "Confirm new password"
 msgstr "Bestätige Dein neues Passwort"
 
 #: lib/task_master_web/live/user_settings_live.ex:41
-#: lib/task_master_web/live/user_settings_live.ex:81
+#: lib/task_master_web/live/user_settings_live.ex:83
 #, elixir-autogen, elixir-format
 msgid "Current password"
 msgstr "Aktuelles Passwort"
 
 #: lib/task_master_web/live/user_reset_password_live.ex:21
-#: lib/task_master_web/live/user_settings_live.ex:69
+#: lib/task_master_web/live/user_settings_live.ex:71
 #, elixir-autogen, elixir-format
 msgid "New password"
 msgstr "Neues Passwort"
@@ -186,19 +186,19 @@ msgstr "Account-Einstellungen"
 msgid "Account created successfully!"
 msgstr "Account erfolgreich angelegt!"
 
-#: lib/task_master_web/live/user_settings_live.ex:46
+#: lib/task_master_web/live/user_settings_live.ex:47
 #, elixir-autogen, elixir-format
 msgid "Change Email"
 msgstr "E-Mail ändern"
 
-#: lib/task_master_web/live/user_settings_live.ex:103
-#: lib/task_master_web/live/user_settings_live.ex:163
+#: lib/task_master_web/live/user_settings_live.ex:107
+#: lib/task_master_web/live/user_settings_live.ex:167
 #, elixir-autogen, elixir-format
 msgid "Email change link is invalid or it has expired."
 msgstr "Der Link zum Ändern der E-Mail-Adresse ist ungültig oder abgelaufen."
 
-#: lib/task_master_web/live/user_settings_live.ex:100
-#: lib/task_master_web/live/user_settings_live.ex:157
+#: lib/task_master_web/live/user_settings_live.ex:104
+#: lib/task_master_web/live/user_settings_live.ex:161
 #, elixir-autogen, elixir-format
 msgid "Email changed successfully."
 msgstr "E-Mail-Adresse erfolgreich geändert."
@@ -306,123 +306,109 @@ msgid "You can reset your password by visiting the URL below:"
 msgstr "Du kannst Dein Passwort zurücksetzen, indem Du die URL unten besuchst:"
 
 #: lib/task_master_web/live/avatar_live/avatar_index.ex:78
-#: lib/task_master_web/live/task_live/task_index.ex:131
+#: lib/task_master_web/live/task_live/task_show.ex:86
 #, elixir-autogen, elixir-format
 msgid "Are you sure?"
 msgstr "Bist Du Dir sicher?"
 
 #: lib/task_master_web/live/avatar_live/avatar_index.ex:73
-#: lib/task_master_web/live/task_live/task_index.ex:126
 #, elixir-autogen, elixir-format
 msgid "Edit"
 msgstr "Bearbeiten"
 
 #: lib/task_master_web/live/avatar_live/avatar_index.ex:71
-#: lib/task_master_web/live/task_live/task_index.ex:124
 #, elixir-autogen, elixir-format
 msgid "Show"
 msgstr "Zeigen"
 
 #: lib/task_master_web/live/avatar_live/avatar_index.ex:80
-#: lib/task_master_web/live/task_live/task_index.ex:133
 #, elixir-autogen, elixir-format
 msgid "Delete"
 msgstr "Löschen"
 
-#: lib/task_master_web/live/task_live/task_index.ex:19
-#: lib/task_master_web/live/task_live/task_index.ex:45
-#: lib/task_master_web/live/task_live/task_index.ex:84
+#: lib/task_master_web/live/task_live/task_index.ex:22
+#: lib/task_master_web/live/task_live/task_index.ex:64
 #, elixir-autogen, elixir-format
 msgid "Listing Tasks"
 msgstr "Tasks"
 
-#: lib/task_master_web/live/task_live/task_index.ex:39
-#: lib/task_master_web/live/task_live/task_index.ex:87
+#: lib/task_master_web/live/task_live/task_index.ex:45
+#: lib/task_master_web/live/task_live/task_index.ex:109
 #, elixir-autogen, elixir-format
 msgid "New Task"
 msgstr "Neue Task"
 
-#: lib/task_master_web/live/task_live/task_component.ex:34
 #: lib/task_master_web/live/task_live/task_component.ex:44
+#: lib/task_master_web/live/task_live/task_component.ex:54
 #, elixir-autogen, elixir-format
 msgid "Choose a value"
 msgstr "Wähle einen Wert"
 
-#: lib/task_master_web/live/task_live/task_show.ex:60
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Edit task"
-msgstr "Bearbeiten"
-
 #: lib/task_master_web/live/avatar_live/avatar_component.ex:134
-#: lib/task_master_web/live/task_live/task_component.ex:91
+#: lib/task_master_web/live/task_live/task_component.ex:101
 #, elixir-autogen, elixir-format
 msgid "Save"
 msgstr "Speichern"
-
-#: lib/task_master_web/live/task_live/task_show.ex:56
-#, elixir-autogen, elixir-format
-msgid "Task"
-msgstr "Task"
-
-#: lib/task_master_web/live/task_live/task_show.ex:57
-#, elixir-autogen, elixir-format
-msgid "This is a task record from your database."
-msgstr "Das ist ein Task-Eintrag aus Deiner Datenbank."
 
 #: lib/task_master_web/live/task_live/task_component.ex:14
 #, elixir-autogen, elixir-format
 msgid "Use this form to manage task records in your database."
 msgstr "Verwende dieses Formular, um Task-Einträge in Deiner Datenbank zu verwalten."
 
-#: lib/task_master_web/live/task_live/task_component.ex:28
-#: lib/task_master_web/live/task_live/task_index.ex:98
-#: lib/task_master_web/live/task_live/task_show.ex:67
+#: lib/task_master_web/live/task_live/task_component.ex:38
+#: lib/task_master_web/live/task_live/task_index.ex:152
+#: lib/task_master_web/live/task_live/task_index.ex:201
+#: lib/task_master_web/live/task_live/task_show.ex:97
 #, elixir-autogen, elixir-format
 msgid "Description"
 msgstr "Beschreibung"
 
-#: lib/task_master_web/live/task_live/task_component.ex:29
-#: lib/task_master_web/live/task_live/task_index.ex:99
-#: lib/task_master_web/live/task_live/task_show.ex:68
+#: lib/task_master_web/live/task_live/task_component.ex:39
+#: lib/task_master_web/live/task_live/task_index.ex:153
+#: lib/task_master_web/live/task_live/task_index.ex:203
+#: lib/task_master_web/live/task_live/task_show.ex:98
 #, elixir-autogen, elixir-format
 msgid "Due date"
 msgstr "Fälligkeit"
 
-#: lib/task_master_web/live/task_live/task_component.ex:39
-#: lib/task_master_web/live/task_live/task_index.ex:103
-#: lib/task_master_web/live/task_live/task_show.ex:72
+#: lib/task_master_web/live/task_live/task_component.ex:49
+#: lib/task_master_web/live/task_live/task_index.ex:160
+#: lib/task_master_web/live/task_live/task_index.ex:210
+#: lib/task_master_web/live/task_live/task_show.ex:102
 #, elixir-autogen, elixir-format
 msgid "Duration"
 msgstr "Dauer"
 
-#: lib/task_master_web/live/task_live/task_component.ex:49
-#: lib/task_master_web/live/task_live/task_index.ex:107
-#: lib/task_master_web/live/task_live/task_show.ex:76
+#: lib/task_master_web/live/task_live/task_component.ex:59
+#: lib/task_master_web/live/task_live/task_index.ex:170
+#: lib/task_master_web/live/task_live/task_index.ex:220
+#: lib/task_master_web/live/task_live/task_show.ex:108
 #, elixir-autogen, elixir-format
 msgid "Indoor"
 msgstr "Indoor"
 
-#: lib/task_master_web/live/task_live/task_component.ex:43
-#: lib/task_master_web/live/task_live/task_index.ex:104
-#: lib/task_master_web/live/task_live/task_show.ex:73
+#: lib/task_master_web/live/task_live/task_component.ex:53
+#: lib/task_master_web/live/task_live/task_index.ex:165
+#: lib/task_master_web/live/task_live/task_index.ex:215
+#: lib/task_master_web/live/task_live/task_show.ex:105
 #, elixir-autogen, elixir-format
 msgid "Priority"
 msgstr "Priorität"
 
-#: lib/task_master_web/live/task_live/task_component.ex:27
-#: lib/task_master_web/live/task_live/task_index.ex:97
-#: lib/task_master_web/live/task_live/task_show.ex:66
+#: lib/task_master_web/live/task_live/task_component.ex:37
+#: lib/task_master_web/live/task_live/task_show.ex:96
 #, elixir-autogen, elixir-format
 msgid "Title"
 msgstr "Titel"
 
-#: lib/task_master_web/live/task_live/task_index.ex:33
+#: lib/task_master_web/live/task_live/task_index.ex:39
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Edit Task"
 msgstr "Bearbeiten"
 
-#: lib/task_master_web/live/task_live/task_index.ex:100
-#: lib/task_master_web/live/task_live/task_show.ex:69
+#: lib/task_master_web/live/task_live/task_index.ex:155
+#: lib/task_master_web/live/task_live/task_index.ex:205
+#: lib/task_master_web/live/task_live/task_show.ex:99
 #, elixir-autogen, elixir-format
 msgid "Status"
 msgstr "Status"
@@ -458,7 +444,7 @@ msgid "Progressing"
 msgstr "In Bearbeitung"
 
 #: lib/task_master_web/live/avatar_live/avatar_show.ex:57
-#: lib/task_master_web/live/task_live/task_show.ex:88
+#: lib/task_master_web/live/task_live/task_show.ex:120
 #, elixir-autogen, elixir-format
 msgid "Back"
 msgstr "Zurück"
@@ -490,7 +476,7 @@ msgid "Avatar created successfully"
 msgstr "Avatar erfolgreich erstellt"
 
 #: lib/task_master_web/live/avatar_live/avatar_component.ex:75
-#: lib/task_master_web/live/user_settings_live.ex:180
+#: lib/task_master_web/live/user_settings_live.ex:184
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Avatar updated successfully"
 msgstr "Avatar erfolgreich erstellt"
@@ -531,18 +517,19 @@ msgstr "Neuer Avatar"
 msgid "Manage your account avatar, email address and password settings"
 msgstr "Verwalte Deine Account-E-Mail-Adresse und Passworteinstellungen"
 
-#: lib/task_master_web/live/task_live/task_component.ex:78
+#: lib/task_master_web/live/task_live/task_component.ex:88
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Select"
 msgstr "Wähle bitte aus"
 
-#: lib/task_master_web/live/task_live/task_component.ex:77
+#: lib/task_master_web/live/task_live/task_component.ex:87
 #, elixir-autogen, elixir-format
 msgid "Who is participating?"
 msgstr "Wer macht mit?"
 
-#: lib/task_master_web/live/task_live/task_index.ex:110
-#: lib/task_master_web/live/task_live/task_show.ex:79
+#: lib/task_master_web/live/task_live/task_index.ex:175
+#: lib/task_master_web/live/task_live/task_index.ex:225
+#: lib/task_master_web/live/task_live/task_show.ex:111
 #, elixir-autogen, elixir-format
 msgid "Who?"
 msgstr "Wer?"
@@ -552,17 +539,17 @@ msgstr "Wer?"
 msgid "Productivity Made Simple"
 msgstr "Produktivität leicht gemacht"
 
-#: lib/task_master_web/live/user_settings_live.ex:214
+#: lib/task_master_web/live/user_settings_live.ex:218
 #, elixir-autogen, elixir-format
 msgid "A link to confirm your email change has been sent to the new address."
 msgstr "Ein Link zur Bestätigung der Änderung Deiner E-Mail-Adresse wurde an die neue Adresse gesendet."
 
-#: lib/task_master_web/live/user_settings_live.ex:87
+#: lib/task_master_web/live/user_settings_live.ex:90
 #, elixir-autogen, elixir-format
 msgid "Change Password"
 msgstr "Passwort ändern"
 
-#: lib/task_master_web/live/user_settings_live.ex:147
+#: lib/task_master_web/live/user_settings_live.ex:151
 #, elixir-autogen, elixir-format
 msgid "Edit User Settings"
 msgstr "Bearbeiten der Nutzereinstellungen"
@@ -622,7 +609,8 @@ msgstr "muss das @ Zeichen enthalten"
 msgid "is not valid"
 msgstr "ist ungültig"
 
-#: lib/task_master_web/live/task_live/task_index.ex:119
+#: lib/task_master_web/live/task_live/task_index.ex:54
+#: lib/task_master_web/live/task_live/task_index.ex:98
 #, elixir-autogen, elixir-format, fuzzy
 msgid "New Subtask"
 msgstr "Neue Unteraufgabe"
@@ -632,12 +620,13 @@ msgstr "Neue Unteraufgabe"
 msgid "Organization name"
 msgstr "Organisationsname"
 
-#: lib/task_master_web/live/task_live/task_component.ex:199
+#: lib/task_master_web/live/task_live/task_component.ex:219
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Task created successfully"
 msgstr "Aufgabe erfolgreich erstellt"
 
-#: lib/task_master_web/live/task_live/task_component.ex:182
+#: lib/task_master_web/live/task_live/task_component.ex:202
+#: lib/task_master_web/live/task_live/task_show.ex:46
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Task updated successfully"
 msgstr "Aufgabe erfolgreich aktualisiert"
@@ -647,7 +636,27 @@ msgstr "Aufgabe erfolgreich aktualisiert"
 msgid "Tasks"
 msgstr "Tasks"
 
-#: lib/task_master_web/live/user_registration_live.ex:92
+#: lib/task_master_web/live/user_registration_live.ex:91
 #, elixir-autogen, elixir-format, fuzzy
 msgid "User created successfully."
 msgstr "Nutzer erfolgreich angelegt."
+
+#: lib/task_master_web/live/task_live/task_index.ex:106
+#, elixir-autogen, elixir-format
+msgid "Open Tasks"
+msgstr "Offene Aufgaben"
+
+#: lib/task_master_web/live/task_live/task_component.ex:30
+#, elixir-autogen, elixir-format
+msgid "Parent Task"
+msgstr "Übergeordnete Aufgabe"
+
+#: lib/task_master_web/live/task_live/task_component.ex:240
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Subtask created successfully"
+msgstr "Unteraufgabe erfolgreich erstellt"
+
+#: lib/task_master_web/live/task_live/task_show.ex:63
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Task deleted successfully"
+msgstr "Aufgabe erfolgreich gelöscht"

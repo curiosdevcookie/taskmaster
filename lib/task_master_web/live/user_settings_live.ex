@@ -159,7 +159,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
         {:noreply,
          socket
          |> put_flash(:info, gettext("Email changed successfully."))
-         |> push_redirect(to: ~p"/#{current_user.id}/users/settings")}
+         |> push_navigate(to: ~p"/#{current_user.id}/users/settings")}
 
       :error ->
         {:noreply,
