@@ -96,66 +96,83 @@ defmodule TaskMasterWeb.Components.TaskComponents do
               </div>
             </div>
           </div>
-          <ul
-            id={"dropdown_id_#{parent_task.id}"}
-            class="hidden space-y-2 mt-4"
-            phx-click-away={
-              JS.hide(
-                to: "#dropdown_id_#{parent_task.id}",
-                transition: {"ease-out duration-75", "opacity-100 scale-100", "opacity-0 scale-95"}
-              )
-              |> JS.toggle_class("rotate-90", to: "#chevron_id_#{parent_task.id}")
-            }
-          >
-            <%= for subtask <- Enum.filter(@subtasks, & &1.parent_task_id == parent_task.id) do %>
-              <li class="border border-gray-300 p-2 rounded">
-                <.link navigate={@navigate_fn.(subtask)} class="font-medium">
-                  <%= subtask.title %>
-                </.link>
-                <div class="grid grid-cols-2 gap-2 text-sm mt-2">
-                  <div>
-                    <strong><%= gettext("Description") %>:</strong> <%= subtask.description %>
-                  </div>
-                  <div><strong><%= gettext("Due date") %>:</strong> <%= subtask.due_date %></div>
-                  <div>
-                    <strong><%= gettext("Status") %>:</strong> <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(
-                      subtask.status
-                    ) %>
-                  </div>
-                  <div>
-                    <strong><%= gettext("Duration") %>:</strong> <%= TaskMasterWeb.Helpers.Formatted.format_duration(
-                      subtask.duration
-                    ) %>
-                  </div>
-                  <div>
-                    <strong><%= gettext("Priority") %>:</strong> <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(
-                      subtask.priority
-                    ) %>
-                  </div>
-                  <div>
-                    <strong><%= gettext("Indoor") %>:</strong> <%= TaskMasterWeb.Helpers.IconHelper.boolean_icon(
-                      subtask.indoor
-                    ) %>
-                  </div>
-                  <div class="col-span-2">
-                    <strong><%= gettext("Who?") %></strong>
-                    <div class="flex flex-wrap gap-1 mt-2">
-                      <%= for participant <- Enum.sort_by(subtask.participants, & &1.nick_name) do %>
-                        <.nick_name participant={participant.nick_name} />
-                      <% end %>
-                    </div>
-                  </div>
-                </div>
-              </li>
-            <% end %>
-          </ul>
+          <.task_list_children
+            parent_task={parent_task}
+            subtasks={@subtasks}
+            navigate_fn={@navigate_fn}
+          />
         </li>
       <% end %>
     </ul>
     """
   end
 
-  def task_list_items(assigns) do
+  attr(:parent_task, :any, required: true)
+  attr(:subtasks, :list, required: false)
+  attr(:current_user, :any, required: false)
+  attr(:navigate_fn, :any, required: true)
+  attr(:patch_fn, :any, required: true)
+  slot :inner_block, required: false
+
+  def task_list_children(assigns) do
+    ~H"""
+    <ul
+      id={"dropdown_id_#{@parent_task.id}"}
+      class="hidden space-y-2 mt-4"
+      phx-click-away={
+        JS.hide(
+          to: "#dropdown_id_#{@parent_task.id}",
+          transition: {"ease-out duration-75", "opacity-100 scale-100", "opacity-0 scale-95"}
+        )
+        |> JS.toggle_class("rotate-90", to: "#chevron_id_#{@parent_task.id}")
+      }
+    >
+      <%= for subtask <- Enum.filter(@subtasks, & &1.parent_task_id == @parent_task.id) do %>
+        <li class="border border-gray-300 p-2 rounded">
+          <.link navigate={@navigate_fn.(subtask)} class="font-medium">
+            <%= subtask.title %>
+          </.link>
+          <div class="grid grid-cols-2 gap-2 text-sm mt-2">
+            <div>
+              <strong><%= gettext("Description") %>:</strong> <%= subtask.description %>
+            </div>
+            <div><strong><%= gettext("Due date") %>:</strong> <%= subtask.due_date %></div>
+            <div>
+              <strong><%= gettext("Status") %>:</strong> <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(
+                subtask.status
+              ) %>
+            </div>
+            <div>
+              <strong><%= gettext("Duration") %>:</strong> <%= TaskMasterWeb.Helpers.Formatted.format_duration(
+                subtask.duration
+              ) %>
+            </div>
+            <div>
+              <strong><%= gettext("Priority") %>:</strong> <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(
+                subtask.priority
+              ) %>
+            </div>
+            <div>
+              <strong><%= gettext("Indoor") %>:</strong> <%= TaskMasterWeb.Helpers.IconHelper.boolean_icon(
+                subtask.indoor
+              ) %>
+            </div>
+            <div class="col-span-2">
+              <strong><%= gettext("Who?") %></strong>
+              <div class="flex flex-wrap gap-1 mt-2">
+                <%= for participant <- Enum.sort_by(subtask.participants, & &1.nick_name) do %>
+                  <.nick_name participant={participant.nick_name} />
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+    """
+  end
+
+  def task_items_parent(assigns) do
     ~H"""
     <li></li>
     """
