@@ -119,6 +119,8 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
       patch_fn={fn parent_task -> ~p"/#{@current_user.id}/tasks/#{parent_task.id}/new_subtask" end}
     />
 
+    <h2><%= gettext("Done Tasks") %></h2>
+
     <.modal
       :if={@live_action in [:new, :edit, :new_subtask]}
       id="task-modal"
