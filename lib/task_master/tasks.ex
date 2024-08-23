@@ -68,6 +68,8 @@ defmodule TaskMaster.Tasks do
   end
 
   def update_task(%Task{} = task, attrs, participants \\ [], org_id) do
+    attrs = maybe_set_completed_at(attrs, task)
+
     task
     |> Task.changeset(attrs)
     |> Repo.update()
@@ -81,6 +83,18 @@ defmodule TaskMaster.Tasks do
         error
     end
   end
+
+  defp maybe_set_completed_at(%{"status" => status} = attrs, %Task{status: old_status}) do
+    case status do
+      "completed" when old_status != "completed" ->
+        Map.put(attrs, "completed_at", NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second))
+      status when status in ["open", "progressing"] ->
+        Map.put(attrs, "completed_at", nil)
+      _ ->
+        attrs
+    end
+  end
+  defp maybe_set_completed_at(attrs, _task), do: attrs
 
   def delete_task(%Task{} = task, org_id) do
     if task.organization_id == org_id do
