@@ -67,7 +67,20 @@ defmodule TaskMaster.Tasks do
     end
   end
 
-  def update_task(%Task{} = task, attrs, participants \\ [], org_id) do
+ def update_task(%Task{} = task, attrs, participants \\ [], org_id) do
+    case {Map.get(attrs, "status"), task.parent_task_id} do
+      {"completed", nil} ->
+        if all_subtasks_completed?(task.id) do
+          do_update_task(task, attrs, participants, org_id)
+        else
+          {:error, :subtasks_not_completed}
+        end
+      _ ->
+        do_update_task(task, attrs, participants, org_id)
+    end
+  end
+
+  defp do_update_task(task, attrs, participants, org_id) do
     attrs = maybe_set_completed_at(attrs, task)
 
     task
@@ -77,10 +90,29 @@ defmodule TaskMaster.Tasks do
       {:ok, updated_task} ->
         updated_task = update_participants(updated_task, participants, org_id)
         updated_task = Repo.preload(updated_task, :participants)
+        maybe_update_parent_task(updated_task)
         broadcast({:ok, updated_task}, :task_updated)
 
       error ->
         error
+    end
+  end
+
+  defp all_subtasks_completed?(parent_task_id) do
+    query = from t in Task,
+      where: t.parent_task_id == ^parent_task_id,
+      select: fragment("COALESCE(BOOL_AND(status = 'completed'), true)")
+
+    Repo.one(query)
+  end
+
+  defp maybe_update_parent_task(%Task{parent_task_id: nil} = task), do: {:ok, task}
+  defp maybe_update_parent_task(%Task{parent_task_id: parent_id} = task) do
+    parent_task = get_task!(parent_id, task.organization_id)
+    if all_subtasks_completed?(parent_id) do
+      do_update_task(parent_task, %{"status" => "completed"}, [], task.organization_id)
+    else
+      do_update_task(parent_task, %{"status" => "progressing"}, [], task.organization_id)
     end
   end
 
