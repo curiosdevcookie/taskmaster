@@ -22,8 +22,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
   attr(:current_user, :any, required: false)
   attr(:navigate_fn, :any, required: true)
   attr(:patch_fn, :any, required: true)
-  attr(:label, :string, required: true)
-  attr(:value, :string, required: true)
+
 
   def task_list(assigns) do
     ~H"""
@@ -90,14 +89,23 @@ defmodule TaskMasterWeb.Components.TaskComponents do
               <%= @parent_task.title %>
             </.link>
           </div>
+          <div class="flex items-center gap-1">
+
+          <.button :if={Enum.empty?(@subtasks) || Enum.all?(@subtasks, &(&1.parent_task_id != @parent_task.id))} phx-click={JS.push("toggle_task_status", value: %{id: @parent_task.id, current_status: @parent_task.status})}>
+              <.icon
+                name="hero-check-circle"
+                class={"h-8 w-8 cursor-pointer " <> if @parent_task.status == :completed, do: "text-green-500", else: "text-red-300"}
+              />
+          </.button>
           <.link patch={@patch_fn.(@parent_task)}>
             <.button
-              class="btn-secondary"
               phx-click={JS.push("add_subtask", value: %{parent_id: @parent_task.id})}
+              class="rounded-full border-brand-700 border-2 h-6 w-6 flex items-center justify-center p-0"
             >
-              <.icon name="hero-plus" />
+              <.icon name="hero-plus" class="text-brand-700" />
             </.button>
           </.link>
+          </div>
         </div>
         <div class="grid grid-cols-2 gap-2 text-sm">
             <.item_slot label={gettext("Description")}><%= @parent_task.description %></.item_slot>
@@ -131,9 +139,18 @@ defmodule TaskMasterWeb.Components.TaskComponents do
   def subtask_list_items(assigns) do
     ~H"""
        <li class="border border-gray-300 p-2 rounded">
+       <div class="flex justify-between">
           <.link navigate={@navigate_fn.(@subtask)} class="font-medium">
             <%= @subtask.title %>
           </.link>
+           <.button phx-click={JS.push("toggle_task_status", value: %{id: @subtask.id, current_status: @subtask.status})}>
+            <.icon
+              name="hero-check-circle"
+              class={"h-8 w-8 cursor-pointer " <> if @subtask.status == :completed, do: "text-green-500", else: "text-red-300"}
+            />
+          </.button>
+
+        </div>
           <div class="grid grid-cols-2 gap-2 text-sm mt-2">
             <.item_slot label={gettext("Description")}><%= @subtask.description %></.item_slot>
             <.item_slot label={gettext("Due date")}><%= @subtask.due_date %></.item_slot>

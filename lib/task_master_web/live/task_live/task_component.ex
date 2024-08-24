@@ -181,14 +181,6 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
      |> assign(:available_users, updated_available_users)}
   end
 
-  # defp update_task_changeset(socket) do
-  #   changeset =
-  #     socket.assigns.task
-  #     |> Tasks.change_task()
-
-  #   assign(socket, :form, to_form(changeset))
-  # end
-
   defp save_task(socket, :edit, task_params) do
   org_id = socket.assigns.current_user.organization_id
 

@@ -8,8 +8,8 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   @impl true
   def mount(_params, _session, socket) do
     current_user = socket.assigns.current_user
-    tasks = Tasks.list_tasks_with_participants(current_user.organization_id)
 
+    tasks = Tasks.list_tasks_with_participants(current_user.organization_id)
     parent_tasks = Tasks.list_parent_tasks(current_user.organization_id)
     subtasks = Tasks.list_subtasks(current_user.organization_id)
 
@@ -77,13 +77,36 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   end
 
   @impl true
-  def handle_info({:task_created, task}, socket) do
-    {:noreply, stream_insert(socket, :tasks, task)}
+  def handle_info({:task_created, new_task}, socket) do
+    {:noreply, update_task_in_assigns(socket, new_task)}
   end
 
-  @impl true
-  def handle_info({:task_updated, task}, socket) do
-    {:noreply, stream_insert(socket, :tasks, task)}
+ @impl true
+  def handle_info({:task_updated, updated_task}, socket) do
+    {:noreply, update_task_in_assigns(socket, updated_task)}
+  end
+
+   defp update_task_in_assigns(socket, updated_task) do
+    socket
+    |> stream_insert(:tasks, updated_task)
+    |> update(:parent_tasks, fn tasks ->
+      if is_nil(updated_task.parent_task_id) do
+        Enum.map(tasks, fn task ->
+          if task.id == updated_task.id, do: updated_task, else: task
+        end)
+      else
+        tasks
+      end
+    end)
+    |> update(:subtasks, fn tasks ->
+      if not is_nil(updated_task.parent_task_id) do
+        Enum.map(tasks, fn task ->
+          if task.id == updated_task.id, do: updated_task, else: task
+        end)
+      else
+        tasks
+      end
+    end)
   end
 
   @impl true
@@ -97,6 +120,25 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
      |> assign(:parent_task, parent_task)
      |> assign(:page_title, gettext("New Subtask"))
      |> push_patch(to: ~p"/#{socket.assigns.current_user.id}/tasks/#{parent_task.id}/new_subtask")}
+  end
+
+    @impl true
+  def handle_event("toggle_task_status", %{"id" => id, "current_status" => current_status}, socket) do
+    org_id = socket.assigns.current_user.organization_id
+    task = Tasks.get_task!(id, org_id)
+
+    new_status = if current_status == "completed", do: "open", else: "completed" |> dbg()
+
+    case Tasks.update_task(task, %{status: new_status}, task.participants, org_id) do
+      {:ok, _updated_task} ->
+        {:noreply, socket}
+
+      {:error, :subtasks_not_completed} ->
+        {:noreply, put_flash(socket, :error, "Cannot complete task: not all subtasks are completed")}
+
+      {:error, _changeset} ->
+        {:noreply, put_flash(socket, :error, "Failed to update task status")}
+    end
   end
 
   @impl true
@@ -117,6 +159,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
       current_user={@current_user}
       navigate_fn={fn parent_task -> ~p"/#{@current_user.id}/tasks/#{parent_task}" end}
       patch_fn={fn parent_task -> ~p"/#{@current_user.id}/tasks/#{parent_task.id}/new_subtask" end}
+
     />
 
     <h2><%= gettext("Done Tasks") %></h2>
