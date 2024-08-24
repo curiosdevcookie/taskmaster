@@ -75,6 +75,7 @@ defmodule TaskMaster.Tasks do
         else
           {:error, :subtasks_not_completed}
         end
+
       _ ->
         do_update_task(task, attrs, participants, org_id)
     end

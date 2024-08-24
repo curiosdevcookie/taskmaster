@@ -90,17 +90,11 @@ defmodule TaskMasterWeb.Components.TaskComponents do
             </.link>
           </div>
           <div class="flex items-center gap-1">
-
-          <.button :if={Enum.empty?(@subtasks) || Enum.all?(@subtasks, &(&1.parent_task_id != @parent_task.id))} phx-click={JS.push("toggle_task_status", value: %{id: @parent_task.id, current_status: @parent_task.status})}>
-              <.icon
-                name="hero-check-circle"
-                class={"h-8 w-8 cursor-pointer " <> if @parent_task.status == :completed, do: "text-green-500", else: "text-red-300"}
-              />
-          </.button>
+          <.check_task subtasks={@subtasks} task={@parent_task}/>
           <.link patch={@patch_fn.(@parent_task)}>
             <.button
               phx-click={JS.push("add_subtask", value: %{parent_id: @parent_task.id})}
-              class="rounded-full border-brand-700 border-2 h-6 w-6 flex items-center justify-center p-0"
+              class="rounded-full border-brand-700 border-2 h-6 w-6 flex items-center justify-center"
             >
               <.icon name="hero-plus" class="text-brand-700" />
             </.button>
@@ -143,13 +137,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
           <.link navigate={@navigate_fn.(@subtask)} class="font-medium">
             <%= @subtask.title %>
           </.link>
-           <.button phx-click={JS.push("toggle_task_status", value: %{id: @subtask.id, current_status: @subtask.status})}>
-            <.icon
-              name="hero-check-circle"
-              class={"h-8 w-8 cursor-pointer " <> if @subtask.status == :completed, do: "text-green-500", else: "text-red-300"}
-            />
-          </.button>
-
+          <.check_task task={@subtask}/>
         </div>
           <div class="grid grid-cols-2 gap-2 text-sm mt-2">
             <.item_slot label={gettext("Description")}><%= @subtask.description %></.item_slot>
@@ -182,6 +170,22 @@ defmodule TaskMasterWeb.Components.TaskComponents do
     <div>
       <strong><%= @label%>:</strong> <%= render_slot(@inner_block) %>
     </div>
+    """
+  end
+
+  attr(:parent_task, :any, default: nil)
+  attr(:subtasks, :list, default: [])
+  attr(:task, :any, required: true)
+
+
+  def check_task(assigns) do
+    ~H"""
+    <.button :if={Enum.empty?(@subtasks) || Enum.all?(@subtasks, &(&1.parent_task_id != @task.id))} phx-click={JS.push("toggle_task_status", value: %{id: @task.id, current_status: @task.status})}>
+      <.icon
+        name="hero-check-circle"
+        class={if @task.status == :completed, do: "text-green-500", else: "text-red-300"}
+      />
+    </.button>
     """
   end
 end
