@@ -67,18 +67,8 @@ defmodule TaskMaster.Tasks do
     end
   end
 
- def update_task(%Task{} = task, attrs, participants \\ [], org_id) do
-    case {Map.get(attrs, "status"), task.parent_task_id} do
-      {"completed", nil} ->
-        if all_subtasks_completed?(task.id) do
-          do_update_task(task, attrs, participants, org_id)
-        else
-          {:error, :subtasks_not_completed}
-        end
-
-      _ ->
-        do_update_task(task, attrs, participants, org_id)
-    end
+  def update_task(%Task{} = task, attrs, participants \\ [], org_id) do
+    do_update_task(task, attrs, participants, org_id)
   end
 
   defp do_update_task(task, attrs, participants, org_id) do
@@ -91,7 +81,9 @@ defmodule TaskMaster.Tasks do
       {:ok, updated_task} ->
         updated_task = update_participants(updated_task, participants, org_id)
         updated_task = Repo.preload(updated_task, :participants)
-        maybe_update_parent_task(updated_task)
+        {:ok, parent_updated_task} = maybe_update_parent_task(updated_task)
+        broadcast({:ok, parent_updated_task}, :task_updated)
+        {:ok, updated_task}
         broadcast({:ok, updated_task}, :task_updated)
 
       error ->
@@ -99,21 +91,40 @@ defmodule TaskMaster.Tasks do
     end
   end
 
-  defp all_subtasks_completed?(parent_task_id) do
-    query = from t in Task,
-      where: t.parent_task_id == ^parent_task_id,
-      select: fragment("COALESCE(BOOL_AND(status = 'completed'), true)")
+  # defp all_subtasks_completed?(parent_task_id) do
+  #   query =
+  #     from t in Task,
+  #       where: t.parent_task_id == ^parent_task_id,
+  #       select: fragment("COALESCE(BOOL_AND(status = 'completed'), true)")
 
-    Repo.one(query)
+  #   Repo.one(query)
+  # end
+
+  defp get_parent_task_status(parent_id) do
+    subtasks = from(t in Task, where: t.parent_task_id == ^parent_id) |> Repo.all()
+
+    cond do
+      Enum.all?(subtasks, &(&1.status == :completed)) -> :completed
+      Enum.any?(subtasks, &(&1.status == :completed)) -> :progressing
+      true -> :open
+    end
   end
 
   defp maybe_update_parent_task(%Task{parent_task_id: nil} = task), do: {:ok, task}
+
   defp maybe_update_parent_task(%Task{parent_task_id: parent_id} = task) do
     parent_task = get_task!(parent_id, task.organization_id)
-    if all_subtasks_completed?(parent_id) do
-      do_update_task(parent_task, %{"status" => "completed"}, [], task.organization_id)
+    new_status = get_parent_task_status(parent_id)
+
+    if parent_task.status != new_status do
+      do_update_task(
+        parent_task,
+        %{"status" => Atom.to_string(new_status)},
+        [],
+        task.organization_id
+      )
     else
-      do_update_task(parent_task, %{"status" => "progressing"}, [], task.organization_id)
+      {:ok, parent_task}
     end
   end
 
@@ -121,12 +132,15 @@ defmodule TaskMaster.Tasks do
     case status do
       "completed" when old_status != "completed" ->
         Map.put(attrs, "completed_at", NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second))
+
       status when status in ["open", "progressing"] ->
         Map.put(attrs, "completed_at", nil)
+
       _ ->
         attrs
     end
   end
+
   defp maybe_set_completed_at(attrs, _task), do: attrs
 
   def delete_task(%Task{} = task, org_id) do
