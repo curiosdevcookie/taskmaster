@@ -414,14 +414,13 @@ defmodule TaskMasterWeb.CoreComponents do
   Renders a header with title.
   """
   attr :class, :string, default: nil
-
   slot :inner_block, required: true
   slot :subtitle
   slot :actions
 
   def header(assigns) do
     ~H"""
-    <header class={[@actions != [] && "flex items-center justify-between gap-2 mb-4", @class]}>
+    <header class={[@actions != [] && "flex items-center justify-between gap-2", @class]}>
       <div>
         <h1 class="lg:text-lg sm:text font-semibold lg:leading-8 sm:leading-2 text-zinc-800">
           <%= render_slot(@inner_block) %>
@@ -432,6 +431,27 @@ defmodule TaskMasterWeb.CoreComponents do
       </div>
       <div class="flex-none"><%= render_slot(@actions) %></div>
     </header>
+    """
+  end
+
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+  slot :subtitle
+  slot :actions
+
+  def footer(assigns) do
+    ~H"""
+    <footer class={[@actions != [] && "flex items-center justify-between gap-2", @class]}>
+      <div>
+        <h1 class="lg:text-lg sm:text font-semibold lg:leading-8 sm:leading-2 text-zinc-800">
+          <%= render_slot(@inner_block) %>
+        </h1>
+        <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
+          <%= render_slot(@subtitle) %>
+        </p>
+      </div>
+      <div class="flex-none"><%= render_slot(@actions) %></div>
+    </footer>
     """
   end
 
