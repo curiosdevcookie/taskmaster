@@ -13,6 +13,9 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     parent_tasks = Tasks.list_parent_tasks(current_user.organization_id)
     subtasks = Tasks.list_subtasks(current_user.organization_id)
 
+    parent_tasks = Enum.map(parent_tasks, &Tasks.preload_task_participants/1)
+    subtasks = Enum.map(subtasks, &Tasks.preload_task_participants/1)
+
     {completed_parent_tasks, open_parent_tasks} =
       Enum.split_with(parent_tasks, &(&1.status == :completed))
 
@@ -90,13 +93,35 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
 
   @impl true
   def handle_info({:task_updated, updated_task}, socket) do
-    {:noreply, update_task_in_assigns(socket, updated_task)}
+    org_id = socket.assigns.current_user.organization_id
+
+    # Refresh the updated task
+    refreshed_task = Tasks.get_task!(updated_task.id, org_id) |> Tasks.preload_task_participants()
+
+    # If it's a subtask, also refresh its parent
+    parent_task =
+      if refreshed_task.parent_task_id do
+        Tasks.get_task!(refreshed_task.parent_task_id, org_id)
+        |> Tasks.preload_task_participants()
+      end
+
+    socket = update_task_in_assigns(socket, refreshed_task)
+
+    socket =
+      if parent_task do
+        update_task_in_assigns(socket, parent_task)
+      else
+        socket
+      end
+
+    {:noreply, socket}
   end
 
   defp update_task_in_assigns(socket, updated_task) do
     socket
     |> stream_insert(:tasks, updated_task)
     |> update_parent_tasks(updated_task)
+    |> update_subtasks(updated_task)
   end
 
   defp update_parent_tasks(socket, updated_task) do
@@ -113,12 +138,16 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
       |> assign(:completed_parent_tasks, completed_parent_tasks)
     else
       socket
-      |> update(:subtasks, fn tasks ->
-        Enum.map(tasks, fn task ->
-          if task.id == updated_task.id, do: updated_task, else: task
-        end)
-      end)
     end
+  end
+
+  defp update_subtasks(socket, updated_task) do
+    socket
+    |> update(:subtasks, fn tasks ->
+      Enum.map(tasks, fn task ->
+        if task.id == updated_task.id, do: updated_task, else: task
+      end)
+    end)
   end
 
   @impl true

@@ -50,8 +50,8 @@ defmodule TaskMaster.Tasks do
     |> Repo.preload([:task_participations, :participants])
   end
 
-  def create_task(attrs \\ %{}, participants \\ [], org_id, parent_id \\ nil) do
-    attrs = Map.merge(attrs, %{"parent_task_id" => parent_id})
+  def create_task(attrs \\ %{}, participants \\ [], org_id, parent_task_id \\ nil) do
+    attrs = Map.merge(attrs, %{"parent_task_id" => parent_task_id})
 
     %Task{}
     |> Task.changeset(attrs)
@@ -60,7 +60,7 @@ defmodule TaskMaster.Tasks do
       {:ok, task} ->
         task = add_participants(task, participants, org_id)
         task = Repo.preload(task, :participants)
-        updated_parent_task = update_parent_task_duration(task)
+        {:ok, updated_parent_task} = update_parent_task(task)
         broadcast({:ok, updated_parent_task}, :task_created)
         {:ok, task}
 
@@ -83,27 +83,39 @@ defmodule TaskMaster.Tasks do
       {:ok, updated_task} ->
         updated_task = update_participants(updated_task, participants, org_id)
         updated_task = Repo.preload(updated_task, :participants)
-        update_parent_task_duration(updated_task)
-        {:ok, parent_updated_task} = maybe_update_parent_task(updated_task)
-        broadcast({:ok, parent_updated_task}, :task_updated)
-        {:ok, updated_task}
         broadcast({:ok, updated_task}, :task_updated)
+        {:ok, parent_updated_task} = update_parent_task(updated_task)
+        broadcast({:ok, parent_updated_task}, :task_updated)
+
+        {:ok, updated_task}
 
       error ->
-        error
+        broadcast(error, :task_update_failed)
     end
   end
 
-  defp update_parent_task_duration(%Task{parent_task_id: nil} = task), do: task
+  defp update_parent_task(%Task{parent_task_id: nil} = task), do: {:ok, task}
 
-  defp update_parent_task_duration(%Task{parent_task_id: parent_id} = task) do
-    parent_task = get_task!(parent_id, task.organization_id)
-    subtasks_duration = calculate_subtasks_duration(parent_id)
+  defp update_parent_task(%Task{parent_task_id: parent_task_id} = task) do
+    parent_task = get_task!(parent_task_id, task.organization_id)
+    subtasks_duration = calculate_subtasks_duration(parent_task_id)
+    subtasks_participants = get_subtasks_participants(parent_task_id)
+    new_status = get_parent_task_status(parent_task_id)
 
-    do_update_task(parent_task, %{duration: subtasks_duration}, [], task.organization_id)
+    all_participants = subtasks_participants |> Enum.uniq_by(& &1.id)
+
+    do_update_task(
+      parent_task,
+      %{
+        duration: subtasks_duration,
+        status: new_status
+      },
+      all_participants,
+      task.organization_id
+    )
   end
 
-  defp calculate_subtasks_duration(parent_task_id) do
+  def calculate_subtasks_duration(parent_task_id) do
     from(t in Task,
       where: t.parent_task_id == ^parent_task_id and t.status != :completed,
       select: sum(t.duration)
@@ -111,31 +123,24 @@ defmodule TaskMaster.Tasks do
     |> Repo.one()
   end
 
-  defp get_parent_task_status(parent_id) do
-    subtasks = from(t in Task, where: t.parent_task_id == ^parent_id) |> Repo.all()
+  def get_subtasks_participants(parent_task_id) do
+    Task
+    |> where([t], t.parent_task_id == ^parent_task_id and t.status != :completed)
+    |> Repo.all()
+    |> Enum.flat_map(fn subtask ->
+      subtask = Repo.preload(subtask, :participants, force: true)
+      subtask.participants
+    end)
+    |> Enum.uniq_by(& &1.id)
+  end
+
+  defp get_parent_task_status(parent_task_id) do
+    subtasks = from(t in Task, where: t.parent_task_id == ^parent_task_id) |> Repo.all()
 
     cond do
       Enum.all?(subtasks, &(&1.status == :completed)) -> :completed
       Enum.any?(subtasks, &(&1.status == :completed)) -> :progressing
       true -> :open
-    end
-  end
-
-  defp maybe_update_parent_task(%Task{parent_task_id: nil} = task), do: {:ok, task}
-
-  defp maybe_update_parent_task(%Task{parent_task_id: parent_id} = task) do
-    parent_task = get_task!(parent_id, task.organization_id)
-    new_status = get_parent_task_status(parent_id)
-
-    if parent_task.status != new_status do
-      do_update_task(
-        parent_task,
-        %{"status" => Atom.to_string(new_status)},
-        [],
-        task.organization_id
-      )
-    else
-      {:ok, parent_task}
     end
   end
 
@@ -157,7 +162,7 @@ defmodule TaskMaster.Tasks do
   def delete_task(%Task{} = task, org_id) do
     if task.organization_id == org_id do
       result = task |> Repo.delete()
-      updated_parent_task = update_parent_task_duration(%{task | id: task.parent_task_id})
+      {:ok, updated_parent_task} = update_parent_task(%{task | id: task.parent_task_id})
       broadcast({:ok, updated_parent_task}, :task_deleted)
       result
     else
@@ -261,7 +266,7 @@ defmodule TaskMaster.Tasks do
       end
     end)
 
-    task
+    Repo.preload(task, :participants, force: true)
   end
 
   def list_task_participants(task_id, org_id) do
@@ -286,10 +291,11 @@ defmodule TaskMaster.Tasks do
     Phoenix.PubSub.subscribe(TaskMaster.PubSub, "tasks:#{org_id}")
   end
 
-  defp broadcast({:ok, task}, event) do
+  def broadcast({:ok, task}, event)
+      when event in [:task_created, :task_deleted, :task_updated] do
     Phoenix.PubSub.broadcast(TaskMaster.PubSub, "tasks:#{task.organization_id}", {event, task})
     {:ok, task}
   end
 
-  defp broadcast({:error, _} = error, _event), do: error
+  def broadcast({:error, _} = error, _event), do: error
 end

@@ -63,7 +63,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
     ~H"""
     <li class="border border-gray-600 p-4 rounded-lg">
       <div class="flex items-center justify-between gap-1">
-        <div class="flex items-center gap-1 truncate">
+        <div class="flex items-center gap-1 truncate mb-2">
           <.button
             :if={Enum.any?(@subtasks, &(&1.parent_task_id == @parent_task.id))}
             phx-click={
@@ -85,7 +85,10 @@ defmodule TaskMasterWeb.Components.TaskComponents do
             navigate={@navigate_fn.(@parent_task)}
             class="font-semibold tracking-tighter truncate"
           >
-            <%= @parent_task.title %>
+            <p class="flex items-center gap-2">
+              <%= @parent_task.title %>
+              <.icon name="hero-information-circle" class="text-gray-700" />
+            </p>
           </.link>
         </div>
         <div class="flex items-center gap-1">
