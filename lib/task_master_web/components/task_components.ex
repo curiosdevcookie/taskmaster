@@ -25,7 +25,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
 
   def task_list(assigns) do
     ~H"""
-    <ul class="space-y-8">
+    <ul class="space-y-2">
       <%= for parent_task <- @parent_tasks do %>
         <.task_list_items
           parent_task={parent_task}
@@ -62,7 +62,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
   def task_list_items(assigns) do
     ~H"""
     <li class="border border-gray-600 p-4 rounded-lg">
-      <div class="flex items-center justify-between mb-2 gap-1">
+      <div class="flex items-center justify-between gap-1">
         <div class="flex items-center gap-1 truncate">
           <.button
             :if={Enum.any?(@subtasks, &(&1.parent_task_id == @parent_task.id))}
@@ -100,7 +100,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
           </.link>
         </div>
       </div>
-      <div class="grid grid-cols-2 gap-2 text-sm">
+      <div class="grid sm:grid-cols-2 sm:gap-1 text-sm">
         <.item_slot label={gettext("Description")}><%= @parent_task.description %></.item_slot>
         <.item_slot label={gettext("Due date")}><%= @parent_task.due_date %></.item_slot>
         <.item_slot label={gettext("Status")}>

@@ -60,7 +60,9 @@ defmodule TaskMaster.Tasks do
       {:ok, task} ->
         task = add_participants(task, participants, org_id)
         task = Repo.preload(task, :participants)
-        broadcast({:ok, task}, :task_created)
+        updated_parent_task = update_parent_task_duration(task)
+        broadcast({:ok, updated_parent_task}, :task_created)
+        {:ok, task}
 
       error ->
         error
@@ -81,6 +83,7 @@ defmodule TaskMaster.Tasks do
       {:ok, updated_task} ->
         updated_task = update_participants(updated_task, participants, org_id)
         updated_task = Repo.preload(updated_task, :participants)
+        update_parent_task_duration(updated_task)
         {:ok, parent_updated_task} = maybe_update_parent_task(updated_task)
         broadcast({:ok, parent_updated_task}, :task_updated)
         {:ok, updated_task}
@@ -91,14 +94,22 @@ defmodule TaskMaster.Tasks do
     end
   end
 
-  # defp all_subtasks_completed?(parent_task_id) do
-  #   query =
-  #     from t in Task,
-  #       where: t.parent_task_id == ^parent_task_id,
-  #       select: fragment("COALESCE(BOOL_AND(status = 'completed'), true)")
+  defp update_parent_task_duration(%Task{parent_task_id: nil} = task), do: task
 
-  #   Repo.one(query)
-  # end
+  defp update_parent_task_duration(%Task{parent_task_id: parent_id} = task) do
+    parent_task = get_task!(parent_id, task.organization_id)
+    subtasks_duration = calculate_subtasks_duration(parent_id)
+
+    do_update_task(parent_task, %{duration: subtasks_duration}, [], task.organization_id)
+  end
+
+  defp calculate_subtasks_duration(parent_task_id) do
+    from(t in Task,
+      where: t.parent_task_id == ^parent_task_id and t.status != :completed,
+      select: sum(t.duration)
+    )
+    |> Repo.one()
+  end
 
   defp get_parent_task_status(parent_id) do
     subtasks = from(t in Task, where: t.parent_task_id == ^parent_id) |> Repo.all()
@@ -145,9 +156,10 @@ defmodule TaskMaster.Tasks do
 
   def delete_task(%Task{} = task, org_id) do
     if task.organization_id == org_id do
-      task
-      |> Repo.delete()
-      |> broadcast(:task_deleted)
+      result = task |> Repo.delete()
+      updated_parent_task = update_parent_task_duration(%{task | id: task.parent_task_id})
+      broadcast({:ok, updated_parent_task}, :task_deleted)
+      result
     else
       {:error, :unauthorized}
     end
