@@ -39,7 +39,8 @@ defmodule TaskMaster.Tasks.Task do
       :indoor,
       :created_by,
       :parent_task_id,
-      :organization_id
+      :organization_id,
+      :completed_at,
     ])
     |> validate_required([
       :title,

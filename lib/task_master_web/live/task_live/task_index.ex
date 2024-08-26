@@ -8,10 +8,19 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   @impl true
   def mount(_params, _session, socket) do
     current_user = socket.assigns.current_user
-    tasks = Tasks.list_tasks_with_participants(current_user.organization_id)
 
+    tasks = Tasks.list_tasks_with_participants(current_user.organization_id)
     parent_tasks = Tasks.list_parent_tasks(current_user.organization_id)
     subtasks = Tasks.list_subtasks(current_user.organization_id)
+
+    parent_tasks = Enum.map(parent_tasks, &Tasks.preload_task_participants/1)
+    subtasks = Enum.map(subtasks, &Tasks.preload_task_participants/1)
+
+    {completed_parent_tasks, open_parent_tasks} =
+      Enum.split_with(parent_tasks, &(&1.status == :completed))
+
+    IO.inspect(Enum.map(open_parent_tasks, & &1.status), label: "Open tasks statuses")
+    IO.inspect(Enum.map(completed_parent_tasks, & &1.status), label: "Completed tasks statuses")
 
     if connected?(socket) do
       Tasks.subscribe(current_user.organization_id)
@@ -21,7 +30,8 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     |> assign(:current_user, current_user)
     |> assign(:page_title, gettext("Listing Tasks"))
     |> stream(:tasks, tasks)
-    |> assign(:parent_tasks, parent_tasks)
+    |> assign(:open_parent_tasks, open_parent_tasks)
+    |> assign(:completed_parent_tasks, completed_parent_tasks)
     |> assign(:subtasks, subtasks)
     |> ok()
   end
@@ -77,13 +87,67 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   end
 
   @impl true
-  def handle_info({:task_created, task}, socket) do
-    {:noreply, stream_insert(socket, :tasks, task)}
+  def handle_info({:task_created, new_task}, socket) do
+    {:noreply, update_task_in_assigns(socket, new_task)}
   end
 
   @impl true
-  def handle_info({:task_updated, task}, socket) do
-    {:noreply, stream_insert(socket, :tasks, task)}
+  def handle_info({:task_updated, updated_task}, socket) do
+    org_id = socket.assigns.current_user.organization_id
+
+    # Refresh the updated task
+    refreshed_task = Tasks.get_task!(updated_task.id, org_id) |> Tasks.preload_task_participants()
+
+    # If it's a subtask, also refresh its parent
+    parent_task =
+      if refreshed_task.parent_task_id do
+        Tasks.get_task!(refreshed_task.parent_task_id, org_id)
+        |> Tasks.preload_task_participants()
+      end
+
+    socket = update_task_in_assigns(socket, refreshed_task)
+
+    socket =
+      if parent_task do
+        update_task_in_assigns(socket, parent_task)
+      else
+        socket
+      end
+
+    {:noreply, socket}
+  end
+
+  defp update_task_in_assigns(socket, updated_task) do
+    socket
+    |> stream_insert(:tasks, updated_task)
+    |> update_parent_tasks(updated_task)
+    |> update_subtasks(updated_task)
+  end
+
+  defp update_parent_tasks(socket, updated_task) do
+    if is_nil(updated_task.parent_task_id) do
+      {open_parent_tasks, completed_parent_tasks} =
+        (socket.assigns.open_parent_tasks ++ socket.assigns.completed_parent_tasks)
+        |> Enum.map(fn task ->
+          if task.id == updated_task.id, do: updated_task, else: task
+        end)
+        |> Enum.split_with(&(&1.status != :completed))
+
+      socket
+      |> assign(:open_parent_tasks, open_parent_tasks)
+      |> assign(:completed_parent_tasks, completed_parent_tasks)
+    else
+      socket
+    end
+  end
+
+  defp update_subtasks(socket, updated_task) do
+    socket
+    |> update(:subtasks, fn tasks ->
+      Enum.map(tasks, fn task ->
+        if task.id == updated_task.id, do: updated_task, else: task
+      end)
+    end)
   end
 
   @impl true
@@ -100,24 +164,71 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   end
 
   @impl true
+  def handle_event(
+        "toggle_task_status",
+        %{"id" => id, "current_status" => current_status},
+        socket
+      ) do
+    org_id = socket.assigns.current_user.organization_id
+    task = Tasks.get_task!(id, org_id)
+
+    new_status = if current_status == "completed", do: "open", else: "completed"
+
+    case Tasks.update_task(task, %{status: new_status}, task.participants, org_id) do
+      {:ok, _updated_task} ->
+        {:noreply, socket}
+
+      {:error, :subtasks_not_completed} ->
+        {:noreply,
+         put_flash(socket, :error, "Cannot complete task: not all subtasks are completed")}
+
+      {:error, _changeset} ->
+        {:noreply, put_flash(socket, :error, "Failed to update task status")}
+    end
+  end
+
+  @impl true
   def render(assigns) do
     ~H"""
-    <.header>
-      <%= gettext("Open Tasks") %>
-      <:actions>
-        <.link patch={~p"/#{@current_user.id}/tasks/new"}>
-          <.button class="btn-primary"><%= gettext("New Task") %></.button>
-        </.link>
-      </:actions>
-    </.header>
-
-    <.task_list
-      parent_tasks={@parent_tasks}
-      subtasks={@subtasks}
-      current_user={@current_user}
-      navigate_fn={fn parent_task -> ~p"/#{@current_user.id}/tasks/#{parent_task}" end}
-      patch_fn={fn parent_task -> ~p"/#{@current_user.id}/tasks/#{parent_task.id}/new_subtask" end}
-    />
+    <div class="flex flex-col h-[calc(100vh-8rem)] gap-6">
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <.header class="flex-shrink-0 mb-4">
+          <%= gettext("Open Tasks") %>
+          <:actions>
+            <.link patch={~p"/#{@current_user.id}/tasks/new"}>
+              <.button class="btn-primary"><%= gettext("New Task") %></.button>
+            </.link>
+          </:actions>
+        </.header>
+        <div class="flex-1 overflow-y-auto">
+          <.task_list
+            parent_tasks={@open_parent_tasks}
+            subtasks={@subtasks}
+            current_user={@current_user}
+            navigate_fn={fn parent_task -> ~p"/#{@current_user.id}/tasks/#{parent_task}" end}
+            patch_fn={
+              fn parent_task -> ~p"/#{@current_user.id}/tasks/#{parent_task.id}/new_subtask" end
+            }
+          />
+        </div>
+      </div>
+      <div class="flex-1 flex flex-col overflow-hidden">
+        <.footer class="flex-shrink-0 mb-4">
+          <%= gettext("Completed Tasks") %>
+        </.footer>
+        <div class="flex-1 overflow-y-auto">
+          <.task_list
+            parent_tasks={@completed_parent_tasks}
+            subtasks={@subtasks}
+            current_user={@current_user}
+            navigate_fn={fn parent_task -> ~p"/#{@current_user.id}/tasks/#{parent_task}" end}
+            patch_fn={
+              fn parent_task -> ~p"/#{@current_user.id}/tasks/#{parent_task.id}/new_subtask" end
+            }
+          />
+        </div>
+      </div>
+    </div>
 
     <.modal
       :if={@live_action in [:new, :edit, :new_subtask]}

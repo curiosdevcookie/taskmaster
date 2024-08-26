@@ -39,6 +39,8 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
 
   @impl true
   def handle_info({TaskMasterWeb.TaskLive.TaskComponent, {:saved, updated_task}}, socket) do
+    updated_task = Tasks.preload_task_participants(updated_task)
+
     {:noreply,
      socket
      |> assign(:task, updated_task)

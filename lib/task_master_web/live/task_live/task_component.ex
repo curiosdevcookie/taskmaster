@@ -181,29 +181,27 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
      |> assign(:available_users, updated_available_users)}
   end
 
-  # defp update_task_changeset(socket) do
-  #   changeset =
-  #     socket.assigns.task
-  #     |> Tasks.change_task()
-
-  #   assign(socket, :form, to_form(changeset))
-  # end
-
   defp save_task(socket, :edit, task_params) do
     org_id = socket.assigns.current_user.organization_id
 
     case Tasks.update_task(socket.assigns.task, task_params, socket.assigns.participants, org_id) do
-      {:ok, task} ->
-        notify_parent({:saved, task})
+      {:ok, updated_task} ->
+        notify_parent({:saved, updated_task})
 
         {:noreply,
          socket
-         |> assign(:task, task)
+         |> assign(:task, updated_task)
          |> put_flash(:info, gettext("Task updated successfully"))
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
+
+      {:error, :subtasks_not_completed} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, gettext("Cannot complete task: not all subtasks are completed"))
+         |> assign_form(Tasks.change_task(socket.assigns.task, task_params))}
     end
   end
 
