@@ -103,7 +103,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
           </.link>
         </div>
       </div>
-      <div class="grid sm:grid-cols-2 sm:gap-1 text-sm">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-7 sm:gap-1 text-sm">
         <.item_slot label={gettext("Description")}><%= @parent_task.description %></.item_slot>
         <.item_slot label={gettext("Due date")}><%= @parent_task.due_date %></.item_slot>
         <.item_slot label={gettext("Status")}>
