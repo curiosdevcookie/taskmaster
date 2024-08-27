@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    # if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -17,9 +17,11 @@ jobs:
 
       - name: Setup SSH
         run: |
+          env
           mkdir -p ~/.ssh
-          echo "${{ secrets.ARTIFACT_SSH_KEY }}" | base64 -d > ~/.ssh/id_rsa
+          echo "${{ secrets.ARTIFACT_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p 24 ${{ secrets.ARTIFACT_HOST }} >> ~/.ssh/known_hosts
       - name: Prepare Deployment
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} 'bash -s' < .github/scripts/deploy_dev.sh
