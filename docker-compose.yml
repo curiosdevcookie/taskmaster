@@ -1,5 +1,3 @@
-version: "3.1"
-
 networks:
   internal:
   traefik_default:
@@ -23,11 +21,11 @@ services:
     logging:
       driver: loki
       options:
-        loki-external-labels: job=docker,container_name={{.Name}},owner=curiosdevcookie,environment=development
+        loki-external-labels: job=docker,container_name={{.Name}},owner=curiosdevcookie,environment=${ENV},system=taskmaster-db
     hostname: backend
 
   frontend:
-    image: ghcr.io/curiosdevcookie/taskmaster-app:latest
+    image: ghcr.io/curiosdevcookie/taskmaster-app:##image_tag##
     env_file: .env
     environment:
       PHX_CHECK_ORIGIN: https://$PHX_HOST
@@ -38,30 +36,32 @@ services:
       - internal
     container_name: taskmaster
     volumes:
-      - app_data:/app/priv/static/uploads
+      - app_data:/app/lib/task_master-0.1.0/priv/static/uploads
     restart: unless-stopped
     logging:
       driver: loki
       options:
-        loki-external-labels: job=docker,container_name={{.Name}},owner=curiosdevcookie,environment=development
+        loki-external-labels: job=docker,container_name={{.Name}},owner=curiosdevcookie,environment=${ENV},system=taskmaster-app
     depends_on:  
       - backend
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_default"
-      - "traefik.http.services.taskmaster-studio.loadbalancer.server.port=8080"
-      - "traefik.http.routers.taskmaster-studio.rule=Host(`test.taskmaster.studio`)"
-      - "traefik.http.routers.taskmaster-studio.entrypoints=websecure"
-      - "traefik.http.routers.taskmaster-studio.tls=true"
-      - "traefik.http.routers.taskmaster-studio.tls.certresolver=leresolver"
+      - "traefik.http.services.${TRAEFIK_LABEL}.loadbalancer.server.port=8080"
+      - "traefik.http.routers.${TRAEFIK_LABEL}.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.${TRAEFIK_LABEL}.entrypoints=websecure"
+      - "traefik.http.routers.${TRAEFIK_LABEL}.tls=true"
+      - "traefik.http.routers.${TRAEFIK_LABEL}.tls.certresolver=leresolver"
   migration:
-    image: ghcr.io/curiosdevcookie/taskmaster-app:latest
+    image: 🙂docker_image🙃
+    env_file: .env
     depends_on:
-      backend:
-        condition: service_healthy
-    command: ["mix", "ecto.migrate"]
-    env_file:
-      - .env
+      - backend
+    command: ["/app/bin/migrate"]
+    logging:
+      driver: loki
+      options:
+        loki-external-labels: job=docker,container_name={{.Name}},owner=curiosdevcookie,environment=${ENV},system=taskmaster-migration
     container_name: taskmaster-migration
     networks:
       - internal
