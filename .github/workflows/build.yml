@@ -56,8 +56,8 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.ARTIFACT_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p 22 ${{ secrets.ARTIFACT_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -p 24 ${{ secrets.ARTIFACT_HOST }} >> ~/.ssh/known_hosts
 
       - name: Test SSH
         run: |
-          ssh -i ~/.ssh/id_rsa -p 22 ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} ls -al
+          ssh -i ~/.ssh/id_rsa -p 24 ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} ls -al
