@@ -2,11 +2,13 @@ name: Build
 
 on:
   push:
-#     branches:
-#       - main
-#   pull_request:
-#     branches:
-#       - main
+    branches:
+      - main
+      # only for testing purposes, remove when ready
+      - '\d+-*'
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
