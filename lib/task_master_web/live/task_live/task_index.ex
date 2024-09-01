@@ -34,6 +34,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     |> assign(:sort_by, sort_by)
     |> assign(:sort_order, sort_order)
     |> stream(:tasks, sorted_tasks)
+    |> assign(:selected, "")
     |> assign(:open_parent_tasks, sort_tasks(open_parent_tasks, sort_by, sort_order))
     |> assign(:completed_parent_tasks, sort_tasks(completed_parent_tasks, sort_by, sort_order))
     |> assign(:subtasks, sort_tasks(subtasks, sort_by, sort_order))
@@ -199,15 +200,17 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     end
   end
 
+  @impl true
   def handle_event("sort_tasks", %{"sort_by" => sort_by, "sort_order" => sort_order}, socket) do
     new_sort_order =
-      if socket.assigns.sort_by == sort_by and socket.assigns.sort_order == "asc",
+      if sort_by == socket.assigns.sort_by && socket.assigns.sort_order == "asc",
         do: "desc",
         else: "asc"
 
     socket
     |> assign(:sort_by, sort_by)
     |> assign(:sort_order, new_sort_order)
+    |> assign(:selected, sort_by)
     |> update_sorted_tasks()
     |> push_patch(
       to:
@@ -223,8 +226,6 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     |> update(:open_parent_tasks, &sort_tasks(&1, sort_by, sort_order))
     |> update(:completed_parent_tasks, &sort_tasks(&1, sort_by, sort_order))
     |> update(:subtasks, &sort_tasks(&1, sort_by, sort_order))
-
-    # |> stream(:tasks, &sort_tasks(&1, sort_by, sort_order), reset: true)
   end
 
   defp sort_tasks(tasks, sort_by, sort_order) do
@@ -254,25 +255,51 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
       <div class="flex-1 flex flex-col overflow-hidden">
         <.header class="flex-shrink-0 mb-4">
           <%= gettext("Open Tasks") %>
-          <section class="flex gap-2">
-            <.sort_button label={gettext("Title")} sort_by="title" sort_order={@sort_order} />
-            <.sort_button label={gettext("Due Date")} sort_by="due_date" sort_order={@sort_order} />
-            <.sort_button label={gettext("Priority")} sort_by="priority" sort_order={@sort_order} />
-            <.sort_button label={gettext("Status")} sort_by="status" sort_order={@sort_order} />
-            <.sort_button label={gettext("Duration")} sort_by="duration" sort_order={@sort_order} />
-            <.sort_button label={gettext("Indoor")} sort_by="indoor" sort_order={@sort_order} />
-            <.sort_button
-              label={gettext("Participants")}
-              sort_by="participants"
-              sort_order={@sort_order}
-            />
-          </section>
+
           <:actions>
             <.link patch={~p"/#{@current_user.id}/tasks/new"}>
               <.button class="btn-primary"><%= gettext("New Task") %></.button>
             </.link>
           </:actions>
         </.header>
+        <section class="flex gap-1">
+          <.sort_button
+            selected={@selected}
+            label={gettext("Title")}
+            sort_by="title"
+            sort_order={@sort_order}
+            id="title"
+          />
+          <.sort_button
+            selected={@selected}
+            label={gettext("Duration")}
+            sort_by="duration"
+            sort_order={@sort_order}
+            id="duration"
+          />
+          <.sort_button
+            selected={@selected}
+            label={gettext("Priority")}
+            sort_by="priority"
+            sort_order={@sort_order}
+            id="priority"
+          />
+          <.sort_button
+            selected={@selected}
+            label={gettext("Indoor")}
+            sort_by="indoor"
+            sort_order={@sort_order}
+            id="indoor"
+          />
+
+          <.sort_button
+            selected={@selected}
+            label={gettext("Due Date")}
+            sort_by="due_date"
+            sort_order={@sort_order}
+            id="due_date"
+          />
+        </section>
         <div class="flex-1 overflow-y-auto">
           <.task_list
             parent_tasks={@open_parent_tasks}

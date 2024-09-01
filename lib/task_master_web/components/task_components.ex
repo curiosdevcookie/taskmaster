@@ -201,18 +201,23 @@ defmodule TaskMasterWeb.Components.TaskComponents do
 
   attr(:sort_by, :string, default: "")
   attr(:sort_order, :string, default: "asc")
+  attr(:selected, :string, required: true)
   attr(:label, :string, required: true)
+  attr(:id, :string, required: true)
 
   def sort_button(assigns) do
     ~H"""
     <.button
       phx-click={JS.push("sort_tasks", value: %{sort_by: @sort_by, sort_order: @sort_order})}
-      class="flex items-center gap-1"
+      class={
+      "flex items-center gap-1 " <>
+      if (@id == @selected and @sort_order == "asc")
+        do: "text-blue-500",
+        else: "text-grey-500"
+    }
+      id={@id}
     >
-      <.icon
-        name="hero-arrows-up-down"
-        class={"h-3 w-3" <> if @sort_by == @sort_by, do: "text-blue-500", else: "text-gray-500"}
-      />
+      <.icon name="hero-arrows-up-down" class="h-3 w-3" />
       <p class="text-sm"><%= @label %></p>
     </.button>
     """

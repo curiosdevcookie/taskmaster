@@ -11,7 +11,7 @@
 msgid ""
 msgstr ""
 
-#: lib/task_master_web/components/core_components.ex:475
+#: lib/task_master_web/components/core_components.ex:493
 #, elixir-autogen, elixir-format
 msgid "Actions"
 msgstr ""
@@ -60,7 +60,7 @@ msgstr ""
 msgid "Already registered?"
 msgstr ""
 
-#: lib/task_master_web/components/layouts/root.html.heex:76
+#: lib/task_master_web/components/layouts/root.html.heex:114
 #: lib/task_master_web/live/user_confirmation_instructions_live.ex:25
 #: lib/task_master_web/live/user_confirmation_live.ex:22
 #: lib/task_master_web/live/user_forgot_password_live.ex:24
@@ -127,7 +127,7 @@ msgstr ""
 msgid "New password"
 msgstr ""
 
-#: lib/task_master_web/components/layouts/root.html.heex:68
+#: lib/task_master_web/components/layouts/root.html.heex:106
 #: lib/task_master_web/live/user_confirmation_instructions_live.ex:24
 #: lib/task_master_web/live/user_confirmation_live.ex:21
 #: lib/task_master_web/live/user_forgot_password_live.ex:23
@@ -141,7 +141,7 @@ msgstr ""
 msgid "Reset Password"
 msgstr ""
 
-#: lib/task_master_web/components/layouts/root.html.heex:59
+#: lib/task_master_web/components/layouts/root.html.heex:67
 #, elixir-autogen, elixir-format
 msgid "Log out"
 msgstr ""
@@ -306,7 +306,7 @@ msgid "You can reset your password by visiting the URL below:"
 msgstr ""
 
 #: lib/task_master_web/live/avatar_live/avatar_index.ex:78
-#: lib/task_master_web/live/task_live/task_show.ex:86
+#: lib/task_master_web/live/task_live/task_show.ex:88
 #, elixir-autogen, elixir-format
 msgid "Are you sure?"
 msgstr ""
@@ -326,14 +326,14 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_index.ex:22
-#: lib/task_master_web/live/task_live/task_index.ex:64
+#: lib/task_master_web/live/task_live/task_index.ex:33
+#: lib/task_master_web/live/task_live/task_index.ex:87
 #, elixir-autogen, elixir-format
 msgid "Listing Tasks"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_index.ex:45
-#: lib/task_master_web/live/task_live/task_index.ex:109
+#: lib/task_master_web/live/task_live/task_index.ex:68
+#: lib/task_master_web/live/task_live/task_index.ex:299
 #, elixir-autogen, elixir-format
 msgid "New Task"
 msgstr ""
@@ -345,7 +345,7 @@ msgid "Choose a value"
 msgstr ""
 
 #: lib/task_master_web/live/avatar_live/avatar_component.ex:134
-#: lib/task_master_web/live/task_live/task_component.ex:101
+#: lib/task_master_web/live/task_live/task_component.ex:103
 #, elixir-autogen, elixir-format
 msgid "Save"
 msgstr ""
@@ -355,60 +355,64 @@ msgstr ""
 msgid "Use this form to manage task records in your database."
 msgstr ""
 
+#: lib/task_master_web/components/task_components.ex:107
+#: lib/task_master_web/components/task_components.ex:148
 #: lib/task_master_web/live/task_live/task_component.ex:38
-#: lib/task_master_web/live/task_live/task_index.ex:152
-#: lib/task_master_web/live/task_live/task_index.ex:201
-#: lib/task_master_web/live/task_live/task_show.ex:97
+#: lib/task_master_web/live/task_live/task_show.ex:99
 #, elixir-autogen, elixir-format
 msgid "Description"
 msgstr ""
 
+#: lib/task_master_web/components/task_components.ex:108
+#: lib/task_master_web/components/task_components.ex:149
 #: lib/task_master_web/live/task_live/task_component.ex:39
-#: lib/task_master_web/live/task_live/task_index.ex:153
-#: lib/task_master_web/live/task_live/task_index.ex:203
-#: lib/task_master_web/live/task_live/task_show.ex:98
+#: lib/task_master_web/live/task_live/task_show.ex:100
 #, elixir-autogen, elixir-format
 msgid "Due date"
 msgstr ""
 
+#: lib/task_master_web/components/task_components.ex:112
+#: lib/task_master_web/components/task_components.ex:153
 #: lib/task_master_web/live/task_live/task_component.ex:49
-#: lib/task_master_web/live/task_live/task_index.ex:160
-#: lib/task_master_web/live/task_live/task_index.ex:210
-#: lib/task_master_web/live/task_live/task_show.ex:102
+#: lib/task_master_web/live/task_live/task_index.ex:268
+#: lib/task_master_web/live/task_live/task_show.ex:104
 #, elixir-autogen, elixir-format
 msgid "Duration"
 msgstr ""
 
+#: lib/task_master_web/components/task_components.ex:118
+#: lib/task_master_web/components/task_components.ex:159
 #: lib/task_master_web/live/task_live/task_component.ex:59
-#: lib/task_master_web/live/task_live/task_index.ex:170
-#: lib/task_master_web/live/task_live/task_index.ex:220
-#: lib/task_master_web/live/task_live/task_show.ex:108
+#: lib/task_master_web/live/task_live/task_index.ex:282
+#: lib/task_master_web/live/task_live/task_show.ex:110
 #, elixir-autogen, elixir-format
 msgid "Indoor"
 msgstr ""
 
+#: lib/task_master_web/components/task_components.ex:115
+#: lib/task_master_web/components/task_components.ex:156
 #: lib/task_master_web/live/task_live/task_component.ex:53
-#: lib/task_master_web/live/task_live/task_index.ex:165
-#: lib/task_master_web/live/task_live/task_index.ex:215
-#: lib/task_master_web/live/task_live/task_show.ex:105
+#: lib/task_master_web/live/task_live/task_index.ex:275
+#: lib/task_master_web/live/task_live/task_show.ex:107
 #, elixir-autogen, elixir-format
 msgid "Priority"
 msgstr ""
 
 #: lib/task_master_web/live/task_live/task_component.ex:37
-#: lib/task_master_web/live/task_live/task_show.ex:96
+#: lib/task_master_web/live/task_live/task_index.ex:261
+#: lib/task_master_web/live/task_live/task_show.ex:98
 #, elixir-autogen, elixir-format
 msgid "Title"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_index.ex:39
+#: lib/task_master_web/live/task_live/task_index.ex:62
 #, elixir-autogen, elixir-format
 msgid "Edit Task"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_index.ex:155
-#: lib/task_master_web/live/task_live/task_index.ex:205
-#: lib/task_master_web/live/task_live/task_show.ex:99
+#: lib/task_master_web/components/task_components.ex:109
+#: lib/task_master_web/components/task_components.ex:150
+#: lib/task_master_web/live/task_live/task_show.ex:101
 #, elixir-autogen, elixir-format
 msgid "Status"
 msgstr ""
@@ -444,7 +448,7 @@ msgid "Progressing"
 msgstr ""
 
 #: lib/task_master_web/live/avatar_live/avatar_show.ex:57
-#: lib/task_master_web/live/task_live/task_show.ex:120
+#: lib/task_master_web/live/task_live/task_show.ex:122
 #, elixir-autogen, elixir-format
 msgid "Back"
 msgstr ""
@@ -527,9 +531,9 @@ msgstr ""
 msgid "Who is participating?"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_index.ex:175
-#: lib/task_master_web/live/task_live/task_index.ex:225
-#: lib/task_master_web/live/task_live/task_show.ex:111
+#: lib/task_master_web/components/task_components.ex:121
+#: lib/task_master_web/components/task_components.ex:162
+#: lib/task_master_web/live/task_live/task_show.ex:113
 #, elixir-autogen, elixir-format
 msgid "Who?"
 msgstr ""
@@ -609,8 +613,8 @@ msgstr ""
 msgid "is not valid"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_index.ex:54
-#: lib/task_master_web/live/task_live/task_index.ex:98
+#: lib/task_master_web/live/task_live/task_index.ex:77
+#: lib/task_master_web/live/task_live/task_index.ex:175
 #, elixir-autogen, elixir-format
 msgid "New Subtask"
 msgstr ""
@@ -620,18 +624,18 @@ msgstr ""
 msgid "Organization name"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_component.ex:219
+#: lib/task_master_web/live/task_live/task_component.ex:221
 #, elixir-autogen, elixir-format
 msgid "Task created successfully"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_component.ex:202
-#: lib/task_master_web/live/task_live/task_show.ex:46
+#: lib/task_master_web/live/task_live/task_component.ex:198
+#: lib/task_master_web/live/task_live/task_show.ex:48
 #, elixir-autogen, elixir-format
 msgid "Task updated successfully"
 msgstr ""
 
-#: lib/task_master_web/components/layouts/root.html.heex:26
+#: lib/task_master_web/components/layouts/root.html.heex:96
 #, elixir-autogen, elixir-format
 msgid "Tasks"
 msgstr ""
@@ -641,7 +645,7 @@ msgstr ""
 msgid "User created successfully."
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_index.ex:106
+#: lib/task_master_web/live/task_live/task_index.ex:257
 #, elixir-autogen, elixir-format
 msgid "Open Tasks"
 msgstr ""
@@ -651,12 +655,32 @@ msgstr ""
 msgid "Parent Task"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_component.ex:240
+#: lib/task_master_web/live/task_live/task_component.ex:242
 #, elixir-autogen, elixir-format
 msgid "Subtask created successfully"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_show.ex:63
+#: lib/task_master_web/live/task_live/task_show.ex:65
 #, elixir-autogen, elixir-format
 msgid "Task deleted successfully"
+msgstr ""
+
+#: lib/task_master_web/live/task_live/task_component.ex:207
+#, elixir-autogen, elixir-format
+msgid "Cannot complete task: not all subtasks are completed"
+msgstr ""
+
+#: lib/task_master_web/live/task_live/task_index.ex:317
+#, elixir-autogen, elixir-format
+msgid "Completed Tasks"
+msgstr ""
+
+#: lib/task_master_web/live/task_live/task_index.ex:290
+#, elixir-autogen, elixir-format
+msgid "Due Date"
+msgstr ""
+
+#: lib/task_master_web/components/layouts/root.html.heex:60
+#, elixir-autogen, elixir-format
+msgid "Settings"
 msgstr ""
