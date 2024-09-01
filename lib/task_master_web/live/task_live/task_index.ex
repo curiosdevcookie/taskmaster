@@ -6,7 +6,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   import TaskMasterWeb.Components.TaskComponents
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(params, _session, socket) do
     current_user = socket.assigns.current_user
 
     tasks = Tasks.list_tasks_with_participants(current_user.organization_id)
@@ -19,8 +19,10 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     {completed_parent_tasks, open_parent_tasks} =
       Enum.split_with(parent_tasks, &(&1.status == :completed))
 
-    IO.inspect(Enum.map(open_parent_tasks, & &1.status), label: "Open tasks statuses")
-    IO.inspect(Enum.map(completed_parent_tasks, & &1.status), label: "Completed tasks statuses")
+    sort_by = params["sort_by"] || "title"
+    sort_order = params["sort_order"] || "asc"
+
+    sorted_tasks = sort_tasks(tasks, sort_by, sort_order)
 
     if connected?(socket) do
       Tasks.subscribe(current_user.organization_id)
@@ -29,16 +31,26 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     socket
     |> assign(:current_user, current_user)
     |> assign(:page_title, gettext("Listing Tasks"))
-    |> stream(:tasks, tasks)
-    |> assign(:open_parent_tasks, open_parent_tasks)
-    |> assign(:completed_parent_tasks, completed_parent_tasks)
-    |> assign(:subtasks, subtasks)
+    |> assign(:sort_by, sort_by)
+    |> assign(:sort_order, sort_order)
+    |> stream(:tasks, sorted_tasks)
+    |> assign(:open_parent_tasks, sort_tasks(open_parent_tasks, sort_by, sort_order))
+    |> assign(:completed_parent_tasks, sort_tasks(completed_parent_tasks, sort_by, sort_order))
+    |> assign(:subtasks, sort_tasks(subtasks, sort_by, sort_order))
     |> ok()
   end
 
   @impl true
   def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+    sort_by = params["sort_by"] || "title"
+    sort_order = params["sort_order"] || "asc"
+
+    socket
+    |> assign(:sort_by, sort_by)
+    |> assign(:sort_order, sort_order)
+    |> update_sorted_tasks()
+    |> apply_action(socket.assigns.live_action, params)
+    |> noreply()
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
@@ -187,6 +199,54 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     end
   end
 
+  def handle_event("sort_tasks", %{"sort_by" => sort_by, "sort_order" => sort_order}, socket) do
+    new_sort_order =
+      if socket.assigns.sort_by == sort_by and socket.assigns.sort_order == "asc",
+        do: "desc",
+        else: "asc"
+
+    socket
+    |> assign(:sort_by, sort_by)
+    |> assign(:sort_order, new_sort_order)
+    |> update_sorted_tasks()
+    |> push_patch(
+      to:
+        ~p"/#{socket.assigns.current_user.id}/tasks?sort_by=#{sort_by}&sort_order=#{new_sort_order}"
+    )
+    |> noreply()
+  end
+
+  defp update_sorted_tasks(socket) do
+    %{sort_by: sort_by, sort_order: sort_order} = socket.assigns
+
+    socket
+    |> update(:open_parent_tasks, &sort_tasks(&1, sort_by, sort_order))
+    |> update(:completed_parent_tasks, &sort_tasks(&1, sort_by, sort_order))
+    |> update(:subtasks, &sort_tasks(&1, sort_by, sort_order))
+
+    # |> stream(:tasks, &sort_tasks(&1, sort_by, sort_order), reset: true)
+  end
+
+  defp sort_tasks(tasks, sort_by, sort_order) do
+    Enum.sort_by(tasks, &sort_value(&1, sort_by), sort_order_to_comparator(sort_order))
+  end
+
+  defp sort_value(task, sort_by) do
+    case sort_by do
+      "title" -> task.title
+      "status" -> task.status
+      "duration" -> task.duration
+      "priority" -> task.priority
+      "indoor" -> task.indoor
+      "participants" -> length(task.participants)
+      "due_date" -> task.due_date
+      _ -> task.title
+    end
+  end
+
+  defp sort_order_to_comparator("desc"), do: &>=/2
+  defp sort_order_to_comparator(_), do: &<=/2
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -194,6 +254,19 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
       <div class="flex-1 flex flex-col overflow-hidden">
         <.header class="flex-shrink-0 mb-4">
           <%= gettext("Open Tasks") %>
+          <section class="flex gap-2">
+            <.sort_button label={gettext("Title")} sort_by="title" sort_order={@sort_order} />
+            <.sort_button label={gettext("Due Date")} sort_by="due_date" sort_order={@sort_order} />
+            <.sort_button label={gettext("Priority")} sort_by="priority" sort_order={@sort_order} />
+            <.sort_button label={gettext("Status")} sort_by="status" sort_order={@sort_order} />
+            <.sort_button label={gettext("Duration")} sort_by="duration" sort_order={@sort_order} />
+            <.sort_button label={gettext("Indoor")} sort_by="indoor" sort_order={@sort_order} />
+            <.sort_button
+              label={gettext("Participants")}
+              sort_by="participants"
+              sort_order={@sort_order}
+            />
+          </section>
           <:actions>
             <.link patch={~p"/#{@current_user.id}/tasks/new"}>
               <.button class="btn-primary"><%= gettext("New Task") %></.button>

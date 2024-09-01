@@ -222,18 +222,16 @@ defmodule TaskMasterWeb.CoreComponents do
 
   def button(assigns) do
     ~H"""
-    <div class="flex justify-end">
-      <button
-        type={@type}
-        class={[
-          "disabled:opacity-30 disabled:bg-grey-100 disabled:cursor-not-allowed",
-          @class
-        ]}
-        {@rest}
-      >
-        <%= render_slot(@inner_block) %>
-      </button>
-    </div>
+    <button
+      type={@type}
+      class={[
+        "disabled:opacity-30 disabled:bg-grey-100 disabled:cursor-not-allowed",
+        @class
+      ]}
+      {@rest}
+    >
+      <%= render_slot(@inner_block) %>
+    </button>
     """
   end
 
