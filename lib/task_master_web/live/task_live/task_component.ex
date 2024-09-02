@@ -98,7 +98,11 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
         </div>
 
         <:actions>
-          <.button class="btn-primary" phx-disable-with="Saving..."><%= gettext("Save") %></.button>
+          <div class="flex justify-end w-full">
+            <.button class="btn-primary" phx-disable-with="Saving...">
+              <%= gettext("Save") %>
+            </.button>
+          </div>
         </:actions>
       </.simple_form>
     </div>
