@@ -211,7 +211,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
       phx-click={JS.push("sort_tasks", value: %{sort_by: @sort_by, sort_order: @sort_order})}
       class={
       "flex items-center gap-1 " <>
-      if (@id == @selected and @sort_order == "asc")
+      if (@id == @selected and @sort_order == "asc"),
         do: "text-blue-500",
         else: "text-grey-500"
     }
