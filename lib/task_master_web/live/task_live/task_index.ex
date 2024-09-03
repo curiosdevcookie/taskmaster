@@ -201,7 +201,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   end
 
   @impl true
-  def handle_event("sort_tasks", %{"sort_by" => sort_by, "sort_order" => sort_order}, socket) do
+  def handle_event("sort_tasks", %{"sort_by" => sort_by, "sort_order" => _sort_order}, socket) do
     new_sort_order =
       if sort_by == socket.assigns.sort_by && socket.assigns.sort_order == "asc",
         do: "desc",
