@@ -106,11 +106,13 @@ defmodule TaskMasterWeb.Components.TaskComponents do
       <div class="grid sm:grid-cols-2 lg:grid-cols-7 sm:gap-1 text-sm">
         <.item_slot label={gettext("Description")}><%= @parent_task.description %></.item_slot>
         <.item_slot label={gettext("Due date")}><%= @parent_task.due_date %></.item_slot>
-        <.item_slot label={gettext("Status")}>
+        <%!-- <.item_slot label={gettext("Status")}>
           <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@parent_task.status) %>
-        </.item_slot>
+        </.item_slot> --%>
         <.item_slot label={gettext("Duration")}>
-          <%= TaskMasterWeb.Helpers.Formatted.format_duration(@parent_task.duration) %>
+          <%= TaskMasterWeb.Helpers.Formatted.format_duration(@parent_task.duration) %> <%= gettext(
+            "min"
+          ) %>
         </.item_slot>
         <.item_slot label={gettext("Priority")}>
           <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@parent_task.priority) %>
@@ -147,11 +149,12 @@ defmodule TaskMasterWeb.Components.TaskComponents do
       <div class="grid grid-cols-2 gap-2 text-sm mt-2">
         <.item_slot label={gettext("Description")}><%= @subtask.description %></.item_slot>
         <.item_slot label={gettext("Due date")}><%= @subtask.due_date %></.item_slot>
-        <.item_slot label={gettext("Status")}>
+        <%!-- <.item_slot label={gettext("Status")}>
           <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@subtask.status) %>
-        </.item_slot>
+        </.item_slot> --%>
         <.item_slot label={gettext("Duration")}>
           <%= TaskMasterWeb.Helpers.Formatted.format_duration(@subtask.duration) %>
+          <%= gettext("min") %>
         </.item_slot>
         <.item_slot label={gettext("Priority")}>
           <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@subtask.priority) %>
