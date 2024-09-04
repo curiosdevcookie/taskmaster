@@ -251,9 +251,9 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="flex flex-col h-[calc(100vh-8rem)] gap-6">
-      <div class="flex-1 flex flex-col overflow-hidden">
-        <.header class="flex-shrink-0 mb-4">
+    <div class="h-[calc(100vh-9rem)] flex flex-col gap-6">
+      <div class="h-2/3 overflow-hidden">
+        <.header class="mb-4">
           <%= gettext("Open Tasks") %>
 
           <:actions>
@@ -262,7 +262,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
             </.link>
           </:actions>
         </.header>
-        <section class="flex gap-1">
+        <section class="flex gap-1 mb-2">
           <.sort_button
             selected={@selected}
             label={gettext("Title")}
@@ -300,7 +300,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
             id="due_date"
           />
         </section>
-        <div class="flex-1 overflow-y-auto">
+        <div class="h-full overflow-y-auto">
           <.task_list
             parent_tasks={@open_parent_tasks}
             subtasks={@subtasks}
@@ -312,11 +312,11 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
           />
         </div>
       </div>
-      <div class="flex-1 flex flex-col overflow-hidden">
-        <.footer class="flex-shrink-0 mb-4">
+      <div class="h-1/3 overflow-hidden">
+        <.footer class="mb-6">
           <%= gettext("Completed Tasks") %>
         </.footer>
-        <div class="flex-1 overflow-y-auto">
+        <div class="h-full overflow-y-auto">
           <.task_list
             parent_tasks={@completed_parent_tasks}
             subtasks={@subtasks}

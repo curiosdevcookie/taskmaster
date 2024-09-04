@@ -668,12 +668,12 @@ msgstr "Aufgabe erfolgreich gelöscht"
 #: lib/task_master_web/live/task_live/task_component.ex:207
 #, elixir-autogen, elixir-format
 msgid "Cannot complete task: not all subtasks are completed"
-msgstr ""
+msgstr "Aufgabe kann nicht abgeschlossen werden: nicht alle Unteraufgaben sind abgeschlossen"
 
 #: lib/task_master_web/live/task_live/task_index.ex:317
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Completed Tasks"
-msgstr "Fertig"
+msgstr "Abgeschlossene Aufgaben"
 
 #: lib/task_master_web/live/task_live/task_index.ex:290
 #, elixir-autogen, elixir-format, fuzzy
@@ -683,4 +683,4 @@ msgstr "Fälligkeit"
 #: lib/task_master_web/components/layouts/root.html.heex:60
 #, elixir-autogen, elixir-format
 msgid "Settings"
-msgstr ""
+msgstr "Einstellungen"
