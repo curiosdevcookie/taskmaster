@@ -101,7 +101,7 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
       <:item title={gettext("Status")}>
         <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@task.status) %>
       </:item>
-      <:item title={gettext("Duration")}>
+      <:item title={gettext("Duration in minutes")}>
         <%= TaskMasterWeb.Helpers.Formatted.format_duration(@task.duration) %>
       </:item>
       <:item title={gettext("Priority")}>

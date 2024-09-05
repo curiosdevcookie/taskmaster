@@ -251,10 +251,49 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="h-[calc(100vh-9rem)] flex flex-col gap-10">
-      <div class="h-3/4 overflow-hidden">
-        <.header class="mb-4">
-          <%= gettext("Open Tasks") %>
+    <section class="flex gap-1 my-4">
+      <.sort_button
+        selected={@selected}
+        label={gettext("Title")}
+        sort_by="title"
+        sort_order={@sort_order}
+        id="title"
+      />
+      <.sort_button
+        selected={@selected}
+        label={gettext("Due Date")}
+        sort_by="due_date"
+        sort_order={@sort_order}
+        id="due_date"
+      />
+      <.sort_button
+        selected={@selected}
+        label={gettext("Duration")}
+        sort_by="duration"
+        sort_order={@sort_order}
+        id="duration"
+      />
+      <.sort_button
+        selected={@selected}
+        label={gettext("Priority")}
+        sort_by="priority"
+        sort_order={@sort_order}
+        id="priority"
+      />
+      <.sort_button
+        selected={@selected}
+        label={gettext("Indoor")}
+        sort_by="indoor"
+        sort_order={@sort_order}
+        id="indoor"
+      />
+    </section>
+    <div class="h-[calc(100vh-10rem)] flex flex-col gap-10">
+      <div class="2/3 overflow-hidden pb-20">
+        <.header class="mb-2">
+          <p>
+            <%= gettext("Open Tasks") %>
+          </p>
 
           <:actions>
             <.link patch={~p"/#{@current_user.id}/tasks/new"}>
@@ -262,43 +301,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
             </.link>
           </:actions>
         </.header>
-        <section class="flex gap-1 mb-2">
-          <.sort_button
-            selected={@selected}
-            label={gettext("Title")}
-            sort_by="title"
-            sort_order={@sort_order}
-            id="title"
-          />
-          <.sort_button
-            selected={@selected}
-            label={gettext("Due Date")}
-            sort_by="due_date"
-            sort_order={@sort_order}
-            id="due_date"
-          />
-          <.sort_button
-            selected={@selected}
-            label={gettext("Duration")}
-            sort_by="duration"
-            sort_order={@sort_order}
-            id="duration"
-          />
-          <.sort_button
-            selected={@selected}
-            label={gettext("Priority")}
-            sort_by="priority"
-            sort_order={@sort_order}
-            id="priority"
-          />
-          <.sort_button
-            selected={@selected}
-            label={gettext("Indoor")}
-            sort_by="indoor"
-            sort_order={@sort_order}
-            id="indoor"
-          />
-        </section>
+
         <div class="h-full overflow-y-auto">
           <.task_list
             parent_tasks={@open_parent_tasks}
@@ -311,10 +314,11 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
           />
         </div>
       </div>
-      <div class="h-1/4 overflow-hidden">
-        <.footer class="mb-6">
-          <%= gettext("Completed Tasks") %>
+      <div class="1/3 overflow-hidden pb-20">
+        <.footer class="mb-4">
+          <p><%= gettext("Completed Tasks") %></p>
         </.footer>
+
         <div class="h-full overflow-y-auto">
           <.task_list
             parent_tasks={@completed_parent_tasks}
