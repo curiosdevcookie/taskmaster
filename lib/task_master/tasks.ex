@@ -153,8 +153,15 @@ defmodule TaskMaster.Tasks do
            updated_task <- Repo.preload(updated_task, :participants),
            updated_task <- award_or_remove_stars_from_participants(updated_task, old_status),
            {:ok, parent_updated_task} <- update_parent_task(updated_task) do
+        TaskMasterWeb.Endpoint.broadcast("task_updates", "task_updated", updated_task)
+
+        if parent_updated_task,
+          do:
+            TaskMasterWeb.Endpoint.broadcast("task_updates", "task_updated", parent_updated_task)
+
         broadcast({:ok, updated_task}, :task_updated)
         broadcast({:ok, parent_updated_task}, :task_updated)
+
         # Return just the updated_task, not a tuple
         updated_task
       else
@@ -204,6 +211,7 @@ defmodule TaskMaster.Tasks do
       subtask.participants
     end)
     |> Enum.uniq_by(& &1.id)
+    |> dbg()
   end
 
   defp get_parent_task_status(parent_task_id) do
