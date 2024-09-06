@@ -4,7 +4,12 @@ defmodule TaskMasterWeb.StarCountLive do
 
   def render(assigns) do
     ~H"""
-    <svg id="b" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 12 12.4">
+    <svg
+      id="b"
+      xmlns="http://www.w3.org/2000/svg"
+      class="sm:w-6 sm:h-6 lg:w-12 lg:h-12"
+      viewBox="0 0 12 12.4"
+    >
       <defs>
         <style>
           .d{fill:#ffdf85;}.d,.e{stroke-width:0px;}.e{fill:#ffce31;}

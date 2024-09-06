@@ -308,8 +308,8 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
         id="indoor"
       />
     </section>
-    <div class="h-[calc(100vh-10rem)] flex flex-col gap-10">
-      <div class="2/3 overflow-hidden pb-20">
+    <div class="flex flex-col gap-1 h-[calc(100vh-6rem)]">
+      <div class="h-[80%] overflow-hidden pb-20">
         <.header class="mb-2">
           <p>
             <%= gettext("Open Tasks") %>
@@ -334,7 +334,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
           />
         </div>
       </div>
-      <div class="1/3 overflow-hidden pb-20">
+      <div class="h-[30%] overflow-hidden pb-20">
         <.footer class="mb-4">
           <p><%= gettext("Completed Tasks") %></p>
         </.footer>
