@@ -10,9 +10,9 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>
+        <%!-- <:subtitle>
           <%= gettext("Use this form to manage task records in your database.") %>
-        </:subtitle>
+        </:subtitle> --%>
       </.header>
 
       <.simple_form
@@ -46,7 +46,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
             TaskMasterWeb.Helpers.EnumTranslator.translate_enum(TaskMaster.Tasks.Task, :status)
           }
         />
-        <.input field={@form[:duration]} type="number" label={gettext("Duration")} />
+        <.input field={@form[:duration]} type="number" label={gettext("Duration in minutes")} />
         <.input
           field={@form[:priority]}
           type="select"

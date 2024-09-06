@@ -60,7 +60,7 @@ msgstr "Account anlegen"
 msgid "Already registered?"
 msgstr "Bereits registriert?"
 
-#: lib/task_master_web/components/layouts/root.html.heex:114
+#: lib/task_master_web/components/layouts/root.html.heex:117
 #: lib/task_master_web/live/user_confirmation_instructions_live.ex:25
 #: lib/task_master_web/live/user_confirmation_live.ex:22
 #: lib/task_master_web/live/user_forgot_password_live.ex:24
@@ -127,7 +127,7 @@ msgstr "Aktuelles Passwort"
 msgid "New password"
 msgstr "Neues Passwort"
 
-#: lib/task_master_web/components/layouts/root.html.heex:106
+#: lib/task_master_web/components/layouts/root.html.heex:109
 #: lib/task_master_web/live/user_confirmation_instructions_live.ex:24
 #: lib/task_master_web/live/user_confirmation_live.ex:21
 #: lib/task_master_web/live/user_forgot_password_live.ex:23
@@ -141,7 +141,7 @@ msgstr "Registrieren"
 msgid "Reset Password"
 msgstr "Passwort"
 
-#: lib/task_master_web/components/layouts/root.html.heex:67
+#: lib/task_master_web/components/layouts/root.html.heex:70
 #, elixir-autogen, elixir-format
 msgid "Log out"
 msgstr "Ausloggen"
@@ -333,7 +333,7 @@ msgid "Listing Tasks"
 msgstr "Tasks"
 
 #: lib/task_master_web/live/task_live/task_index.ex:68
-#: lib/task_master_web/live/task_live/task_index.ex:299
+#: lib/task_master_web/live/task_live/task_index.ex:263
 #, elixir-autogen, elixir-format
 msgid "New Task"
 msgstr "Neue Task"
@@ -355,15 +355,13 @@ msgstr "Speichern"
 msgid "Use this form to manage task records in your database."
 msgstr "Verwende dieses Formular, um Task-Einträge in Deiner Datenbank zu verwalten."
 
-#: lib/task_master_web/components/task_components.ex:107
-#: lib/task_master_web/components/task_components.ex:148
 #: lib/task_master_web/live/task_live/task_component.ex:38
 #: lib/task_master_web/live/task_live/task_show.ex:99
 #, elixir-autogen, elixir-format
 msgid "Description"
 msgstr "Beschreibung"
 
-#: lib/task_master_web/components/task_components.ex:108
+#: lib/task_master_web/components/task_components.ex:107
 #: lib/task_master_web/components/task_components.ex:149
 #: lib/task_master_web/live/task_live/task_component.ex:39
 #: lib/task_master_web/live/task_live/task_show.ex:100
@@ -371,35 +369,33 @@ msgstr "Beschreibung"
 msgid "Due date"
 msgstr "Fälligkeit"
 
-#: lib/task_master_web/components/task_components.ex:112
-#: lib/task_master_web/components/task_components.ex:153
-#: lib/task_master_web/live/task_live/task_component.ex:49
-#: lib/task_master_web/live/task_live/task_index.ex:268
-#: lib/task_master_web/live/task_live/task_show.ex:104
+#: lib/task_master_web/components/task_components.ex:111
+#: lib/task_master_web/components/task_components.ex:150
+#: lib/task_master_web/live/task_live/task_index.ex:284
 #, elixir-autogen, elixir-format
 msgid "Duration"
 msgstr "Dauer"
 
-#: lib/task_master_web/components/task_components.ex:118
-#: lib/task_master_web/components/task_components.ex:159
+#: lib/task_master_web/components/task_components.ex:119
+#: lib/task_master_web/components/task_components.ex:157
 #: lib/task_master_web/live/task_live/task_component.ex:59
-#: lib/task_master_web/live/task_live/task_index.ex:282
+#: lib/task_master_web/live/task_live/task_index.ex:298
 #: lib/task_master_web/live/task_live/task_show.ex:110
 #, elixir-autogen, elixir-format
 msgid "Indoor"
 msgstr "Indoor"
 
-#: lib/task_master_web/components/task_components.ex:115
-#: lib/task_master_web/components/task_components.ex:156
+#: lib/task_master_web/components/task_components.ex:116
+#: lib/task_master_web/components/task_components.ex:154
 #: lib/task_master_web/live/task_live/task_component.ex:53
-#: lib/task_master_web/live/task_live/task_index.ex:275
+#: lib/task_master_web/live/task_live/task_index.ex:291
 #: lib/task_master_web/live/task_live/task_show.ex:107
 #, elixir-autogen, elixir-format
 msgid "Priority"
 msgstr "Priorität"
 
 #: lib/task_master_web/live/task_live/task_component.ex:37
-#: lib/task_master_web/live/task_live/task_index.ex:261
+#: lib/task_master_web/live/task_live/task_index.ex:270
 #: lib/task_master_web/live/task_live/task_show.ex:98
 #, elixir-autogen, elixir-format
 msgid "Title"
@@ -410,8 +406,6 @@ msgstr "Titel"
 msgid "Edit Task"
 msgstr "Bearbeiten"
 
-#: lib/task_master_web/components/task_components.ex:109
-#: lib/task_master_web/components/task_components.ex:150
 #: lib/task_master_web/live/task_live/task_show.ex:101
 #, elixir-autogen, elixir-format
 msgid "Status"
@@ -531,8 +525,8 @@ msgstr "Wähle bitte aus"
 msgid "Who is participating?"
 msgstr "Wer macht mit?"
 
-#: lib/task_master_web/components/task_components.ex:121
-#: lib/task_master_web/components/task_components.ex:162
+#: lib/task_master_web/components/task_components.ex:122
+#: lib/task_master_web/components/task_components.ex:160
 #: lib/task_master_web/live/task_live/task_show.ex:113
 #, elixir-autogen, elixir-format
 msgid "Who?"
@@ -635,7 +629,7 @@ msgstr "Aufgabe erfolgreich erstellt"
 msgid "Task updated successfully"
 msgstr "Aufgabe erfolgreich aktualisiert"
 
-#: lib/task_master_web/components/layouts/root.html.heex:96
+#: lib/task_master_web/components/layouts/root.html.heex:99
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Tasks"
 msgstr "Tasks"
@@ -645,7 +639,7 @@ msgstr "Tasks"
 msgid "User created successfully."
 msgstr "Nutzer erfolgreich angelegt."
 
-#: lib/task_master_web/live/task_live/task_index.ex:257
+#: lib/task_master_web/live/task_live/task_index.ex:258
 #, elixir-autogen, elixir-format
 msgid "Open Tasks"
 msgstr "Offene Aufgaben"
@@ -668,19 +662,35 @@ msgstr "Aufgabe erfolgreich gelöscht"
 #: lib/task_master_web/live/task_live/task_component.ex:207
 #, elixir-autogen, elixir-format
 msgid "Cannot complete task: not all subtasks are completed"
-msgstr ""
+msgstr "Aufgabe kann nicht abgeschlossen werden: nicht alle Unteraufgaben sind abgeschlossen"
 
-#: lib/task_master_web/live/task_live/task_index.ex:317
+#: lib/task_master_web/live/task_live/task_index.ex:318
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Completed Tasks"
-msgstr "Fertig"
+msgstr "Abgeschlossene Aufgaben"
 
-#: lib/task_master_web/live/task_live/task_index.ex:290
+#: lib/task_master_web/live/task_live/task_index.ex:277
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Due Date"
 msgstr "Fälligkeit"
 
-#: lib/task_master_web/components/layouts/root.html.heex:60
+#: lib/task_master_web/components/layouts/root.html.heex:63
 #, elixir-autogen, elixir-format
 msgid "Settings"
+msgstr "Einstellungen"
+
+#: lib/task_master_web/live/task_live/task_component.ex:49
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Duration in min"
+msgstr "Dauer in min"
+
+#: lib/task_master_web/live/task_live/task_show.ex:104
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Duration in minutes"
+msgstr "Dauer in Minuten"
+
+#: lib/task_master_web/components/task_components.ex:112
+#: lib/task_master_web/components/task_components.ex:152
+#, elixir-autogen, elixir-format
+msgid "min"
 msgstr ""

@@ -25,7 +25,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
 
   def task_list(assigns) do
     ~H"""
-    <ul class="space-y-2">
+    <ul class="space-y-1">
       <%= for parent_task <- @parent_tasks do %>
         <.task_list_items
           parent_task={parent_task}
@@ -43,7 +43,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
     ~H"""
     <ul
       id={"dropdown_id_#{@parent_task.id}"}
-      class="hidden space-y-2 mt-4"
+      class="hidden space-y-2 mt-3"
       phx-click-away={
         JS.hide(
           to: "#dropdown_id_#{@parent_task.id}",
@@ -52,7 +52,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
         |> JS.toggle_class("rotate-90", to: "#chevron_id_#{@parent_task.id}")
       }
     >
-      <%= for subtask <- Enum.filter(@subtasks, & &1.parent_task_id == @parent_task.id) do %>
+      <%= for subtask <- @subtasks|> Enum.filter(& &1.parent_task_id == @parent_task.id) do %>
         <.subtask_list_items subtask={subtask} navigate_fn={@navigate_fn} patch_fn={@patch_fn} />
       <% end %>
     </ul>
@@ -61,9 +61,9 @@ defmodule TaskMasterWeb.Components.TaskComponents do
 
   def task_list_items(assigns) do
     ~H"""
-    <li class="border border-gray-600 p-4 rounded-lg">
+    <li class="border border-gray-600 lg:p-4 sm:px-4 sm:py-2 rounded-lg">
       <div class="flex items-center justify-between gap-1">
-        <div class="flex items-center gap-1 truncate mb-2">
+        <div class="flex items-center gap-1 truncate">
           <.button
             :if={Enum.any?(@subtasks, &(&1.parent_task_id == @parent_task.id))}
             phx-click={
@@ -103,14 +103,15 @@ defmodule TaskMasterWeb.Components.TaskComponents do
           </.link>
         </div>
       </div>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-7 sm:gap-1 text-sm">
-        <.item_slot label={gettext("Description")}><%= @parent_task.description %></.item_slot>
+      <div class="lg:grid sm:hidden lg:grid-cols-6 mt-2 text-sm">
         <.item_slot label={gettext("Due date")}><%= @parent_task.due_date %></.item_slot>
         <.item_slot label={gettext("Status")}>
           <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@parent_task.status) %>
         </.item_slot>
         <.item_slot label={gettext("Duration")}>
-          <%= TaskMasterWeb.Helpers.Formatted.format_duration(@parent_task.duration) %>
+          <%= TaskMasterWeb.Helpers.Formatted.format_duration(@parent_task.duration) %> <%= gettext(
+            "min"
+          ) %>
         </.item_slot>
         <.item_slot label={gettext("Priority")}>
           <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@parent_task.priority) %>
@@ -136,22 +137,19 @@ defmodule TaskMasterWeb.Components.TaskComponents do
 
   def subtask_list_items(assigns) do
     ~H"""
-    <li class="border border-gray-300 p-2 rounded">
-      <div class="flex justify-between">
+    <li class="border border-gray-300 px-2 py-1 rounded">
+      <div class="flex items-center justify-between">
         <.link navigate={@navigate_fn.(@subtask)} class="font-medium">
           <%= @subtask.title %>
           <.icon name="hero-information-circle" class="text-gray-700" />
         </.link>
         <.check_task task={@subtask} />
       </div>
-      <div class="grid grid-cols-2 gap-2 text-sm mt-2">
-        <.item_slot label={gettext("Description")}><%= @subtask.description %></.item_slot>
+      <div class="lg:grid lg:grid-cols-2 sm:hidden gap-2 text-sm mt-2">
         <.item_slot label={gettext("Due date")}><%= @subtask.due_date %></.item_slot>
-        <.item_slot label={gettext("Status")}>
-          <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@subtask.status) %>
-        </.item_slot>
         <.item_slot label={gettext("Duration")}>
           <%= TaskMasterWeb.Helpers.Formatted.format_duration(@subtask.duration) %>
+          <%= gettext("min") %>
         </.item_slot>
         <.item_slot label={gettext("Priority")}>
           <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@subtask.priority) %>
@@ -175,7 +173,8 @@ defmodule TaskMasterWeb.Components.TaskComponents do
   def item_slot(assigns) do
     ~H"""
     <div>
-      <strong><%= @label %>:</strong> <%= render_slot(@inner_block) %>
+      <strong><%= @label %>:</strong>
+      <p><%= render_slot(@inner_block) %></p>
     </div>
     """
   end
