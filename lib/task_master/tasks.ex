@@ -8,6 +8,8 @@ defmodule TaskMaster.Tasks do
 
   alias TaskMaster.Tasks.Task
   alias TaskMaster.Tasks.TaskParticipation
+  alias TaskMaster.Accounts
+  require Logger
 
   @doc """
   Returns the list of tasks.
@@ -69,29 +71,99 @@ defmodule TaskMaster.Tasks do
     end
   end
 
+  def award_or_remove_stars_from_participants(task, old_status) do
+    task = Repo.preload(task, :participants)
+
+    Logger.info(
+      "Awarding or removing stars. Task ID: #{task.id}, Old status: #{old_status}, New status: #{task.status}"
+    )
+
+    Enum.each(task.participants, fn participant ->
+      Logger.info("Processing participant #{participant.id}")
+      Logger.info("Participant current stars: #{participant.stars}")
+
+      case {old_status, task.status} do
+        {:completed, status} when status in [:open, :progressing] ->
+          Logger.info("Attempting to decrement star for user #{participant.id}")
+
+          case Accounts.decrement_user_stars(participant) do
+            {:ok, updated_user} ->
+              Logger.info("User #{participant.id} stars after decrement: #{updated_user.stars}")
+
+            error ->
+              Logger.error(
+                "Failed to decrement stars for user #{participant.id}: #{inspect(error)}"
+              )
+          end
+
+        {status, :completed} when status in [:open, :progressing] ->
+          Logger.info("Attempting to increment star for user #{participant.id}")
+
+          case Accounts.increment_user_stars(participant) do
+            {:ok, updated_user} ->
+              Logger.info("User #{participant.id} stars after increment: #{updated_user.stars}")
+
+            error ->
+              Logger.error(
+                "Failed to increment stars for user #{participant.id}: #{inspect(error)}"
+              )
+          end
+
+        _ ->
+          Logger.info("No change in completion status for user #{participant.id}")
+      end
+    end)
+
+    task
+  end
+
   def update_task(%Task{} = task, attrs, participants \\ [], org_id) do
-    do_update_task(task, attrs, participants, org_id)
+    Logger.info(
+      "Updating task #{task.id}. Current status: #{task.status}, New status: #{attrs[:status]}"
+    )
+
+    result = do_update_task(task, attrs, participants, org_id)
+
+    case result do
+      {:ok, updated_task} ->
+        Logger.info(
+          "Task #{updated_task.id} successfully updated. New status: #{updated_task.status}"
+        )
+
+        # Return just the updated_task, not a tuple
+        updated_task
+
+      {:error, _} = error ->
+        Logger.error("Failed to update task: #{inspect(error)}")
+        error
+    end
   end
 
   defp do_update_task(task, attrs, participants, org_id) do
+    old_status = task.status
+    Logger.info("Updating task #{task.id}. Old status: #{old_status}")
+
     attrs = maybe_set_completed_at(attrs, task)
+    Logger.info("Attributes after maybe_set_completed_at: #{inspect(attrs)}")
 
-    task
-    |> Task.changeset(attrs)
-    |> Repo.update()
-    |> case do
-      {:ok, updated_task} ->
-        updated_task = update_participants(updated_task, participants, org_id)
-        updated_task = Repo.preload(updated_task, :participants)
+    Repo.transaction(fn ->
+      with {:ok, updated_task} <- Task.changeset(task, attrs) |> Repo.update(),
+           _ <- Logger.info("Task updated in DB. New status: #{updated_task.status}"),
+           updated_task <- update_participants(updated_task, participants, org_id),
+           updated_task <- Repo.preload(updated_task, :participants),
+           updated_task <- award_or_remove_stars_from_participants(updated_task, old_status),
+           {:ok, parent_updated_task} <- update_parent_task(updated_task) do
         broadcast({:ok, updated_task}, :task_updated)
-        {:ok, parent_updated_task} = update_parent_task(updated_task)
         broadcast({:ok, parent_updated_task}, :task_updated)
-
-        {:ok, updated_task}
-
-      error ->
-        broadcast(error, :task_update_failed)
-    end
+        # Return just the updated_task, not a tuple
+        updated_task
+      else
+        error ->
+          Logger.error("Failed to update task: #{inspect(error)}")
+          broadcast(error, :task_update_failed)
+          Repo.rollback(error)
+      end
+    end)
   end
 
   defp update_parent_task(%Task{parent_task_id: nil} = task), do: {:ok, task}
