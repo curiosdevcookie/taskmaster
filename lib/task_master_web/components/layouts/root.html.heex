@@ -14,6 +14,44 @@
   <body class="bg-white antialiased min-h-screen flex flex-col p-4">
     <ul class="relative flex items-center gap-4 px-4 sm:px-2 lg:px-8 justify-end">
       <%= if @current_user do %>
+        <section>
+          <svg
+            id="b"
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 12 12.4"
+          >
+            <defs>
+              <style>
+                .d{fill:#ffdf85;}.d,.e{stroke-width:0px;}.e{fill:#ffce31;}
+              </style>
+            </defs>
+            <g id="c">
+              <polygon
+                class="e"
+                points="11.6 4.7 7.3 4.7 6 .7 4.7 4.7 .4 4.7 3.9 7.1 2.5 11 6 8.6 9.5 11 8.1 7.1 11.6 4.7"
+              /><polygon class="d" points="8.7 4.2 9.4 2 7.4 3.4 7.7 4.2 8.7 4.2" /><polygon
+                class="d"
+                points="5.2 9.7 6 12 6.8 9.7 6 9.2 5.2 9.7"
+              /><polygon class="d" points="9.5 6.8 8.8 7.3 9.1 8.2 11.5 8.2 9.5 6.8" /><polygon
+                class="d"
+                points="4.6 3.4 2.6 2 3.3 4.2 4.3 4.2 4.6 3.4"
+              /><polygon class="d" points="2.5 6.8 .5 8.2 2.9 8.2 3.2 7.3 2.5 6.8" />
+            </g>
+            <text
+              x="50%"
+              y="55%"
+              dominant-baseline="middle"
+              text-anchor="middle"
+              fill="blue"
+              font-size="3"
+              font-weight="bold"
+            >
+              <%= @current_user.stars %>
+            </text>
+          </svg>
+        </section>
         <.button
           phx-click={
             JS.toggle(
