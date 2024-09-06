@@ -4,6 +4,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   alias TaskMaster.Tasks
   alias TaskMaster.Tasks.Task
   import TaskMasterWeb.Components.TaskComponents
+  require Logger
 
   @impl true
   def mount(params, _session, socket) do
@@ -91,7 +92,14 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   @impl true
   def handle_info({TaskMasterWeb.TaskLive.TaskComponent, {:saved, task}}, socket) do
     org_id = socket.assigns.current_user.organization_id
-    updated_task = Tasks.get_task!(task.id, org_id) |> Tasks.preload_task_participants()
+
+    updated_task =
+      case task do
+        %TaskMaster.Tasks.Task{} -> task
+        {:ok, task} -> task
+        _ -> Tasks.get_task!(task.id, org_id)
+      end
+      |> Tasks.preload_task_participants()
 
     {:noreply,
      socket
@@ -137,7 +145,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     |> update_subtasks(updated_task)
   end
 
-  defp update_parent_tasks(socket, updated_task) do
+  defp update_parent_tasks(socket, %Task{} = updated_task) do
     if is_nil(updated_task.parent_task_id) do
       {open_parent_tasks, completed_parent_tasks} =
         (socket.assigns.open_parent_tasks ++ socket.assigns.completed_parent_tasks)
@@ -154,7 +162,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     end
   end
 
-  defp update_subtasks(socket, updated_task) do
+  defp update_subtasks(socket, %Task{} = updated_task) do
     socket
     |> update(:subtasks, fn tasks ->
       Enum.map(tasks, fn task ->
@@ -185,17 +193,29 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     org_id = socket.assigns.current_user.organization_id
     task = Tasks.get_task!(id, org_id)
 
-    new_status = if current_status == "completed", do: "open", else: "completed"
+    new_status =
+      case current_status do
+        "completed" -> :open
+        _ -> :completed
+      end
+
+    Logger.info(
+      "Toggling task status. Task ID: #{id}, Current status: #{current_status}, New status: #{new_status}"
+    )
 
     case Tasks.update_task(task, %{status: new_status}, task.participants, org_id) do
-      {:ok, _updated_task} ->
-        {:noreply, socket}
+      %Task{} = updated_task ->
+        Logger.info("Task updated successfully. New status: #{updated_task.status}")
+        {:noreply, update_task_in_assigns(socket, updated_task)}
 
       {:error, :subtasks_not_completed} ->
+        Logger.warning("Cannot complete task: not all subtasks are completed")
+
         {:noreply,
          put_flash(socket, :error, "Cannot complete task: not all subtasks are completed")}
 
-      {:error, _changeset} ->
+      {:error, changeset} ->
+        Logger.error("Failed to update task status: #{inspect(changeset)}")
         {:noreply, put_flash(socket, :error, "Failed to update task status")}
     end
   end
@@ -288,8 +308,8 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
         id="indoor"
       />
     </section>
-    <div class="h-[calc(100vh-10rem)] flex flex-col gap-10">
-      <div class="2/3 overflow-hidden pb-20">
+    <div class="flex flex-col gap-1 h-[calc(100vh-6rem)]">
+      <div class="h-[80%] overflow-hidden pb-20">
         <.header class="mb-2">
           <p>
             <%= gettext("Open Tasks") %>
@@ -314,7 +334,7 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
           />
         </div>
       </div>
-      <div class="1/3 overflow-hidden pb-20">
+      <div class="h-[30%] overflow-hidden pb-20">
         <.footer class="mb-4">
           <p><%= gettext("Completed Tasks") %></p>
         </.footer>

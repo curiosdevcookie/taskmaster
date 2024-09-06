@@ -13,6 +13,8 @@ defmodule TaskMaster.Accounts do
   alias TaskMaster.Organizations
   alias TaskMaster.Accounts.Organization
 
+  require Logger
+
   ## Database getters
 
   def list_users(org_id) do
@@ -564,4 +566,32 @@ defmodule TaskMaster.Accounts do
 
   def maybe_preload_avatar(nil), do: nil
   def maybe_preload_avatar(user), do: Repo.preload(user, :avatar)
+
+  def increment_user_stars(user) do
+    user
+    |> User.stars_changeset(%{stars: user.stars + 1})
+    |> Repo.update()
+  end
+
+  def decrement_user_stars(user) do
+    Logger.info("Decrementing stars for user #{user.id}. Current stars: #{user.stars}")
+
+    result =
+      user
+      |> User.stars_changeset(%{stars: max(user.stars - 1, 0)})
+      |> Repo.update()
+
+    case result do
+      {:ok, updated_user} ->
+        Logger.info(
+          "Stars decremented for user #{updated_user.id}. New stars: #{updated_user.stars}"
+        )
+
+        {:ok, updated_user}
+
+      error ->
+        Logger.error("Failed to decrement stars for user #{user.id}: #{inspect(error)}")
+        error
+    end
+  end
 end

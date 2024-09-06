@@ -31,15 +31,27 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
     org_id = socket.assigns.current_user.organization_id
     task = Tasks.get_task!(id, org_id)
 
-    Tasks.delete_task(task, org_id)
+    case Tasks.delete_task(task, org_id) do
+      {:ok, _deleted_task} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Task deleted successfully"))
+         |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
 
-    socket
-    |> noreply()
+      {:error, _changeset} ->
+        {:noreply, put_flash(socket, :error, gettext("Failed to delete task"))}
+    end
   end
 
   @impl true
-  def handle_info({TaskMasterWeb.TaskLive.TaskComponent, {:saved, updated_task}}, socket) do
-    updated_task = Tasks.preload_task_participants(updated_task)
+  def handle_info({TaskMasterWeb.TaskLive.TaskComponent, {:saved, task}}, socket) do
+    updated_task =
+      case task do
+        %TaskMaster.Tasks.Task{} -> task
+        {:ok, task} -> task
+        _ -> Tasks.get_task!(task.id, socket.assigns.current_user.organization_id)
+      end
+      |> Tasks.preload_task_participants()
 
     {:noreply,
      socket
@@ -59,7 +71,14 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
 
   @impl true
   def handle_info({:task_deleted, deleted_task}, socket) do
-    if deleted_task.id == socket.assigns.task.id do
+    task_id =
+      case deleted_task do
+        %TaskMaster.Tasks.Task{id: id} -> id
+        {:ok, %TaskMaster.Tasks.Task{id: id}} -> id
+        _ -> nil
+      end
+
+    if task_id && task_id == socket.assigns.task.id do
       {:noreply,
        socket
        |> put_flash(:info, gettext("Task deleted successfully"))

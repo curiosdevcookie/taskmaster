@@ -198,6 +198,15 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
          |> put_flash(:info, gettext("Task updated successfully"))
          |> push_patch(to: socket.assigns.patch)}
 
+      %TaskMaster.Tasks.Task{} = updated_task ->
+        notify_parent({:saved, updated_task})
+
+        {:noreply,
+         socket
+         |> assign(:task, updated_task)
+         |> put_flash(:info, gettext("Task updated successfully"))
+         |> push_patch(to: socket.assigns.patch)}
+
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
 
@@ -221,6 +230,14 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
          |> put_flash(:info, gettext("Task created successfully"))
          |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
 
+      %TaskMaster.Tasks.Task{} = task ->
+        notify_parent({:saved, task})
+
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Task created successfully"))
+         |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
+
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
     end
@@ -234,6 +251,15 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
 
     case Tasks.create_task(task_params, socket.assigns.participants, org_id, parent_id) do
       {:ok, task} ->
+        IO.puts("Subtask created successfully: #{inspect(task)}")
+        notify_parent({:saved, task})
+
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Subtask created successfully"))
+         |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
+
+      %TaskMaster.Tasks.Task{} = task ->
         IO.puts("Subtask created successfully: #{inspect(task)}")
         notify_parent({:saved, task})
 
