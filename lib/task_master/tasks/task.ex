@@ -7,10 +7,10 @@ defmodule TaskMaster.Tasks.Task do
   @foreign_key_type :binary_id
 
   schema "tasks" do
+    field :title, :string
     field :priority, Ecto.Enum, values: [:low, :medium, :high], default: :medium
     field :status, Ecto.Enum, values: [:open, :progressing, :completed], default: :open
     field :description, :string
-    field :title, :string
     field :due_date, :date
     field :duration, :integer
     field :completed_at, :naive_datetime
@@ -40,7 +40,7 @@ defmodule TaskMaster.Tasks.Task do
       :created_by,
       :parent_task_id,
       :organization_id,
-      :completed_at,
+      :completed_at
     ])
     |> validate_required([
       :title,
