@@ -20,27 +20,37 @@ defmodule TaskMaster.Tasks do
       [%Task{}, ...]
 
   """
-  def list_tasks(org_id) do
+
+  def list_tasks(org_id, sort_by \\ :title, sort_order \\ :asc) do
     Task
     |> Task.for_org(org_id)
+    |> maybe_order_by(sort_by, sort_order)
     |> Repo.all()
     |> Repo.preload([:task_participations, :participants])
   end
 
-  def list_parent_tasks(org_id) do
+  def list_parent_tasks(org_id, sort_by \\ :title, sort_order \\ :asc) do
     Task
     |> Task.for_org(org_id)
     |> where([t], is_nil(t.parent_task_id))
+    |> maybe_order_by(sort_by, sort_order)
     |> Repo.all()
     |> Repo.preload([:task_participations, :participants])
   end
 
-  def list_subtasks(org_id) do
+  def list_subtasks(org_id, sort_by \\ :title, sort_order \\ :asc) do
     Task
     |> Task.for_org(org_id)
     |> where([t], not is_nil(t.parent_task_id))
+    |> maybe_order_by(sort_by, sort_order)
     |> Repo.all()
     |> Repo.preload([:task_participations, :participants])
+  end
+
+  defp maybe_order_by(query, _sort_by, :inactive), do: query
+
+  defp maybe_order_by(query, sort_by, sort_order) do
+    order_by(query, {^sort_order, ^sort_by})
   end
 
   def get_task!(id, _org_id) when is_nil(id), do: %Task{}

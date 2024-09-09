@@ -104,10 +104,10 @@ defmodule TaskMasterWeb.Components.TaskComponents do
         </div>
       </div>
       <div class="lg:grid sm:hidden lg:grid-cols-6 mt-2 text-sm">
-        <.item_slot label={gettext("Due date")}><%= @parent_task.due_date %></.item_slot>
-        <.item_slot label={gettext("Status")}>
-          <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@parent_task.status) %>
+        <.item_slot label={gettext("Description")}>
+          <%= @parent_task.description %>
         </.item_slot>
+        <.item_slot label={gettext("Due date")}><%= @parent_task.due_date %></.item_slot>
         <.item_slot label={gettext("Duration")}>
           <%= TaskMasterWeb.Helpers.Formatted.format_duration(@parent_task.duration) %> <%= gettext(
             "min"
@@ -198,27 +198,71 @@ defmodule TaskMasterWeb.Components.TaskComponents do
     """
   end
 
-  attr(:sort_by, :string, default: "")
-  attr(:sort_order, :string, default: "asc")
-  attr(:selected, :string, required: true)
-  attr(:label, :string, required: true)
-  attr(:id, :string, required: true)
+  attr(:sort_criteria, :list, required: true)
+
+  def sort_button_list(assigns) do
+    ~H"""
+    <div class="flex gap-2">
+      <%= for sort_criterion <- @sort_criteria do %>
+        <.sort_button sort_criterion={sort_criterion} />
+        <%!-- <%= if sort_order_is_activated?(@sort_criteria) do %>
+          ja
+        <% else %>
+          nein
+        <% end %> --%>
+      <% end %>
+    </div>
+    """
+  end
+
+  attr(:sort_criterion, :map, required: true)
+
+  def sort_button(assigns = %{sort_criterion: %{status: :inactive}}) do
+    ~H"""
+    <.button
+      phx-click={
+        JS.push("sort_tasks", value: %{field: @sort_criterion.field, status: @sort_criterion.status})
+      }
+      class="flex items-center gap-1 "
+    >
+      <p>
+        <%= @sort_criterion.label %>
+      </p>
+    </.button>
+    """
+  end
 
   def sort_button(assigns) do
     ~H"""
     <.button
-      phx-click={JS.push("sort_tasks", value: %{sort_by: @sort_by, sort_order: @sort_order})}
-      class={
-      "flex items-center gap-1 " <>
-      if (@id == @selected and @sort_order == "asc"),
-        do: "text-blue-500",
-        else: "text-grey-500"
-    }
-      id={@id}
+      phx-click={
+        JS.push("sort_tasks", value: %{field: @sort_criterion.field, status: @sort_criterion.status})
+      }
+      class="flex items-center gap-1 "
     >
-      <.icon name="hero-arrows-up-down" class="h-3 w-3" />
-      <p class="text-sm"><%= @label %></p>
+      <%= if @sort_criterion.type == :alpha do %>
+        <%= case @sort_criterion.status do %>
+          <% :asc -> %>
+            <.icon name="hero-arrow-up" class="h-3 w-3" />
+          <% :desc -> %>
+            <.icon name="hero-arrow-down" class="h-3 w-3" />
+        <% end %>
+      <% else %>
+        <%= case @sort_criterion.status do %>
+          <% :asc -> %>
+            <.icon name="hero-arrow-up" class="h-3 w-3" />
+          <% :desc -> %>
+            <.icon name="hero-arrow-down" class="h-3 w-3" />
+        <% end %>
+      <% end %>
+      <p>
+        <%= @sort_criterion.label %>
+      </p>
     </.button>
     """
+  end
+
+  defp sort_order_is_activated?(sort_criteria) do
+    Enum.any?(sort_criteria, fn sc -> sc.status != :inactive end)
   end
 end
