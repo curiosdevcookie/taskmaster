@@ -61,14 +61,24 @@ defmodule TaskMaster.TasksTest do
       assert task.organization_id == organization.id
     end
 
-    test "update_task/4 with invalid data returns error changeset", %{organization: organization} do
-      task = task_fixture(%{"organization_id" => organization.id})
+    @invalid_attrs %{
+      title: nil,
+      status: nil,
+      priority: nil,
+      indoor: nil,
+      created_by: nil,
+      organization_id: nil
+    }
 
-      assert {:error, %Ecto.Changeset{}} =
+    test "update_task/4 with invalid data returns error tuple and doesn't change the task" do
+      organization = organization_fixture()
+      task = task_fixture(%{organization: organization})
+
+      assert {:error, {:error, %Ecto.Changeset{}}} =
                Tasks.update_task(task, @invalid_attrs, [], organization.id)
 
-      assert returned_task = Tasks.get_task!(task.id, organization.id)
-      assert returned_task.id == task.id
+      updated_task = Tasks.get_task!(task.id, organization.id)
+      assert updated_task == task
     end
 
     test "delete_task/2 deletes the task", %{organization: organization} do

@@ -199,7 +199,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
   end
 
   attr(:sort_criteria, :list, required: true)
-  attr(:current_sort_criteria, :list, required: false)
+  attr(:current_sort_criteria, :list, required: true)
 
   def sort_button_list(assigns) do
     ~H"""
@@ -212,7 +212,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
   end
 
   attr(:sort_criterion, :map, required: true)
-  attr(:current_status, :any, required: true)
+  attr(:current_sort_criteria, :list, required: true)
 
   def sort_button(assigns) do
     current_status =
