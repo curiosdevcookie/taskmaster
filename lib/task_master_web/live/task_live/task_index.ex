@@ -8,31 +8,22 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   require Logger
 
   @impl true
-  def mount(params, _session, socket) do
+  def mount(_params, _session, socket) do
     current_user = socket.assigns.current_user
-    sort_by = (params["sort_by"] || "title") |> String.to_existing_atom()
-    sort_order = (params["sort_order"] || "asc") |> String.to_existing_atom()
+    current_sort_criteria = []
 
-    tasks = Tasks.list_tasks(current_user.organization_id, sort_by, sort_order)
-    parent_tasks = Tasks.list_parent_tasks(current_user.organization_id, sort_by, sort_order)
-    subtasks = Tasks.list_subtasks(current_user.organization_id, sort_by, sort_order)
-
-    parent_tasks = Enum.map(parent_tasks, &Tasks.preload_task_participants/1)
-    subtasks = Enum.map(subtasks, &Tasks.preload_task_participants/1)
+    tasks = Tasks.list_tasks(current_user.organization_id, current_sort_criteria)
+    parent_tasks = Tasks.list_parent_tasks(current_user.organization_id, current_sort_criteria)
+    subtasks = Tasks.list_subtasks(current_user.organization_id)
 
     {completed_parent_tasks, open_parent_tasks} =
       Enum.split_with(parent_tasks, &(&1.status == :completed))
 
-    sort_criteria = Sorting.get_default_sort_criteria()
-
-    if connected?(socket) do
-      Tasks.subscribe(current_user.organization_id)
-    end
-
     socket
     |> assign(:current_user, current_user)
     |> assign(:page_title, gettext("Listing Tasks"))
-    |> assign(:sort_criteria, sort_criteria)
+    |> assign(:sort_criteria, Sorting.get_default_sort_criteria())
+    |> assign(:current_sort_criteria, current_sort_criteria)
     |> stream(:tasks, tasks)
     |> assign(:open_parent_tasks, open_parent_tasks)
     |> assign(:completed_parent_tasks, completed_parent_tasks)
@@ -42,34 +33,12 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
 
   @impl true
   def handle_params(params, _url, socket) do
+    sort_criteria = Sorting.parse_sort_criteria(params)
+
     socket
-    |> maybe_assign_sort_by(request_param(params, "sort_by"))
-    |> maybe_assign_sort_order(request_param(params, "sort_order"))
+    |> assign(:current_sort_criteria, sort_criteria)
     |> apply_action(socket.assigns.live_action, params)
     |> noreply()
-  end
-
-  defp request_param(params, key) do
-    case Map.get(params, key) do
-      "" -> nil
-      other -> other
-    end
-  end
-
-  # Sorting
-
-  defp maybe_assign_sort_by(socket, nil), do: socket
-
-  defp maybe_assign_sort_by(socket, sort_by) do
-    socket
-    |> assign(:sort_by, Sorting.parse_sort_by(sort_by))
-  end
-
-  defp maybe_assign_sort_order(socket, nil), do: socket
-
-  defp maybe_assign_sort_order(socket, sort_order) do
-    socket
-    |> assign(:sort_order, Sorting.parse_sort_order(sort_order))
   end
 
   # Apply actions
@@ -240,36 +209,52 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   end
 
   @impl true
-  def handle_event("sort_tasks", %{"field" => field, "status" => old_status}, socket) do
-    {new_criteria, sort_by, sort_order} = Sorting.compute_new_sort_criteria(field, old_status)
+  def handle_event("sort_tasks", %{"field" => field, "status" => status}, socket) do
+    current_sort_criteria = socket.assigns.current_sort_criteria
+
+    {new_criteria, new_sort_criteria} =
+      Sorting.compute_new_sort_criteria(field, status, current_sort_criteria)
+
     current_user = socket.assigns.current_user
 
-    tasks = Tasks.list_tasks(current_user.organization_id, sort_by, sort_order)
-    parent_tasks = Tasks.list_parent_tasks(current_user.organization_id, sort_by, sort_order)
-    subtasks = Tasks.list_subtasks(current_user.organization_id, sort_by, sort_order)
+    tasks = Tasks.list_tasks(current_user.organization_id, new_sort_criteria)
+    parent_tasks = Tasks.list_parent_tasks(current_user.organization_id, new_sort_criteria)
+    subtasks = Tasks.list_subtasks(current_user.organization_id)
+
+    IO.puts("Sorted parent tasks:")
+    Enum.each(parent_tasks, fn task -> IO.puts("#{task.title} - #{task.due_date}") end)
 
     {completed_parent_tasks, open_parent_tasks} =
       Enum.split_with(parent_tasks, &(&1.status == :completed))
 
-    socket
-    |> assign(:sort_by, sort_by)
-    |> assign(:sort_order, sort_order)
-    |> assign(:sort_criteria, new_criteria)
-    |> assign(:tasks, tasks)
-    |> assign(:open_parent_tasks, open_parent_tasks)
-    |> assign(:completed_parent_tasks, completed_parent_tasks)
-    |> assign(:subtasks, subtasks)
-    |> push_patch(
-      to: ~p"/#{socket.assigns.current_user.id}/tasks?sort_by=#{sort_by}&sort_order=#{sort_order}"
-    )
-    |> noreply()
+    socket =
+      socket
+      |> assign(:sort_criteria, new_criteria)
+      |> assign(:current_sort_criteria, new_sort_criteria)
+      |> assign(:tasks, tasks)
+      |> assign(:open_parent_tasks, open_parent_tasks)
+      |> assign(:completed_parent_tasks, completed_parent_tasks)
+      |> assign(:subtasks, subtasks)
+
+    {:noreply,
+     push_patch(socket, to: ~p"/#{current_user.id}/tasks?#{build_sort_params(new_sort_criteria)}")}
+  end
+
+  defp build_sort_params(sort_criteria) do
+    Enum.map(sort_criteria, fn {field, order} ->
+      {Atom.to_string(field), Atom.to_string(order)}
+    end)
+    |> Enum.into(%{})
   end
 
   @impl true
   def render(assigns) do
     ~H"""
     <section class="flex gap-1 my-4">
-      <.sort_button_list sort_criteria={@sort_criteria} />
+      <.sort_button_list
+        sort_criteria={@sort_criteria}
+        current_sort_criteria={@current_sort_criteria}
+      />
     </section>
     <div class="flex flex-col gap-1 h-[calc(100vh-6rem)]">
       <div class="h-[80%] overflow-hidden pb-20">
