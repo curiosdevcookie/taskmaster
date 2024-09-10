@@ -225,6 +225,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
       }
       class="flex items-center gap-1 "
     >
+      <.icon name="hero-arrows-up-down" class="h-3 w-3" />
       <p>
         <%= @sort_criterion.label %>
       </p>
@@ -238,22 +239,13 @@ defmodule TaskMasterWeb.Components.TaskComponents do
       phx-click={
         JS.push("sort_tasks", value: %{field: @sort_criterion.field, status: @sort_criterion.status})
       }
-      class="flex items-center gap-1 "
+      class={"flex items-center gap-1 " <> if @sort_criterion.status != :inactive, do: "text-brand-700"}
     >
-      <%= if @sort_criterion.type == :alpha do %>
-        <%= case @sort_criterion.status do %>
-          <% :asc -> %>
-            <.icon name="hero-arrow-up" class="h-3 w-3" />
-          <% :desc -> %>
-            <.icon name="hero-arrow-down" class="h-3 w-3" />
-        <% end %>
-      <% else %>
-        <%= case @sort_criterion.status do %>
-          <% :asc -> %>
-            <.icon name="hero-arrow-up" class="h-3 w-3" />
-          <% :desc -> %>
-            <.icon name="hero-arrow-down" class="h-3 w-3" />
-        <% end %>
+      <%= case @sort_criterion.status do %>
+        <% :asc -> %>
+          <.icon name="hero-arrow-up" class="h-3 w-3" />
+        <% :desc -> %>
+          <.icon name="hero-arrow-down" class="h-3 w-3" />
       <% end %>
       <p>
         <%= @sort_criterion.label %>
