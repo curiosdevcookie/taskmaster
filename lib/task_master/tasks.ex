@@ -48,7 +48,10 @@ defmodule TaskMaster.Tasks do
 
   defp apply_sort_criteria(query, sort_criteria) do
     Enum.reduce(sort_criteria, query, fn {field, order}, acc ->
-      order_by(acc, {^order, ^field})
+      case field do
+        :title -> order_by(acc, [t], {^order, fragment("lower(?)", field(t, ^field))})
+        _ -> order_by(acc, [t], {^order, field(t, ^field)})
+      end
     end)
   end
 

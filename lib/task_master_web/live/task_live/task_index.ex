@@ -224,8 +224,17 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     IO.puts("Sorted parent tasks:")
     Enum.each(parent_tasks, fn task -> IO.puts("#{task.title} - #{task.due_date}") end)
 
+    sorted_parent_tasks =
+      case Enum.find(new_sort_criteria, fn {f, _} -> f == :title end) do
+        {_, order} ->
+          Enum.sort_by(parent_tasks, fn task -> String.downcase(task.title) end, order)
+
+        nil ->
+          parent_tasks
+      end
+
     {completed_parent_tasks, open_parent_tasks} =
-      Enum.split_with(parent_tasks, &(&1.status == :completed))
+      Enum.split_with(sorted_parent_tasks, &(&1.status == :completed))
 
     socket =
       socket
