@@ -203,7 +203,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
 
   def sort_button_list(assigns) do
     ~H"""
-    <div class="flex gap-2">
+    <div class="flex gap-2 sm:text-sm lg:text-lg whitespace-nowrap">
       <%= for sort_criterion <- @sort_criteria do %>
         <.sort_button sort_criterion={sort_criterion} current_sort_criteria={@current_sort_criteria} />
       <% end %>
@@ -227,7 +227,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
       phx-click={
         JS.push("sort_tasks", value: %{field: @sort_criterion.field, status: @current_status})
       }
-      class={"flex items-center gap-1 " <> if @current_status != :inactive, do: "text-blue-600", else: "text-black"}
+      class={"flex items-center " <> if @current_status != :inactive, do: "text-blue-600", else: "text-black"}
     >
       <%= case @current_status do %>
         <% :asc -> %>
@@ -237,7 +237,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
         <% _ -> %>
           <.icon name="hero-arrows-up-down" class="h-3 w-3" />
       <% end %>
-      <p>
+      <p class="italic">
         <%= @sort_criterion.label %>
       </p>
     </.button>
