@@ -10,36 +10,40 @@ on:
       # only for testing purposes, remove when ready
       - '\d+-*'
 
+env:
+  APP_DEPLOY_NAME: deploy-via-ssh-dev
+  APP_URL: ${{ secrets.APP_DEV_URL }}
+  DEPLOYMENT_FOLDER: 'taskmaster-dev'
+  SSH_PORT: 24
 jobs:
   deploy:
-    # last part only for testing purposes, remove when ready
-    if: ${{ github.event.workflow_run.conclusion == 'success' && (github.event.workflow_run.head_branch == 'main' || startsWith(github.event.workflow_run.head_branch, 'refs/heads/')) }}
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+      - name: Prepare docker compose
+        env:
+          APP_DEPLOY_IMAGE: ghcr.io/${{ github.repository }}-app:${{ github.sha }}  
+        run: |
+          bash scripts/prepare-docker-compose.sh > compose.yml
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.ARTIFACT_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p 24 ${{ secrets.ARTIFACT_HOST }} >> ~/.ssh/known_hosts
-          if [ $? -ne 0 ]; then
-            echo "Error: Failed to add host key to known_hosts"
-            exit 1
-          fi
-      - name: Test SSH connection
+          ssh-keyscan -p ${SSH_PORT} ${{ secrets.ARTIFACT_HOST }} >> ~/.ssh/known_hosts
+      - name: Prepare dev deployment
         run: |
-          if ! ssh -i ~/.ssh/id_rsa -p 24 ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} 'echo "SSH connection successful"'; then
-            echo "Error: SSH connection failed"
-            exit 1
-          fi
-      - name: Prepare Deployment
+          ssh -i ~/.ssh/id_rsa -p ${SSH_PORT} ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} mkdir -p ${DEPLOYMENT_FOLDER}
+      - name: Upload docker compose
         run: |
-          set -e  # Exit immediately if a command exits with a non-zero status
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p 24 ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} 'bash -s' < .github/scripts/deploy_dev.sh || { echo "Error: Remote script execution failed"; exit 1; }
-          mkdir -p tmp
-          sed 's/🙂docker_image🙃/ghcr.io/${{ github.repository }}-app:${{ github.event.workflow_run.head_branch }}/g' docker-compose.yml > tmp/docker-compose.yml
-          scp -P 24 tmp/docker-compose.yml ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }}:/home/${{ secrets.ARTIFACT_USER }}/docker-compose.yml || { echo "Error: Failed to copy docker-compose.yml"; exit 1; }
+          scp -P ${SSH_PORT} compose.yml ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }}:/home/${{ secrets.ARTIFACT_USER }}/${DEPLOYMENT_FOLDER}/
+      - name: Perform deployment
+        run: |
+          ssh -i ~/.ssh/id_rsa -p ${SSH_PORT} ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} docker compose -f ${DEPLOYMENT_FOLDER}/compose.yml pull
+#          ssh -i ~/.ssh/id_rsa -p ${SSH_PORT} ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} docker compose -f ${DEPLOYMENT_FOLDER}/compose.yml up -d --remove-orphans --force-recreate 

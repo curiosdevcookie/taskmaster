@@ -1,3 +1,5 @@
+#!/bin/sh
+cat << EOF
 networks:
   internal:
   traefik_default:
@@ -21,14 +23,14 @@ services:
     logging:
       driver: loki
       options:
-        loki-external-labels: job=docker,container_name={{.Name}},owner=curiosdevcookie,environment=${ENV},system=taskmaster-db
+        loki-external-labels: job=docker,container_name={{.Name}},owner=curiosdevcookie,environment=\${ENV},system=taskmaster-db
     hostname: backend
 
   frontend:
-    image: ghcr.io/curiosdevcookie/taskmaster-app:##image_tag##
+    image: $APP_IMAGE
     env_file: .env
     environment:
-      PHX_CHECK_ORIGIN: https://$PHX_HOST
+      PHX_CHECK_ORIGIN: https://\${PHX_HOST}
       POOL_SIZE: 10
       PORT: 8080
     networks:
@@ -41,19 +43,19 @@ services:
     logging:
       driver: loki
       options:
-        loki-external-labels: job=docker,container_name={{.Name}},owner=curiosdevcookie,environment=${ENV},system=taskmaster-app
+        loki-external-labels: job=docker,container_name={{.Name}},owner=curiosdevcookie,environment=\${ENV},system=taskmaster-app
     depends_on:  
       - backend
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_default"
-      - "traefik.http.services.${TRAEFIK_LABEL}.loadbalancer.server.port=8080"
-      - "traefik.http.routers.${TRAEFIK_LABEL}.rule=Host(`${DOMAIN}`)"
-      - "traefik.http.routers.${TRAEFIK_LABEL}.entrypoints=websecure"
-      - "traefik.http.routers.${TRAEFIK_LABEL}.tls=true"
-      - "traefik.http.routers.${TRAEFIK_LABEL}.tls.certresolver=leresolver"
+      - "traefik.http.services.\${TRAEFIK_LABEL}.loadbalancer.server.port=8080"
+      - "traefik.http.routers.\${TRAEFIK_LABEL}.rule=Host(`\${DOMAIN}`)"
+      - "traefik.http.routers.\${TRAEFIK_LABEL}.entrypoints=websecure"
+      - "traefik.http.routers.\${TRAEFIK_LABEL}.tls=true"
+      - "traefik.http.routers.\${TRAEFIK_LABEL}.tls.certresolver=leresolver"
   migration:
-    image: 🙂docker_image🙃
+    image: $APP_IMAGE
     env_file: .env
     depends_on:
       - backend
@@ -61,10 +63,11 @@ services:
     logging:
       driver: loki
       options:
-        loki-external-labels: job=docker,container_name={{.Name}},owner=curiosdevcookie,environment=${ENV},system=taskmaster-migration
+        loki-external-labels: job=docker,container_name={{.Name}},owner=curiosdevcookie,environment=\${ENV},system=taskmaster-migration
     container_name: taskmaster-migration
     networks:
       - internal
 volumes:
   db_data:
   app_data:
+EOF
