@@ -5,6 +5,7 @@ on:
     workflows: ["Build"]
     types:
       - completed
+  push:
     branches:
       - main
       # only for testing purposes, remove when ready
