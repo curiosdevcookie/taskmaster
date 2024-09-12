@@ -1,12 +1,16 @@
 name: Deploy to Dev
 
 on:
-  workflow_run:
-    workflows: ["Build"]
-    types:
-      - completed
+  push:
     branches:
-      - '*'
+      - main
+      # only for testing purposes, remove when ready
+      - '\d+-*'
+  # this works only on main
+  # workflow_run:
+  #   workflows: ["Build"]
+  #   types:
+  #     - completed
 
 env:
   APP_DEPLOY_NAME: deploy-via-ssh-dev
@@ -26,7 +30,7 @@ jobs:
           images: ${{ env.REGISTRY_IMAGE }}
       - name: Prepare docker compose
         env:
-          APP_DEPLOY_IMAGE: ghcr.io/${{ github.repository }}-app:${{ github.sha }}  
+          APP_DEPLOY_IMAGE: ghcr.io/${{ github.repository }}-app:latest #${{ github.sha }}  
         run: |
           bash scripts/prepare-docker-compose.sh > compose.yml
       - name: Set up SSH key
