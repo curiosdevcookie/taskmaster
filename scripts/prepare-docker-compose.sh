@@ -27,7 +27,7 @@ services:
     hostname: backend
 
   frontend:
-    image: $APP_IMAGE
+    image: $APP_DEPLOY_IMAGE
     env_file: .env
     environment:
       PHX_CHECK_ORIGIN: https://\${PHX_HOST}
@@ -55,7 +55,7 @@ services:
       - "traefik.http.routers.\${TRAEFIK_LABEL}.tls=true"
       - "traefik.http.routers.\${TRAEFIK_LABEL}.tls.certresolver=leresolver"
   migration:
-    image: $APP_IMAGE
+    image: $APP_DEPLOY_IMAGE
     env_file: .env
     depends_on:
       - backend
