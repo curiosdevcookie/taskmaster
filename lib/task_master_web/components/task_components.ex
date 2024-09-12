@@ -203,7 +203,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
 
   def sort_button_list(assigns) do
     ~H"""
-    <div class="flex gap-2 sm:text-sm lg:text-lg whitespace-nowrap">
+    <div class="flex sm:gap-2 lg:gap-5 sm:text-sm lg:text-lg whitespace-nowrap">
       <%= for sort_criterion <- @sort_criteria do %>
         <.sort_button sort_criterion={sort_criterion} current_sort_criteria={@current_sort_criteria} />
       <% end %>
@@ -216,8 +216,8 @@ defmodule TaskMasterWeb.Components.TaskComponents do
 
   def sort_button(assigns) do
     current_status =
-      Enum.find_value(assigns.current_sort_criteria, fn {field, order} ->
-        if field == assigns.sort_criterion.field, do: order, else: nil
+      Enum.find_value(assigns.current_sort_criteria, fn {field, status} ->
+        if field == assigns.sort_criterion.field, do: status, else: nil
       end) || :inactive
 
     assigns = assign(assigns, :current_status, current_status)
@@ -227,7 +227,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
       phx-click={
         JS.push("sort_tasks", value: %{field: @sort_criterion.field, status: @current_status})
       }
-      class={"flex items-center " <> if @current_status != :inactive, do: "text-blue-600", else: "text-black"}
+      class={"flex items-center " <> if @current_status != :inactive, do: "text-brand-600", else: "text-black"}
     >
       <%= case @current_status do %>
         <% :asc -> %>

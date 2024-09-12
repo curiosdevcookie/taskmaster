@@ -222,7 +222,10 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
     subtasks = Tasks.list_subtasks(current_user.organization_id)
 
     IO.puts("Sorted parent tasks:")
-    Enum.each(parent_tasks, fn task -> IO.puts("#{task.title} - #{task.due_date}") end)
+
+    Enum.each(parent_tasks, fn task ->
+      IO.puts("#{task.title} - #{task.due_date} - #{task.duration}")
+    end)
 
     {completed_parent_tasks, open_parent_tasks} =
       Enum.split_with(parent_tasks, &(&1.status == :completed))
