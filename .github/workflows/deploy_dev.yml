@@ -5,6 +5,8 @@ on:
     workflows: ["Build"]
     types:
       - completed
+    branches:
+      - '*'
 
 env:
   APP_DEPLOY_NAME: deploy-via-ssh-dev
