@@ -11,6 +11,14 @@ defmodule TaskMaster.Tasks do
   alias TaskMaster.Accounts
   require Logger
 
+  defmacro asc_nulls_first(column) do
+    quote do: fragment("? ASC NULLS FIRST", unquote(column))
+  end
+
+  defmacro desc_nulls_last(column) do
+    quote do: fragment("? DESC NULLS LAST", unquote(column))
+  end
+
   @doc """
   Returns the list of tasks.
 
@@ -21,36 +29,41 @@ defmodule TaskMaster.Tasks do
 
   """
 
-  def list_tasks(org_id, sort_by \\ :title, sort_order \\ :asc) do
+  def list_tasks(org_id, sort_criteria \\ []) do
     Task
     |> Task.for_org(org_id)
-    |> maybe_order_by(sort_by, sort_order)
+    |> apply_sort_criteria(sort_criteria)
     |> Repo.all()
     |> Repo.preload([:task_participations, :participants])
   end
 
-  def list_parent_tasks(org_id, sort_by \\ :title, sort_order \\ :asc) do
+  def list_parent_tasks(org_id, sort_criteria \\ []) do
     Task
     |> Task.for_org(org_id)
     |> where([t], is_nil(t.parent_task_id))
-    |> maybe_order_by(sort_by, sort_order)
+    |> apply_sort_criteria(sort_criteria)
     |> Repo.all()
     |> Repo.preload([:task_participations, :participants])
   end
 
-  def list_subtasks(org_id, sort_by \\ :title, sort_order \\ :asc) do
+  def list_subtasks(org_id) do
     Task
     |> Task.for_org(org_id)
     |> where([t], not is_nil(t.parent_task_id))
-    |> maybe_order_by(sort_by, sort_order)
     |> Repo.all()
     |> Repo.preload([:task_participations, :participants])
   end
 
-  defp maybe_order_by(query, _sort_by, :inactive), do: query
+  defp apply_sort_criteria(query, sort_criteria) do
+    Enum.reduce(sort_criteria, query, fn {field, order}, acc ->
+      case order do
+        :asc ->
+          order_by(acc, [t], asc_nulls_first(field(t, ^field)))
 
-  defp maybe_order_by(query, sort_by, sort_order) do
-    order_by(query, {^sort_order, ^sort_by})
+        :desc ->
+          order_by(acc, [t], desc_nulls_last(field(t, ^field)))
+      end
+    end)
   end
 
   def get_task!(id, _org_id) when is_nil(id), do: %Task{}
@@ -305,13 +318,6 @@ defmodule TaskMaster.Tasks do
     |> Repo.get!(user_id)
     |> Repo.preload(:participated_tasks)
     |> Map.get(:participated_tasks)
-  end
-
-  def list_tasks_with_participants(org_id) do
-    Task
-    |> Task.for_org(org_id)
-    |> Repo.all()
-    |> Repo.preload(:participants)
   end
 
   def preload_task_participants(task) do

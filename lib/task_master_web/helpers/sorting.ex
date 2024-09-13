@@ -7,41 +7,21 @@ defmodule TaskMasterWeb.Helpers.Sorting do
     %{label: "Indoor", field: :indoor, status: :inactive, type: :alpha}
   ]
 
-  def get_default_sort_criteria() do
-    @sort_criteria
-  end
+  def get_default_sort_criteria, do: @sort_criteria
 
-  def parse_sort_by(field) do
-    @sort_criteria
-    |> Enum.find(fn c -> Atom.to_string(c.field) == field end)
-    |> Map.get(:field)
-  end
-
-  def parse_sort_order(status) do
-    case status do
-      "inactive" -> :inactive
-      "asc" -> :asc
-      "desc" -> :desc
-      _ -> raise "Unknown sort order"
-    end
-  end
-
-  def compute_sort_criteria(sort_by, sort_order) do
-    @sort_criteria
-    |> Enum.map(fn c ->
-      if c.field == sort_by do
-        %{c | status: sort_order}
-      else
-        c
+  def parse_sort_criteria(params) do
+    Enum.reduce(@sort_criteria, [], fn criterion, acc ->
+      case Map.get(params, Atom.to_string(criterion.field)) do
+        "asc" -> [{criterion.field, :asc} | acc]
+        "desc" -> [{criterion.field, :desc} | acc]
+        _ -> acc
       end
     end)
+    |> Enum.reverse()
   end
 
-  def compute_new_sort_criteria(field, old_status) do
-    sort_by =
-      @sort_criteria |> Enum.find(fn c -> Atom.to_string(c.field) == field end) |> Map.get(:field)
-
-    sort_order =
+  def compute_new_sort_criteria(field, old_status, current_criteria) do
+    new_status =
       case old_status do
         "inactive" -> :asc
         "asc" -> :desc
@@ -49,15 +29,26 @@ defmodule TaskMasterWeb.Helpers.Sorting do
       end
 
     new_criteria =
-      @sort_criteria
-      |> Enum.map(fn c ->
-        if c.field == sort_by do
-          %{c | status: sort_order}
+      Enum.map(@sort_criteria, fn c ->
+        if c.field == String.to_existing_atom(field) do
+          %{c | status: new_status}
         else
           c
         end
       end)
 
-    {new_criteria, sort_by, sort_order}
+    sort_criteria =
+      case new_status do
+        :inactive ->
+          List.keydelete(current_criteria, String.to_existing_atom(field), 0)
+
+        _ ->
+          [
+            {String.to_existing_atom(field), new_status}
+            | List.keydelete(current_criteria, String.to_existing_atom(field), 0)
+          ]
+      end
+
+    {new_criteria, sort_criteria}
   end
 end

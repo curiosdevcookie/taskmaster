@@ -199,70 +199,48 @@ defmodule TaskMasterWeb.Components.TaskComponents do
   end
 
   attr(:sort_criteria, :list, required: true)
+  attr(:current_sort_criteria, :list, required: true)
 
   def sort_button_list(assigns) do
     ~H"""
-    <div class="flex gap-2">
+    <div class="flex sm:gap-2 lg:gap-5 sm:text-sm lg:text-lg whitespace-nowrap">
       <%= for sort_criterion <- @sort_criteria do %>
-        <.sort_button sort_criterion={sort_criterion} />
-        <%!-- <%= if sort_order_is_activated?(@sort_criteria) do %>
-          ja
-        <% else %>
-          nein
-        <% end %> --%>
+        <.sort_button sort_criterion={sort_criterion} current_sort_criteria={@current_sort_criteria} />
       <% end %>
     </div>
     """
   end
 
   attr(:sort_criterion, :map, required: true)
-
-  def sort_button(assigns = %{sort_criterion: %{status: :inactive}}) do
-    ~H"""
-    <.button
-      phx-click={
-        JS.push("sort_tasks", value: %{field: @sort_criterion.field, status: @sort_criterion.status})
-      }
-      class="flex items-center gap-1 "
-    >
-      <p>
-        <%= @sort_criterion.label %>
-      </p>
-    </.button>
-    """
-  end
+  attr(:current_sort_criteria, :list, required: true)
 
   def sort_button(assigns) do
+    current_status =
+      Enum.find_value(assigns.current_sort_criteria, fn {field, status} ->
+        if field == assigns.sort_criterion.field, do: status, else: nil
+      end) || :inactive
+
+    assigns = assign(assigns, :current_status, current_status)
+
     ~H"""
     <.button
       phx-click={
-        JS.push("sort_tasks", value: %{field: @sort_criterion.field, status: @sort_criterion.status})
+        JS.push("sort_tasks", value: %{field: @sort_criterion.field, status: @current_status})
       }
-      class="flex items-center gap-1 "
+      class={"flex items-center " <> if @current_status != :inactive, do: "text-brand-600", else: "text-black"}
     >
-      <%= if @sort_criterion.type == :alpha do %>
-        <%= case @sort_criterion.status do %>
-          <% :asc -> %>
-            <.icon name="hero-arrow-up" class="h-3 w-3" />
-          <% :desc -> %>
-            <.icon name="hero-arrow-down" class="h-3 w-3" />
-        <% end %>
-      <% else %>
-        <%= case @sort_criterion.status do %>
-          <% :asc -> %>
-            <.icon name="hero-arrow-up" class="h-3 w-3" />
-          <% :desc -> %>
-            <.icon name="hero-arrow-down" class="h-3 w-3" />
-        <% end %>
+      <%= case @current_status do %>
+        <% :asc -> %>
+          <.icon name="hero-arrow-up" class="h-3 w-3" />
+        <% :desc -> %>
+          <.icon name="hero-arrow-down" class="h-3 w-3" />
+        <% _ -> %>
+          <.icon name="hero-arrows-up-down" class="h-3 w-3" />
       <% end %>
-      <p>
+      <p class="italic">
         <%= @sort_criterion.label %>
       </p>
     </.button>
     """
-  end
-
-  defp sort_order_is_activated?(sort_criteria) do
-    Enum.any?(sort_criteria, fn sc -> sc.status != :inactive end)
   end
 end
