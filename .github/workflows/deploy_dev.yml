@@ -42,4 +42,4 @@ jobs:
       - name: Perform deployment
         run: |
           ssh -i ~/.ssh/id_rsa -p ${SSH_PORT} ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} docker compose -f ${DEPLOYMENT_FOLDER}/compose.yml pull
-#          ssh -i ~/.ssh/id_rsa -p ${SSH_PORT} ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} docker compose -f ${DEPLOYMENT_FOLDER}/compose.yml up -d --remove-orphans --force-recreate 
+          ssh -i ~/.ssh/id_rsa -p ${SSH_PORT} ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} docker compose -f ${DEPLOYMENT_FOLDER}/compose.yml up -d --remove-orphans --force-recreate 
