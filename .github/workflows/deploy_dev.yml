@@ -1,16 +1,10 @@
 name: Deploy to Dev
 
 on:
-  push:
-    branches:
-      - main
-      # only for testing purposes, remove when ready
-      - '\d+-*'
-  # this works only on main
-  # workflow_run:
-  #   workflows: ["Build"]
-  #   types:
-  #     - completed
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
 
 env:
   APP_DEPLOY_NAME: deploy-via-ssh-dev
