@@ -1,0 +1,45 @@
+name: Deploy to Dev
+
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
+
+env:
+  APP_DEPLOY_NAME: deploy-via-ssh-dev
+  APP_URL: ${{ secrets.APP_DEV_URL }}
+  DEPLOYMENT_FOLDER: 'taskmaster-dev'
+  SSH_PORT: 24
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+      - name: Prepare docker compose
+        env:
+          APP_DEPLOY_IMAGE: ghcr.io/${{ github.repository }}-app:latest #${{ github.sha }}  
+        run: |
+          bash scripts/prepare-docker-compose.sh > compose.yml
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ARTIFACT_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p ${SSH_PORT} ${{ secrets.ARTIFACT_HOST }} >> ~/.ssh/known_hosts
+      - name: Prepare dev deployment
+        run: |
+          ssh -i ~/.ssh/id_rsa -p ${SSH_PORT} ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} mkdir -p ${DEPLOYMENT_FOLDER}
+      - name: Upload docker compose
+        run: |
+          scp -P ${SSH_PORT} compose.yml ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }}:/home/${{ secrets.ARTIFACT_USER }}/${DEPLOYMENT_FOLDER}/
+      - name: Perform deployment
+        run: |
+          ssh -i ~/.ssh/id_rsa -p ${SSH_PORT} ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} docker compose -f ${DEPLOYMENT_FOLDER}/compose.yml pull
+          ssh -i ~/.ssh/id_rsa -p ${SSH_PORT} ${{ secrets.ARTIFACT_USER }}@${{ secrets.ARTIFACT_HOST }} docker compose -f ${DEPLOYMENT_FOLDER}/compose.yml up -d --remove-orphans --force-recreate 

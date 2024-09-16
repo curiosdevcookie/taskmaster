@@ -77,3 +77,5 @@ config :phoenix, :plug_init_mode, :runtime
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+config :task_master, :upload_path, Path.expand("priv/static/uploads")
