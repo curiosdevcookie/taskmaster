@@ -15,6 +15,7 @@ defmodule TaskMaster.Accounts.User do
     field :confirmed_at, :naive_datetime
     field :last_login_at, :naive_datetime
     field :organization_name, :string, virtual: true
+    field :stars, :integer, default: 0
     has_one :avatar, TaskMaster.Accounts.Avatar
     has_many :task_participations, TaskMaster.Tasks.TaskParticipation
     belongs_to :organization, TaskMaster.Accounts.Organization, type: :binary_id
@@ -62,6 +63,12 @@ defmodule TaskMaster.Accounts.User do
     |> unique_constraint(:email)
     |> unique_constraint(:nick_name)
     |> validate_organization()
+  end
+
+  def stars_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:stars])
+    |> validate_number(:stars, greater_than_or_equal_to: 0)
   end
 
   defp validate_organization(changeset) do

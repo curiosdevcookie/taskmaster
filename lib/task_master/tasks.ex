@@ -8,6 +8,16 @@ defmodule TaskMaster.Tasks do
 
   alias TaskMaster.Tasks.Task
   alias TaskMaster.Tasks.TaskParticipation
+  alias TaskMaster.Accounts
+  require Logger
+
+  defmacro asc_nulls_first(column) do
+    quote do: fragment("? ASC NULLS FIRST", unquote(column))
+  end
+
+  defmacro desc_nulls_last(column) do
+    quote do: fragment("? DESC NULLS LAST", unquote(column))
+  end
 
   @doc """
   Returns the list of tasks.
@@ -18,17 +28,20 @@ defmodule TaskMaster.Tasks do
       [%Task{}, ...]
 
   """
-  def list_tasks(org_id) do
+
+  def list_tasks(org_id, sort_criteria \\ []) do
     Task
     |> Task.for_org(org_id)
+    |> apply_sort_criteria(sort_criteria)
     |> Repo.all()
     |> Repo.preload([:task_participations, :participants])
   end
 
-  def list_parent_tasks(org_id) do
+  def list_parent_tasks(org_id, sort_criteria \\ []) do
     Task
     |> Task.for_org(org_id)
     |> where([t], is_nil(t.parent_task_id))
+    |> apply_sort_criteria(sort_criteria)
     |> Repo.all()
     |> Repo.preload([:task_participations, :participants])
   end
@@ -41,7 +54,19 @@ defmodule TaskMaster.Tasks do
     |> Repo.preload([:task_participations, :participants])
   end
 
-  def get_task!(id, org_id) when is_nil(id), do: %Task{}
+  defp apply_sort_criteria(query, sort_criteria) do
+    Enum.reduce(sort_criteria, query, fn {field, order}, acc ->
+      case order do
+        :asc ->
+          order_by(acc, [t], asc_nulls_first(field(t, ^field)))
+
+        :desc ->
+          order_by(acc, [t], desc_nulls_last(field(t, ^field)))
+      end
+    end)
+  end
+
+  def get_task!(id, _org_id) when is_nil(id), do: %Task{}
 
   def get_task!(id, org_id) do
     Task
@@ -50,8 +75,8 @@ defmodule TaskMaster.Tasks do
     |> Repo.preload([:task_participations, :participants])
   end
 
-  def create_task(attrs \\ %{}, participants \\ [], org_id, parent_id \\ nil) do
-    attrs = Map.merge(attrs, %{"parent_task_id" => parent_id})
+  def create_task(attrs \\ %{}, participants \\ [], org_id, parent_task_id \\ nil) do
+    attrs = Map.merge(attrs, %{"parent_task_id" => parent_task_id})
 
     %Task{}
     |> Task.changeset(attrs)
@@ -60,33 +85,189 @@ defmodule TaskMaster.Tasks do
       {:ok, task} ->
         task = add_participants(task, participants, org_id)
         task = Repo.preload(task, :participants)
-        broadcast({:ok, task}, :task_created)
+        {:ok, updated_parent_task} = update_parent_task(task)
+        broadcast({:ok, updated_parent_task}, :task_created)
+        {:ok, task}
 
       error ->
         error
     end
+  end
+
+  def award_or_remove_stars_from_participants(task, old_status) do
+    task = Repo.preload(task, :participants)
+
+    Logger.info(
+      "Awarding or removing stars. Task ID: #{task.id}, Old status: #{old_status}, New status: #{task.status}"
+    )
+
+    Enum.each(task.participants, fn participant ->
+      Logger.info("Processing participant #{participant.id}")
+      Logger.info("Participant current stars: #{participant.stars}")
+
+      case {old_status, task.status} do
+        {:completed, status} when status in [:open, :progressing] ->
+          Logger.info("Attempting to decrement star for user #{participant.id}")
+
+          case Accounts.decrement_user_stars(participant) do
+            {:ok, updated_user} ->
+              Logger.info("User #{participant.id} stars after decrement: #{updated_user.stars}")
+
+            error ->
+              Logger.error(
+                "Failed to decrement stars for user #{participant.id}: #{inspect(error)}"
+              )
+          end
+
+        {status, :completed} when status in [:open, :progressing] ->
+          Logger.info("Attempting to increment star for user #{participant.id}")
+
+          case Accounts.increment_user_stars(participant) do
+            {:ok, updated_user} ->
+              Logger.info("User #{participant.id} stars after increment: #{updated_user.stars}")
+
+            error ->
+              Logger.error(
+                "Failed to increment stars for user #{participant.id}: #{inspect(error)}"
+              )
+          end
+
+        _ ->
+          Logger.info("No change in completion status for user #{participant.id}")
+      end
+    end)
+
+    task
   end
 
   def update_task(%Task{} = task, attrs, participants \\ [], org_id) do
-    task
-    |> Task.changeset(attrs)
-    |> Repo.update()
-    |> case do
-      {:ok, updated_task} ->
-        updated_task = update_participants(updated_task, participants, org_id)
-        updated_task = Repo.preload(updated_task, :participants)
-        broadcast({:ok, updated_task}, :task_updated)
+    Logger.info(
+      "Updating task #{task.id}. Current status: #{task.status}, New status: #{attrs[:status]}"
+    )
 
-      error ->
+    result = do_update_task(task, attrs, participants, org_id)
+
+    case result do
+      {:ok, updated_task} ->
+        Logger.info(
+          "Task #{updated_task.id} successfully updated. New status: #{updated_task.status}"
+        )
+
+        # Return just the updated_task, not a tuple
+        updated_task
+
+      {:error, _} = error ->
+        Logger.error("Failed to update task: #{inspect(error)}")
         error
     end
   end
 
+  defp do_update_task(task, attrs, participants, org_id) do
+    old_status = task.status
+    Logger.info("Updating task #{task.id}. Old status: #{old_status}")
+
+    attrs = maybe_set_completed_at(attrs, task)
+    Logger.info("Attributes after maybe_set_completed_at: #{inspect(attrs)}")
+
+    Repo.transaction(fn ->
+      with {:ok, updated_task} <- Task.changeset(task, attrs) |> Repo.update(),
+           _ <- Logger.info("Task updated in DB. New status: #{updated_task.status}"),
+           updated_task <- update_participants(updated_task, participants, org_id),
+           updated_task <- Repo.preload(updated_task, :participants),
+           updated_task <- award_or_remove_stars_from_participants(updated_task, old_status),
+           {:ok, parent_updated_task} <- update_parent_task(updated_task) do
+        TaskMasterWeb.Endpoint.broadcast("task_updates", "task_updated", updated_task)
+
+        if parent_updated_task,
+          do:
+            TaskMasterWeb.Endpoint.broadcast("task_updates", "task_updated", parent_updated_task)
+
+        broadcast({:ok, updated_task}, :task_updated)
+        broadcast({:ok, parent_updated_task}, :task_updated)
+
+        # Return just the updated_task, not a tuple
+        updated_task
+      else
+        error ->
+          Logger.error("Failed to update task: #{inspect(error)}")
+          broadcast(error, :task_update_failed)
+          Repo.rollback(error)
+      end
+    end)
+  end
+
+  defp update_parent_task(%Task{parent_task_id: nil} = task), do: {:ok, task}
+
+  defp update_parent_task(%Task{parent_task_id: parent_task_id} = task) do
+    parent_task = get_task!(parent_task_id, task.organization_id)
+    subtasks_duration = calculate_subtasks_duration(parent_task_id)
+    subtasks_participants = get_subtasks_participants(parent_task_id)
+    new_status = get_parent_task_status(parent_task_id)
+
+    all_participants = subtasks_participants |> Enum.uniq_by(& &1.id)
+
+    do_update_task(
+      parent_task,
+      %{
+        duration: subtasks_duration,
+        status: new_status
+      },
+      all_participants,
+      task.organization_id
+    )
+  end
+
+  def calculate_subtasks_duration(parent_task_id) do
+    from(t in Task,
+      where: t.parent_task_id == ^parent_task_id and t.status != :completed,
+      select: sum(t.duration)
+    )
+    |> Repo.one()
+  end
+
+  def get_subtasks_participants(parent_task_id) do
+    Task
+    |> where([t], t.parent_task_id == ^parent_task_id and t.status != :completed)
+    |> Repo.all()
+    |> Enum.flat_map(fn subtask ->
+      subtask = Repo.preload(subtask, :participants, force: true)
+      subtask.participants
+    end)
+    |> Enum.uniq_by(& &1.id)
+    |> dbg()
+  end
+
+  defp get_parent_task_status(parent_task_id) do
+    subtasks = from(t in Task, where: t.parent_task_id == ^parent_task_id) |> Repo.all()
+
+    cond do
+      Enum.all?(subtasks, &(&1.status == :completed)) -> :completed
+      Enum.any?(subtasks, &(&1.status == :completed)) -> :progressing
+      true -> :open
+    end
+  end
+
+  defp maybe_set_completed_at(%{"status" => status} = attrs, %Task{status: old_status}) do
+    case status do
+      "completed" when old_status != "completed" ->
+        Map.put(attrs, "completed_at", NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second))
+
+      status when status in ["open", "progressing"] ->
+        Map.put(attrs, "completed_at", nil)
+
+      _ ->
+        attrs
+    end
+  end
+
+  defp maybe_set_completed_at(attrs, _task), do: attrs
+
   def delete_task(%Task{} = task, org_id) do
     if task.organization_id == org_id do
-      task
-      |> Repo.delete()
-      |> broadcast(:task_deleted)
+      result = task |> Repo.delete()
+      {:ok, updated_parent_task} = update_parent_task(%{task | id: task.parent_task_id})
+      broadcast({:ok, updated_parent_task}, :task_deleted)
+      result
     else
       {:error, :unauthorized}
     end
@@ -139,13 +320,6 @@ defmodule TaskMaster.Tasks do
     |> Map.get(:participated_tasks)
   end
 
-  def list_tasks_with_participants(org_id) do
-    Task
-    |> Task.for_org(org_id)
-    |> Repo.all()
-    |> Repo.preload(:participants)
-  end
-
   def preload_task_participants(task) do
     Repo.preload(task, :participants)
   end
@@ -188,7 +362,7 @@ defmodule TaskMaster.Tasks do
       end
     end)
 
-    task
+    Repo.preload(task, :participants, force: true)
   end
 
   def list_task_participants(task_id, org_id) do
@@ -213,10 +387,11 @@ defmodule TaskMaster.Tasks do
     Phoenix.PubSub.subscribe(TaskMaster.PubSub, "tasks:#{org_id}")
   end
 
-  defp broadcast({:ok, task}, event) do
+  def broadcast({:ok, task}, event)
+      when event in [:task_created, :task_deleted, :task_updated] do
     Phoenix.PubSub.broadcast(TaskMaster.PubSub, "tasks:#{task.organization_id}", {event, task})
     {:ok, task}
   end
 
-  defp broadcast({:error, _} = error, _event), do: error
+  def broadcast({:error, _} = error, _event), do: error
 end

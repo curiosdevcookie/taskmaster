@@ -7,10 +7,10 @@ defmodule TaskMaster.Tasks.Task do
   @foreign_key_type :binary_id
 
   schema "tasks" do
+    field :title, :string
     field :priority, Ecto.Enum, values: [:low, :medium, :high], default: :medium
     field :status, Ecto.Enum, values: [:open, :progressing, :completed], default: :open
     field :description, :string
-    field :title, :string
     field :due_date, :date
     field :duration, :integer
     field :completed_at, :naive_datetime
@@ -33,21 +33,14 @@ defmodule TaskMaster.Tasks.Task do
       :title,
       :description,
       :due_date,
-      :status,
       :duration,
       :priority,
+      :status,
       :indoor,
       :created_by,
-      :parent_task_id,
       :organization_id
     ])
-    |> validate_required([
-      :title,
-      :status,
-      :priority,
-      :indoor
-    ])
-    |> unique_constraint(:title, name: :tasks_title_index)
+    |> validate_required([:title, :status, :priority, :indoor, :created_by, :organization_id])
   end
 
   def for_org(query, org_id) when is_binary(org_id) do

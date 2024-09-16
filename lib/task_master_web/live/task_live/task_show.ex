@@ -22,7 +22,42 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:task, task)}
+     |> assign(:task, task)
+     |> assign(:live_action, socket.assigns.live_action)}
+  end
+
+  @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    org_id = socket.assigns.current_user.organization_id
+    task = Tasks.get_task!(id, org_id)
+
+    case Tasks.delete_task(task, org_id) do
+      {:ok, _deleted_task} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Task deleted successfully"))
+         |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
+
+      {:error, _changeset} ->
+        {:noreply, put_flash(socket, :error, gettext("Failed to delete task"))}
+    end
+  end
+
+  @impl true
+  def handle_info({TaskMasterWeb.TaskLive.TaskComponent, {:saved, task}}, socket) do
+    updated_task =
+      case task do
+        %TaskMaster.Tasks.Task{} -> task
+        {:ok, task} -> task
+        _ -> Tasks.get_task!(task.id, socket.assigns.current_user.organization_id)
+      end
+      |> Tasks.preload_task_participants()
+
+    {:noreply,
+     socket
+     |> assign(:task, updated_task)
+     |> assign(:live_action, :show)
+     |> put_flash(:info, gettext("Task updated successfully"))}
   end
 
   @impl true
@@ -36,10 +71,17 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
 
   @impl true
   def handle_info({:task_deleted, deleted_task}, socket) do
-    if deleted_task.id == socket.assigns.task.id do
+    task_id =
+      case deleted_task do
+        %TaskMaster.Tasks.Task{id: id} -> id
+        {:ok, %TaskMaster.Tasks.Task{id: id}} -> id
+        _ -> nil
+      end
+
+    if task_id && task_id == socket.assigns.task.id do
       {:noreply,
        socket
-       |> put_flash(:info, "This task has been deleted.")
+       |> put_flash(:info, gettext("Task deleted successfully"))
        |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
     else
       {:noreply, socket}
@@ -54,12 +96,20 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
   def render(assigns) do
     ~H"""
     <.header>
-      <%= gettext("Task") %>
-      <:subtitle><%= gettext("This is a task record from your database.") %></:subtitle>
+      <%= @task.title %>
       <:actions>
-        <.link patch={~p"/#{@current_user.id}/tasks/#{@task}/show/edit"} phx-click={JS.push_focus()}>
-          <.button class="btn-primary"><%= gettext("Edit task") %></.button>
-        </.link>
+        <section class="flex gap-1">
+          <.link patch={~p"/#{@current_user.id}/tasks/#{@task}/show/edit"} phx-click={JS.push_focus()}>
+            <.button class="btn-primary"><.icon name="hero-pencil" /></.button>
+          </.link>
+          <.link
+            phx-click={JS.push("delete", value: %{id: @task.id})}
+            data-confirm={gettext("Are you sure?")}
+            class="btn-danger"
+          >
+            <.icon name="hero-trash" />
+          </.link>
+        </section>
       </:actions>
     </.header>
 
@@ -70,7 +120,7 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
       <:item title={gettext("Status")}>
         <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@task.status) %>
       </:item>
-      <:item title={gettext("Duration")}>
+      <:item title={gettext("Duration in minutes")}>
         <%= TaskMasterWeb.Helpers.Formatted.format_duration(@task.duration) %>
       </:item>
       <:item title={gettext("Priority")}>
@@ -81,7 +131,7 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
       </:item>
       <:item title={gettext("Who?")}>
         <div class="flex flex-wrap gap-2">
-          <%= for participant <- @task.participants do %>
+          <%= for participant <- Enum.sort_by(@task.participants, & &1.nick_name) do %>
             <.nick_name participant={participant.nick_name} />
           <% end %>
         </div>
@@ -98,10 +148,11 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
     >
       <.live_component
         module={TaskMasterWeb.TaskLive.TaskComponent}
-        id={@task.id}
+        id={@task.id || :new}
         title={@page_title}
         action={@live_action}
         task={@task}
+        parent_id={{@task.parent_task_id, @task.id}}
         current_user={@current_user}
         patch={~p"/#{@current_user.id}/tasks/#{@task}"}
       />

@@ -66,7 +66,7 @@ defmodule TaskMasterWeb.CoreComponents do
               phx-window-keydown={JS.exec("data-cancel", to: "##{@id}")}
               phx-key="escape"
               phx-click-away={JS.exec("data-cancel", to: "##{@id}")}
-              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl bg-white p-14 shadow-lg ring-1 transition"
+              class="shadow-zinc-700/10 ring-zinc-700/10 relative hidden rounded-2xl bg-white lg:p-14 sm:p-6 shadow-lg ring-1 transition"
             >
               <div class="absolute top-6 right-5">
                 <button
@@ -113,7 +113,7 @@ defmodule TaskMasterWeb.CoreComponents do
       phx-click={JS.push("lv:clear-flash", value: %{key: @kind}) |> hide("##{@id}")}
       role="alert"
       class={[
-        "fixed top-2 right-2 w-80 sm:w-96 z-50 rounded-lg p-3 ring-1",
+        "fixed top-2 right-2 w-80 z-50 rounded-lg p-3 ring-1",
         @kind == :info && "bg-emerald-50 text-emerald-800 ring-emerald-500 fill-cyan-900",
         @kind == :error && "bg-rose-50 text-rose-900 shadow-md ring-rose-500 fill-rose-900"
       ]}
@@ -196,9 +196,9 @@ defmodule TaskMasterWeb.CoreComponents do
   def simple_form(assigns) do
     ~H"""
     <.form :let={f} for={@for} as={@as} {@rest}>
-      <div class="mt-10 space-y-8 bg-white">
+      <div class="lg:mt-10 sm:mt-5 lg:space-y-8 sm:space-y-4 bg-white">
         <%= render_slot(@inner_block, f) %>
-        <div :for={action <- @actions} class="mt-2 flex items-center justify-between gap-6">
+        <div :for={action <- @actions} class="my-2 flex items-center justify-between gap-2">
           <%= render_slot(action, f) %>
         </div>
       </div>
@@ -222,18 +222,16 @@ defmodule TaskMasterWeb.CoreComponents do
 
   def button(assigns) do
     ~H"""
-    <div class="flex justify-end w-full">
-      <button
-        type={@type}
-        class={[
-          "disabled:opacity-30 disabled:bg-grey-100 disabled:cursor-not-allowed",
-          @class
-        ]}
-        {@rest}
-      >
-        <%= render_slot(@inner_block) %>
-      </button>
-    </div>
+    <button
+      type={@type}
+      class={[
+        "disabled:opacity-30 disabled:bg-grey-100 disabled:cursor-not-allowed",
+        @class
+      ]}
+      {@rest}
+    >
+      <%= render_slot(@inner_block) %>
+    </button>
     """
   end
 
@@ -414,16 +412,15 @@ defmodule TaskMasterWeb.CoreComponents do
   Renders a header with title.
   """
   attr :class, :string, default: nil
-
   slot :inner_block, required: true
   slot :subtitle
   slot :actions
 
   def header(assigns) do
     ~H"""
-    <header class={[@actions != [] && "flex items-center justify-between gap-6", @class]}>
+    <header class={[@actions != [] && "flex items-center justify-between gap-2", @class]}>
       <div>
-        <h1 class="text-lg font-semibold leading-8 text-zinc-800">
+        <h1 class="lg:text-lg sm:text font-semibold lg:leading-8 sm:leading-2 text-zinc-800">
           <%= render_slot(@inner_block) %>
         </h1>
         <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
@@ -432,6 +429,27 @@ defmodule TaskMasterWeb.CoreComponents do
       </div>
       <div class="flex-none"><%= render_slot(@actions) %></div>
     </header>
+    """
+  end
+
+  attr :class, :string, default: nil
+  slot :inner_block, required: true
+  slot :subtitle
+  slot :actions
+
+  def footer(assigns) do
+    ~H"""
+    <footer class={[@actions != [] && "flex items-center justify-between gap-2", @class]}>
+      <div>
+        <h1 class="lg:text-lg sm:text font-semibold lg:leading-8 sm:leading-2 text-zinc-800">
+          <%= render_slot(@inner_block) %>
+        </h1>
+        <p :if={@subtitle != []} class="mt-2 text-sm leading-6 text-zinc-600">
+          <%= render_slot(@subtitle) %>
+        </p>
+      </div>
+      <div class="flex-none"><%= render_slot(@actions) %></div>
+    </footer>
     """
   end
 
@@ -529,7 +547,7 @@ defmodule TaskMasterWeb.CoreComponents do
     ~H"""
     <div class="mt-14">
       <dl class="-my-4 divide-y divide-zinc-100">
-        <div :for={item <- @item} class="flex gap-4 py-4 text-sm leading-6 sm:gap-8">
+        <div :for={item <- @item} class="flex gap-4 sm:py-2 lg:py-4 text-sm leading-6 sm:gap-8">
           <dt class="w-1/4 flex-none text-zinc-500"><%= item.title %></dt>
           <dd class="text-zinc-700"><%= render_slot(item) %></dd>
         </div>
@@ -550,7 +568,7 @@ defmodule TaskMasterWeb.CoreComponents do
 
   def back(assigns) do
     ~H"""
-    <div class="mt-16">
+    <div class="lg:mt-16 sm:mt-10">
       <.link
         navigate={@navigate}
         class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
@@ -582,10 +600,11 @@ defmodule TaskMasterWeb.CoreComponents do
   """
   attr :name, :string, required: true
   attr :class, :string, default: nil
+  attr :id, :string, required: false, default: nil
 
   def icon(%{name: "hero-" <> _} = assigns) do
     ~H"""
-    <span class={[@name, @class]} />
+    <span class={[@name, @class]} id={@id} />
     """
   end
 

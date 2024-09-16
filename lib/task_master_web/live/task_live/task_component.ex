@@ -10,9 +10,9 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>
+        <%!-- <:subtitle>
           <%= gettext("Use this form to manage task records in your database.") %>
-        </:subtitle>
+        </:subtitle> --%>
       </.header>
 
       <.simple_form
@@ -46,7 +46,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
             TaskMasterWeb.Helpers.EnumTranslator.translate_enum(TaskMaster.Tasks.Task, :status)
           }
         />
-        <.input field={@form[:duration]} type="number" label={gettext("Duration")} />
+        <.input field={@form[:duration]} type="number" label={gettext("Duration in minutes")} />
         <.input
           field={@form[:priority]}
           type="select"
@@ -98,7 +98,11 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
         </div>
 
         <:actions>
-          <.button class="btn-primary" phx-disable-with="Saving..."><%= gettext("Save") %></.button>
+          <div class="flex justify-end w-full">
+            <.button class="btn-primary" phx-disable-with="Saving...">
+              <%= gettext("Save") %>
+            </.button>
+          </div>
         </:actions>
       </.simple_form>
     </div>
@@ -181,29 +185,36 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
      |> assign(:available_users, updated_available_users)}
   end
 
-  # defp update_task_changeset(socket) do
-  #   changeset =
-  #     socket.assigns.task
-  #     |> Tasks.change_task()
-
-  #   assign(socket, :form, to_form(changeset))
-  # end
-
   defp save_task(socket, :edit, task_params) do
     org_id = socket.assigns.current_user.organization_id
 
     case Tasks.update_task(socket.assigns.task, task_params, socket.assigns.participants, org_id) do
-      {:ok, task} ->
-        notify_parent({:saved, task})
+      {:ok, updated_task} ->
+        notify_parent({:saved, updated_task})
 
         {:noreply,
          socket
-         |> assign(:task, task)
+         |> assign(:task, updated_task)
+         |> put_flash(:info, gettext("Task updated successfully"))
+         |> push_patch(to: socket.assigns.patch)}
+
+      %TaskMaster.Tasks.Task{} = updated_task ->
+        notify_parent({:saved, updated_task})
+
+        {:noreply,
+         socket
+         |> assign(:task, updated_task)
          |> put_flash(:info, gettext("Task updated successfully"))
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
+
+      {:error, :subtasks_not_completed} ->
+        {:noreply,
+         socket
+         |> put_flash(:error, gettext("Cannot complete task: not all subtasks are completed"))
+         |> assign_form(Tasks.change_task(socket.assigns.task, task_params))}
     end
   end
 
@@ -212,6 +223,14 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
 
     case Tasks.create_task(task_params, socket.assigns.participants, org_id) do
       {:ok, task} ->
+        notify_parent({:saved, task})
+
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Task created successfully"))
+         |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
+
+      %TaskMaster.Tasks.Task{} = task ->
         notify_parent({:saved, task})
 
         {:noreply,
@@ -230,8 +249,17 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
 
     IO.puts("Saving new subtask with parent_id: #{parent_id}")
 
-    case Tasks.create_task(task_params, socket.assigns.participants, org_id) do
+    case Tasks.create_task(task_params, socket.assigns.participants, org_id, parent_id) do
       {:ok, task} ->
+        IO.puts("Subtask created successfully: #{inspect(task)}")
+        notify_parent({:saved, task})
+
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Subtask created successfully"))
+         |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
+
+      %TaskMaster.Tasks.Task{} = task ->
         IO.puts("Subtask created successfully: #{inspect(task)}")
         notify_parent({:saved, task})
 

@@ -11,54 +11,99 @@
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
   </head>
-  <body class="bg-white antialiased min-h-screen flex flex-col p-4">
-    <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
+  <body class="bg-white h-screen antialiased p-4">
+    <ul class="relative flex items-center gap-4 px-4 sm:px-2 lg:px-8 justify-end">
       <%= if @current_user do %>
-        <%= if  @current_user.organization do %>
-          <span class="text-[0.8125rem] leading-6 border-zinc-900 border-2 py-1 px-2 rounded-full  text-zinc-900">
-            <%= @current_user.organization.name %>
+        <%= live_render(@conn, TaskMasterWeb.StarCountLive,
+          id: "star-count",
+          session: %{"user_id" => @current_user.id}
+        ) %>
+        <.button
+          phx-click={
+            JS.toggle(
+              to: "#user-menu",
+              in: {"ease-out duration-100", "opacity-0 scale-95", "opacity-100 scale-100"},
+              out: {"ease-out duration-75", "opacity-100 scale-100", "opacity-0 scale-95"}
+            )
+          }
+          class="flex items-center gap-2"
+        >
+          <%= if @current_user && @current_user.avatar do %>
+            <img
+              src={@current_user.avatar.path}
+              alt={@current_user.first_name}
+              class="w-6 h-6 rounded-full"
+            />
+          <% else %>
+            <img
+              src="/uploads/default_avatar.png"
+              alt={@current_user.first_name}
+              class="w-6 h-6 rounded-full"
+            />
+          <% end %>
+
+          <span class="text-[0.8125rem] leading-6 text-zinc-900">
+            <%= @current_user.first_name %>
           </span>
-        <% end %>
-        <.link
-          navigate={~p"/#{@current_user.id}/tasks"}
-          class="font-semibold text-zinc-900 hover:text-zinc-700"
+        </.button>
+        <menu
+          id="user-menu"
+          class="hidden absolute sm:right-2 lg:right-8 top-10 w-48 py-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          phx-click-away={
+            JS.hide(
+              to: "#user-menu",
+              transition: {"ease-out duration-75", "opacity-100 scale-100", "opacity-0 scale-95"}
+            )
+          }
         >
-          ➜ <%= gettext("Tasks") %>
-        </.link>
+          <ul class="flex flex-col gap-2 px-4">
+            <p class="text-[0.8125rem] leading-6 italic text-zinc-900">
+              <%= @current_user.organization.name %>
+            </p>
+            <.link
+              href={~p"/#{@current_user}/users/settings"}
+              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-brand-700"
+            >
+              <%= gettext("Settings") %>
+            </.link>
+            <.link
+              href={~p"/users/log_out"}
+              method="delete"
+              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-brand-700"
+            >
+              <%= gettext("Log out") %>
+            </.link>
+          </ul>
+        </menu>
 
-        <.link
-          href={~p"/#{@current_user}/users/settings"}
-          class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+        <.button phx-click={
+          JS.toggle(
+            to: "#app-menu",
+            in: {"ease-out duration-100", "opacity-0 scale-95", "opacity-100 scale-100"},
+            out: {"ease-out duration-75", "opacity-100 scale-100", "opacity-0 scale-95"}
+          )
+        }>
+          <.icon name="hero-bars-3" class="w-6 h-6 rounded-full" />
+        </.button>
+        <menu
+          id="app-menu"
+          class="hidden absolute sm:right-2 lg:right-8 top-10 w-48 py-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          phx-click-away={
+            JS.hide(
+              to: "#app-menu",
+              transition: {"ease-out duration-75", "opacity-100 scale-100", "opacity-0 scale-95"}
+            )
+          }
         >
-          <li class="flex items-center gap-2">
-            <%= if @current_user && @current_user.avatar do %>
-              <img
-                src={@current_user.avatar.path}
-                alt={@current_user.first_name}
-                class="w-6 h-6 rounded-full"
-              />
-            <% else %>
-              <img
-                src="/uploads/default_avatar.png"
-                alt={@current_user.first_name}
-                class="w-6 h-6 rounded-full"
-              />
-            <% end %>
-            <span class="text-[0.8125rem] leading-6 text-zinc-900">
-              <%= @current_user.first_name %>
-            </span>
-          </li>
-        </.link>
-
-        <li>
-          <.link
-            href={~p"/users/log_out"}
-            method="delete"
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            <%= gettext("Log out") %>
-          </.link>
-        </li>
+          <ul class="flex flex-col gap-2 px-4">
+            <.link
+              navigate={~p"/#{@current_user.id}/tasks"}
+              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            >
+              <%= gettext("Tasks") %>
+            </.link>
+          </ul>
+        </menu>
       <% else %>
         <li>
           <.link
@@ -78,6 +123,7 @@
         </li>
       <% end %>
     </ul>
+
     <%= @inner_content %>
   </body>
 </html>

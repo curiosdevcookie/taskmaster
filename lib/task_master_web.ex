@@ -86,6 +86,7 @@ defmodule TaskMasterWeb do
       # Core UI components and translation
       import TaskMasterWeb.CoreComponents
       import TaskMasterWeb.Gettext
+      import Phoenix.LiveView.Helpers
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
