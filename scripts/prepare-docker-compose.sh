@@ -50,7 +50,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=traefik_default"
       - "traefik.http.services.\${TRAEFIK_LABEL}.loadbalancer.server.port=8080"
-      - "traefik.http.routers.\${TRAEFIK_LABEL}.rule=Host(`\${DOMAIN}`)"
+      - "traefik.http.routers.\${TRAEFIK_LABEL}.rule=Host(\`\${DOMAIN}\`)"
       - "traefik.http.routers.\${TRAEFIK_LABEL}.entrypoints=websecure"
       - "traefik.http.routers.\${TRAEFIK_LABEL}.tls=true"
       - "traefik.http.routers.\${TRAEFIK_LABEL}.tls.certresolver=leresolver"
