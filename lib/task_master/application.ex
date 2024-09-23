@@ -7,6 +7,10 @@ defmodule TaskMaster.Application do
 
   @impl true
   def start(_type, _args) do
+    unless :ets.whereis(Mix.State) != :undefined do
+      :ets.new(Mix.State, [:named_table, :public, read_concurrency: true])
+    end
+
     children = [
       # Start the Telemetry supervisor
       TaskMasterWeb.Telemetry,
