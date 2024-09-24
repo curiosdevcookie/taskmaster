@@ -11,8 +11,8 @@
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
   </head>
-  <body class="bg-white h-screen antialiased p-4">
-    <ul class="relative flex items-center gap-4 px-4 sm:px-2 lg:px-8 justify-end">
+  <body class="bg-white antialiased sm:p-2 lg:p-8">
+    <ul class="relative flex items-center gap-4 mb-4 justify-end">
       <%= if @current_user do %>
         <%= live_render(@conn, TaskMasterWeb.StarCountLive,
           id: "star-count",
@@ -87,7 +87,7 @@
         </.button>
         <menu
           id="app-menu"
-          class="hidden absolute sm:right-2 lg:right-8 top-10 w-48 py-2 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          class="hidden absolute sm:right-2 lg:right-8 top-10 w-48 py-2 bg-white z-20 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
           phx-click-away={
             JS.hide(
               to: "#app-menu",
@@ -101,6 +101,12 @@
               class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
             >
               <%= gettext("Tasks") %>
+            </.link>
+            <.link
+              navigate={~p"/#{@current_user.id}/contacts"}
+              class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+            >
+              <%= gettext("Contacts") %>
             </.link>
           </ul>
         </menu>

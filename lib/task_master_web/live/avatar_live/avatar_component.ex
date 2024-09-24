@@ -39,7 +39,7 @@ defmodule TaskMasterWeb.AvatarLive.AvatarComponent do
         {:noreply, put_flash(socket, :error, "No file uploaded")}
 
       _entries ->
-        uploads_dir = Application.fetch_env!(:task_master, :upload_path)
+        uploads_dir = Application.app_dir(:task_master, "priv/static/uploads")
 
         File.mkdir_p!(uploads_dir)
 

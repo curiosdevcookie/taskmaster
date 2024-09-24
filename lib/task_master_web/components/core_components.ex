@@ -459,8 +459,8 @@ defmodule TaskMasterWeb.CoreComponents do
   ## Examples
 
       <.table id="users" rows={@users}>
-        <:col :let={user} label={gettext("id"><%= user.id %></:col>
-        <:col :let={user} label={gettext("username"><%= user.username %></:col>
+        <:col :let={user} label="id"><%= user.id %></:col>
+        <:col :let={user} label="username"><%= user.username %></:col>
       </.table>
   """
   attr :id, :string, required: true

@@ -1,0 +1,46 @@
+<.header>
+  Listing Contacts
+  <:actions>
+    <.link patch={~p"/#{@current_user.id}/contacts/new"}>
+      <.button>New Contact</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="contacts"
+  rows={@streams.contacts}
+  row_click={fn {_id, contact} -> JS.navigate(~p"/#{@current_user.id}/contacts/#{contact}") end}
+>
+  <:col :let={contact} label="company"><%= contact.company %></:col>
+  <:action :let={{_id, contact}}>
+    <div class="sr-only">
+      <.link navigate={~p"/#{@current_user.id}/contacts/#{contact}"}>Show</.link>
+    </div>
+    <.link patch={~p"/#{@current_user.id}/contacts/#{contact}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, contact}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: contact.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="contact-modal"
+  show
+  on_cancel={JS.patch(~p"/#{@current_user.id}/contacts")}
+>
+  <.live_component
+    module={TaskMasterWeb.ContactLive.ContactComponent}
+    id={@contact.id || :new}
+    title={@page_title}
+    action={@live_action}
+    contact={@contact}
+    patch={~p"/#{@current_user.id}/contacts"}
+  />
+</.modal>

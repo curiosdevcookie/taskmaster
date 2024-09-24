@@ -1,0 +1,32 @@
+<.header>
+  Contact <%= @contact.id %>
+  <:subtitle>This is a contact record from your database.</:subtitle>
+  <:actions>
+    <.link
+      patch={~p"/#{@current_user.id}/contacts/#{@contact}/show/edit"}
+      phx-click={JS.push_focus()}
+    >
+      <.button>Edit contact</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list></.list>
+
+<.back navigate={~p"/#{@current_user.id}/contacts"}>Back to contacts</.back>
+
+<.modal
+  :if={@live_action == :edit}
+  id="contact-modal"
+  show
+  on_cancel={JS.patch(~p"/#{@current_user.id}/contacts/#{@contact}")}
+>
+  <.live_component
+    module={TaskMasterWeb.ContactLive.ContactComponent}
+    id={@contact.id}
+    title={@page_title}
+    action={@live_action}
+    contact={@contact}
+    patch={~p"/#{@current_user.id}/contacts/#{@contact}"}
+  />
+</.modal>
