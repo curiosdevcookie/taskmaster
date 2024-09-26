@@ -1,8 +1,8 @@
 <.header>
-  Listing Contacts
+  <%= gettext("Listing Contacts") %>
   <:actions>
     <.link patch={~p"/#{@current_user.id}/contacts/new"}>
-      <.button>New Contact</.button>
+      <.button><%= gettext("New Contact") %></.button>
     </.link>
   </:actions>
 </.header>
@@ -12,10 +12,25 @@
   rows={@streams.contacts}
   row_click={fn {_id, contact} -> JS.navigate(~p"/#{@current_user.id}/contacts/#{contact}") end}
 >
-  <:col :let={contact} label="company"><%= contact.company %></:col>
+  <:col :let={contact} label={gettext("First name")}><%= contact.first_name %></:col>
+  <:col :let={contact} label={gettext("Last name")}><%= contact.last_name %></:col>
+  <:col :let={contact} label={gettext("Company")}><%= contact.company %></:col>
+  <:col :let={contact} label={gettext("Area of Expertise")}>
+    <%= contact.area_of_expertise %>
+  </:col>
+  <:col :let={contact} label={gettext("Email")}><%= contact.email %></:col>
+  <:col :let={contact} label={gettext("Phone")}><%= contact.phone %></:col>
+  <:col :let={contact} label={gettext("Mobile")}><%= contact.mobile %></:col>
+  <:col :let={contact} label={gettext("Street")}><%= contact.street %></:col>
+  <:col :let={contact} label={gettext("Street number")}><%= contact.street_number %></:col>
+  <:col :let={contact} label={gettext("City")}><%= contact.city %></:col>
+  <:col :let={contact} label={gettext("Notes")}><%= contact.notes %></:col>
+
   <:action :let={{_id, contact}}>
     <div class="sr-only">
-      <.link navigate={~p"/#{@current_user.id}/contacts/#{contact}"}>Show</.link>
+      <.link navigate={~p"/#{@current_user.id}/contacts/#{contact}"}>
+        <%= gettext("Show") %>
+      </.link>
     </div>
     <.link patch={~p"/#{@current_user.id}/contacts/#{contact}/edit"}>Edit</.link>
   </:action>
@@ -24,7 +39,7 @@
       phx-click={JS.push("delete", value: %{id: contact.id}) |> hide("##{id}")}
       data-confirm="Are you sure?"
     >
-      Delete
+      <%= gettext("Delete") %>
     </.link>
   </:action>
 </.table>

@@ -1,19 +1,31 @@
 <.header>
-  Contact <%= @contact.id %>
-  <:subtitle>This is a contact record from your database.</:subtitle>
+  <%= gettext("Contact") %>
+  <:subtitle><%= gettext("This is a contact record from your database.") %></:subtitle>
   <:actions>
     <.link
       patch={~p"/#{@current_user.id}/contacts/#{@contact}/show/edit"}
       phx-click={JS.push_focus()}
     >
-      <.button>Edit contact</.button>
+      <.button><%= gettext("Edit") %></.button>
     </.link>
   </:actions>
 </.header>
 
-<.list></.list>
+<.list>
+  <:item title={gettext("First Name")}><%= @contact.first_name %></:item>
+  <:item title={gettext("Last Name")}><%= @contact.last_name %></:item>
+  <:item title={gettext("Company")}><%= @contact.company %></:item>
+  <:item title={gettext("Area of Expertise")}><%= @contact.area_of_expertise %></:item>
+  <:item title={gettext("Email")}><%= @contact.email %></:item>
+  <:item title={gettext("Phone")}><%= @contact.phone %></:item>
+  <:item title={gettext("Mobile")}><%= @contact.mobile %></:item>
+  <:item title={gettext("Street")}><%= @contact.street %></:item>
+  <:item title={gettext("Street Number")}><%= @contact.street_number %></:item>
+  <:item title={gettext("City")}><%= @contact.city %></:item>
+  <:item title={gettext("Notes")}><%= @contact.notes %></:item>
+</.list>
 
-<.back navigate={~p"/#{@current_user.id}/contacts"}>Back to contacts</.back>
+<.back navigate={~p"/#{@current_user.id}/contacts"}><%= gettext("Back") %></.back>
 
 <.modal
   :if={@live_action == :edit}
