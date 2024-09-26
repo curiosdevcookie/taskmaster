@@ -97,31 +97,6 @@ The `task_participations` table includes:
 
 A user can participate in a task. A user can be assigned to multiple tasks. A task can have multiple participants.
 
-### Task locations
-
-The `task_locations` table includes:
-
-- `id`: UUID, PRIMARY KEY
-- `task_id`: UUID, FOREIGN KEY referencing `tasks(id)`, NULL: FALSE
-- `location_id`: UUID, FOREIGN KEY referencing `locations(id)`, NULL: FALSE
-- `inserted_at`: TIMESTAMP without time zone, NOT NULL
-- `updated_at`: TIMESTAMP without time zone, NOT NULL
-- `UNIQUE(task_id, location_id)`
-
-A task can have multiple locations. A location can be assigned to multiple tasks.
-
-### Locations
-
-The `locations` table includes:
-
-- `id`: UUID, PRIMARY KEY
-- `name`: VARCHAR
-- `inserted_at`: TIMESTAMP without time zone, NOT NULL
-- `updated_at`: TIMESTAMP without time zone, NOT NULL
-- `UNIQUE(name)`
-
-Users can create locations that are visible and usable by all users in the system.
-
 ### Pictures
 
 The `pictures` table includes:
