@@ -12,8 +12,12 @@ defmodule TaskMaster.Repo.Migrations.CreateContacts do
       add :mobile, :string
       add :street, :string
       add :street_number, :string
+      add :postal_code, :string
       add :city, :string
       add :notes, :text
+
+      add :organization_id, references(:organizations, type: :binary_id, on_delete: :delete_all),
+        null: false
 
       timestamps()
     end

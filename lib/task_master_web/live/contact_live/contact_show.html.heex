@@ -21,6 +21,7 @@
   <:item title={gettext("Mobile")}><%= @contact.mobile %></:item>
   <:item title={gettext("Street")}><%= @contact.street %></:item>
   <:item title={gettext("Street Number")}><%= @contact.street_number %></:item>
+  <:item title={gettext("Postal Code")}><%= @contact.postal_code %></:item>
   <:item title={gettext("City")}><%= @contact.city %></:item>
   <:item title={gettext("Notes")}><%= @contact.notes %></:item>
 </.list>
@@ -40,5 +41,6 @@
     action={@live_action}
     contact={@contact}
     patch={~p"/#{@current_user.id}/contacts/#{@contact}"}
+    current_user={@current_user}
   />
 </.modal>

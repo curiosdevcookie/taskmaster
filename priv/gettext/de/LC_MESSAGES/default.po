@@ -22,12 +22,14 @@ msgstr "Aktionen"
 msgid "close"
 msgstr "Schließen"
 
+#: lib/task_master_web/live/contact_live/contact_component.ex:22
 #: lib/task_master_web/live/contact_live/contact_index.html.heex:15
 #: lib/task_master_web/live/user_registration_live.ex:39
 #, elixir-autogen, elixir-format
 msgid "First name"
 msgstr "Vorname"
 
+#: lib/task_master_web/live/contact_live/contact_component.ex:26
 #: lib/task_master_web/live/contact_live/contact_index.html.heex:21
 #: lib/task_master_web/live/contact_live/contact_show.html.heex:19
 #: lib/task_master_web/live/user_login_live.ex:18
@@ -37,6 +39,7 @@ msgstr "Vorname"
 msgid "Email"
 msgstr "E-Mail"
 
+#: lib/task_master_web/live/contact_live/contact_component.ex:23
 #: lib/task_master_web/live/contact_live/contact_index.html.heex:16
 #: lib/task_master_web/live/user_registration_live.ex:40
 #, elixir-autogen, elixir-format, fuzzy
@@ -322,13 +325,13 @@ msgid "Edit"
 msgstr "Bearbeiten"
 
 #: lib/task_master_web/live/avatar_live/avatar_index.ex:71
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:32
+#: lib/task_master_web/live/contact_live/contact_index.html.heex:33
 #, elixir-autogen, elixir-format
 msgid "Show"
 msgstr "Zeigen"
 
 #: lib/task_master_web/live/avatar_live/avatar_index.ex:80
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:42
+#: lib/task_master_web/live/contact_live/contact_index.html.heex:43
 #, elixir-autogen, elixir-format
 msgid "Delete"
 msgstr "Löschen"
@@ -352,6 +355,7 @@ msgid "Choose a value"
 msgstr "Wähle einen Wert"
 
 #: lib/task_master_web/live/avatar_live/avatar_component.ex:135
+#: lib/task_master_web/live/contact_live/contact_component.ex:36
 #: lib/task_master_web/live/task_live/task_component.ex:103
 #, elixir-autogen, elixir-format
 msgid "Save"
@@ -441,7 +445,7 @@ msgid "Progressing"
 msgstr "In Bearbeitung"
 
 #: lib/task_master_web/live/avatar_live/avatar_show.ex:57
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:28
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:29
 #: lib/task_master_web/live/task_live/task_show.ex:141
 #, elixir-autogen, elixir-format
 msgid "Back"
@@ -696,12 +700,14 @@ msgstr "Min"
 msgid "Area of Expertise"
 msgstr "Fachgebiet"
 
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:26
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:24
+#: lib/task_master_web/live/contact_live/contact_component.ex:32
+#: lib/task_master_web/live/contact_live/contact_index.html.heex:27
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:25
 #, elixir-autogen, elixir-format
 msgid "City"
 msgstr "Stadt"
 
+#: lib/task_master_web/live/contact_live/contact_component.ex:24
 #: lib/task_master_web/live/contact_live/contact_index.html.heex:17
 #: lib/task_master_web/live/contact_live/contact_show.html.heex:17
 #, elixir-autogen, elixir-format
@@ -738,6 +744,7 @@ msgstr "Nachname"
 msgid "Listing Contacts"
 msgstr "Kontakte"
 
+#: lib/task_master_web/live/contact_live/contact_component.ex:28
 #: lib/task_master_web/live/contact_live/contact_index.html.heex:23
 #: lib/task_master_web/live/contact_live/contact_show.html.heex:21
 #, elixir-autogen, elixir-format
@@ -749,18 +756,21 @@ msgstr "Handy"
 msgid "New Contact"
 msgstr "Neuer Kontakt"
 
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:27
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:25
+#: lib/task_master_web/live/contact_live/contact_component.ex:33
+#: lib/task_master_web/live/contact_live/contact_index.html.heex:28
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:26
 #, elixir-autogen, elixir-format
 msgid "Notes"
 msgstr "Anmerkungen"
 
+#: lib/task_master_web/live/contact_live/contact_component.ex:27
 #: lib/task_master_web/live/contact_live/contact_index.html.heex:22
 #: lib/task_master_web/live/contact_live/contact_show.html.heex:20
 #, elixir-autogen, elixir-format
 msgid "Phone"
 msgstr "Telefon"
 
+#: lib/task_master_web/live/contact_live/contact_component.ex:29
 #: lib/task_master_web/live/contact_live/contact_index.html.heex:24
 #: lib/task_master_web/live/contact_live/contact_show.html.heex:22
 #, elixir-autogen, elixir-format
@@ -772,6 +782,7 @@ msgstr "Straße"
 msgid "Street Number"
 msgstr "Hausnummer"
 
+#: lib/task_master_web/live/contact_live/contact_component.ex:30
 #: lib/task_master_web/live/contact_live/contact_index.html.heex:25
 #, elixir-autogen, elixir-format
 msgid "Street number"
@@ -781,3 +792,19 @@ msgstr "Hausnummer"
 #, elixir-autogen, elixir-format
 msgid "This is a contact record from your database."
 msgstr "Dies ist ein Kontakt aus Deiner Datenbank."
+
+#: lib/task_master_web/live/contact_live/contact_component.ex:25
+#, elixir-autogen, elixir-format, fuzzy
+msgid "Area of expertise"
+msgstr "Fachgebiet"
+
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:24
+#, elixir-autogen, elixir-format
+msgid "Postal Code"
+msgstr ""
+
+#: lib/task_master_web/live/contact_live/contact_component.ex:31
+#: lib/task_master_web/live/contact_live/contact_index.html.heex:26
+#, elixir-autogen, elixir-format
+msgid "Postal code"
+msgstr "PLZ"

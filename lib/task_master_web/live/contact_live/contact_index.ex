@@ -6,7 +6,17 @@ defmodule TaskMasterWeb.ContactLive.ContactIndex do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, stream(socket, :contacts, Contacts.list_contacts())}
+    current_user = socket.assigns.current_user |> dbg()
+    contacts = Contacts.list_contacts(current_user.organization_id)
+
+    socket =
+      socket
+      |> assign(:page_title, "Listing Contacts")
+      |> assign(:contact, nil)
+      |> assign(:live_action, :index)
+      |> assign(:current_user, current_user)
+      |> stream(:contacts, contacts)
+      |> ok()
   end
 
   @impl true

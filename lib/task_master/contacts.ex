@@ -17,8 +17,10 @@ defmodule TaskMaster.Contacts do
       [%Contact{}, ...]
 
   """
-  def list_contacts do
-    Repo.all(Contact)
+
+  def list_contacts(org_id) do
+    from(c in Contact, where: c.organization_id == ^org_id)
+    |> Repo.all()
   end
 
   @doc """

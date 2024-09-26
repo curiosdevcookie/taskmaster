@@ -9,7 +9,6 @@ defmodule TaskMasterWeb.ContactLive.ContactComponent do
     <div>
       <.header>
         <%= @title %>
-        <:subtitle>Use this form to manage contact records in your database.</:subtitle>
       </.header>
 
       <.simple_form
@@ -19,8 +18,22 @@ defmodule TaskMasterWeb.ContactLive.ContactComponent do
         phx-change="validate"
         phx-submit="save"
       >
+        <input type="hidden" name="task[organization_id]" value={@current_user.organization_id} />
+        <.input field={@form[:first_name]} type="text" label={gettext("First name")} />
+        <.input field={@form[:last_name]} type="text" label={gettext("Last name")} />
+        <.input field={@form[:company]} type="text" label={gettext("Company")} />
+        <.input field={@form[:area_of_expertise]} type="text" label={gettext("Area of expertise")} />
+        <.input field={@form[:email]} type="email" label={gettext("Email")} />
+        <.input field={@form[:phone]} type="tel" label={gettext("Phone")} />
+        <.input field={@form[:mobile]} type="tel" label={gettext("Mobile")} />
+        <.input field={@form[:street]} type="text" label={gettext("Street")} />
+        <.input field={@form[:street_number]} type="text" label={gettext("Street number")} />
+        <.input field={@form[:postal_code]} type="text" label={gettext("Postal code")} />
+        <.input field={@form[:city]} type="text" label={gettext("City")} />
+        <.input field={@form[:notes]} type="text" label={gettext("Notes")} />
+
         <:actions>
-          <.button phx-disable-with="Saving...">Save Contact</.button>
+          <.button phx-disable-with="Saving..."><%= gettext("Save") %></.button>
         </:actions>
       </.simple_form>
     </div>

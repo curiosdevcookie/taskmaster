@@ -4,6 +4,7 @@ defmodule TaskMaster.Accounts.Organization do
   import Ecto.Query
 
   @primary_key {:id, Ecto.UUID, autogenerate: true}
+
   schema "organizations" do
     field :name, :string
     has_many :users, TaskMaster.Accounts.User

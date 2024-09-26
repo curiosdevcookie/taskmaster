@@ -23,6 +23,7 @@
   <:col :let={contact} label={gettext("Mobile")}><%= contact.mobile %></:col>
   <:col :let={contact} label={gettext("Street")}><%= contact.street %></:col>
   <:col :let={contact} label={gettext("Street number")}><%= contact.street_number %></:col>
+  <:col :let={contact} label={gettext("Postal code")}><%= contact.postal_code %></:col>
   <:col :let={contact} label={gettext("City")}><%= contact.city %></:col>
   <:col :let={contact} label={gettext("Notes")}><%= contact.notes %></:col>
 
@@ -57,5 +58,6 @@
     action={@live_action}
     contact={@contact}
     patch={~p"/#{@current_user.id}/contacts"}
+    current_user={@current_user}
   />
 </.modal>
