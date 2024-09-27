@@ -8,6 +8,8 @@ defmodule TaskMaster.Contacts do
 
   alias TaskMaster.Contacts.Contact
 
+  require Logger
+
   @doc """
   Returns the list of contacts.
 
@@ -55,6 +57,15 @@ defmodule TaskMaster.Contacts do
     %Contact{}
     |> Contact.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, contact} ->
+        Logger.info("Contact created successfully!")
+        {:ok, contact}
+
+      {:error, changeset} ->
+        Logger.error("Error creating contact: #{inspect(changeset)}")
+        {:error, changeset}
+    end
   end
 
   @doc """

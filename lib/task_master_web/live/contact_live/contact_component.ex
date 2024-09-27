@@ -18,7 +18,6 @@ defmodule TaskMasterWeb.ContactLive.ContactComponent do
         phx-change="validate"
         phx-submit="save"
       >
-        <input type="hidden" name="task[organization_id]" value={@current_user.organization_id} />
         <.input field={@form[:first_name]} type="text" label={gettext("First name")} />
         <.input field={@form[:last_name]} type="text" label={gettext("Last name")} />
         <.input field={@form[:company]} type="text" label={gettext("Company")} />
@@ -61,6 +60,9 @@ defmodule TaskMasterWeb.ContactLive.ContactComponent do
   end
 
   defp save_contact(socket, :edit, contact_params) do
+    contact_params =
+      Map.put(contact_params, "organization_id", socket.assigns.current_user.organization_id)
+
     case Contacts.update_contact(socket.assigns.contact, contact_params) do
       {:ok, contact} ->
         notify_parent({:saved, contact})
@@ -76,6 +78,9 @@ defmodule TaskMasterWeb.ContactLive.ContactComponent do
   end
 
   defp save_contact(socket, :new, contact_params) do
+    contact_params =
+      Map.put(contact_params, "organization_id", socket.assigns.current_user.organization_id)
+
     case Contacts.create_contact(contact_params) do
       {:ok, contact} ->
         notify_parent({:saved, contact})

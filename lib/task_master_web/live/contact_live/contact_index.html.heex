@@ -12,20 +12,20 @@
   rows={@streams.contacts}
   row_click={fn {_id, contact} -> JS.navigate(~p"/#{@current_user.id}/contacts/#{contact}") end}
 >
-  <:col :let={contact} label={gettext("First name")}><%= contact.first_name %></:col>
-  <:col :let={contact} label={gettext("Last name")}><%= contact.last_name %></:col>
-  <:col :let={contact} label={gettext("Company")}><%= contact.company %></:col>
-  <:col :let={contact} label={gettext("Area of Expertise")}>
+  <:col :let={{_id, contact}} label={gettext("First name")}><%= contact.first_name %></:col>
+  <:col :let={{_id, contact}} label={gettext("Last name")}><%= contact.last_name %></:col>
+  <:col :let={{_id, contact}} label={gettext("Company")}><%= contact.company %></:col>
+  <:col :let={{_id, contact}} label={gettext("Area of Expertise")}>
     <%= contact.area_of_expertise %>
   </:col>
-  <:col :let={contact} label={gettext("Email")}><%= contact.email %></:col>
-  <:col :let={contact} label={gettext("Phone")}><%= contact.phone %></:col>
-  <:col :let={contact} label={gettext("Mobile")}><%= contact.mobile %></:col>
-  <:col :let={contact} label={gettext("Street")}><%= contact.street %></:col>
-  <:col :let={contact} label={gettext("Street number")}><%= contact.street_number %></:col>
-  <:col :let={contact} label={gettext("Postal code")}><%= contact.postal_code %></:col>
-  <:col :let={contact} label={gettext("City")}><%= contact.city %></:col>
-  <:col :let={contact} label={gettext("Notes")}><%= contact.notes %></:col>
+  <:col :let={{_id, contact}} label={gettext("Email")}><%= contact.email %></:col>
+  <:col :let={{_id, contact}} label={gettext("Phone")}><%= contact.phone %></:col>
+  <:col :let={{_id, contact}} label={gettext("Mobile")}><%= contact.mobile %></:col>
+  <:col :let={{_id, contact}} label={gettext("Street")}><%= contact.street %></:col>
+  <:col :let={{_id, contact}} label={gettext("Street number")}><%= contact.street_number %></:col>
+  <:col :let={{_id, contact}} label={gettext("Postal code")}><%= contact.postal_code %></:col>
+  <:col :let={{_id, contact}} label={gettext("City")}><%= contact.city %></:col>
+  <:col :let={{_id, contact}} label={gettext("Notes")}><%= contact.notes %></:col>
 
   <:action :let={{_id, contact}}>
     <div class="sr-only">

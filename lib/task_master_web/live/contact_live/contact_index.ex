@@ -9,14 +9,13 @@ defmodule TaskMasterWeb.ContactLive.ContactIndex do
     current_user = socket.assigns.current_user |> dbg()
     contacts = Contacts.list_contacts(current_user.organization_id)
 
-    socket =
-      socket
-      |> assign(:page_title, "Listing Contacts")
-      |> assign(:contact, nil)
-      |> assign(:live_action, :index)
-      |> assign(:current_user, current_user)
-      |> stream(:contacts, contacts)
-      |> ok()
+    socket
+    |> assign(:page_title, "Listing Contacts")
+    |> assign(:contact, nil)
+    |> assign(:live_action, :index)
+    |> assign(:current_user, current_user)
+    |> stream(:contacts, contacts)
+    |> ok()
   end
 
   @impl true
@@ -43,7 +42,7 @@ defmodule TaskMasterWeb.ContactLive.ContactIndex do
   end
 
   @impl true
-  def handle_info({TaskMasterWeb.ContactLive.FormComponent, {:saved, contact}}, socket) do
+  def handle_info({TaskMasterWeb.ContactLive.ContactComponent, {:saved, contact}}, socket) do
     {:noreply, stream_insert(socket, :contacts, contact)}
   end
 
