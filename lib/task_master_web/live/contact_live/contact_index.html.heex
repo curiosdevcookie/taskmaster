@@ -2,7 +2,7 @@
   <%= gettext("Listing Contacts") %>
   <:actions>
     <.link patch={~p"/#{@current_user.id}/contacts/new"}>
-      <.button><%= gettext("New Contact") %></.button>
+      <.button class="btn-primary"><%= gettext("New Contact") %></.button>
     </.link>
   </:actions>
 </.header>
@@ -12,36 +12,28 @@
   rows={@streams.contacts}
   row_click={fn {_id, contact} -> JS.navigate(~p"/#{@current_user.id}/contacts/#{contact}") end}
 >
-  <:col :let={{_id, contact}} label={gettext("First name")}><%= contact.first_name %></:col>
-  <:col :let={{_id, contact}} label={gettext("Last name")}><%= contact.last_name %></:col>
   <:col :let={{_id, contact}} label={gettext("Company")}><%= contact.company %></:col>
   <:col :let={{_id, contact}} label={gettext("Area of Expertise")}>
     <%= contact.area_of_expertise %>
   </:col>
-  <:col :let={{_id, contact}} label={gettext("Email")}><%= contact.email %></:col>
-  <:col :let={{_id, contact}} label={gettext("Phone")}><%= contact.phone %></:col>
-  <:col :let={{_id, contact}} label={gettext("Mobile")}><%= contact.mobile %></:col>
-  <:col :let={{_id, contact}} label={gettext("Street")}><%= contact.street %></:col>
-  <:col :let={{_id, contact}} label={gettext("Street number")}><%= contact.street_number %></:col>
-  <:col :let={{_id, contact}} label={gettext("Postal code")}><%= contact.postal_code %></:col>
-  <:col :let={{_id, contact}} label={gettext("City")}><%= contact.city %></:col>
-  <:col :let={{_id, contact}} label={gettext("Notes")}><%= contact.notes %></:col>
-
   <:action :let={{_id, contact}}>
     <div class="sr-only">
       <.link navigate={~p"/#{@current_user.id}/contacts/#{contact}"}>
         <%= gettext("Show") %>
       </.link>
     </div>
-    <.link patch={~p"/#{@current_user.id}/contacts/#{contact}/edit"}>Edit</.link>
-  </:action>
-  <:action :let={{id, contact}}>
-    <.link
-      phx-click={JS.push("delete", value: %{id: contact.id}) |> hide("##{id}")}
-      data-confirm="Are you sure?"
-    >
-      <%= gettext("Delete") %>
-    </.link>
+    <section class="flex gap-1">
+      <.link patch={~p"/#{@current_user.id}/contacts/#{contact}/edit"} phx-click={JS.push_focus()}>
+        <.button class="btn-pencil"><.icon name="hero-pencil" /></.button>
+      </.link>
+      <.link
+        phx-click={JS.push("delete", value: %{id: contact.id})}
+        data-confirm={gettext("Are you sure?")}
+        class="btn-danger"
+      >
+        <.icon name="hero-trash" />
+      </.link>
+    </section>
   </:action>
 </.table>
 

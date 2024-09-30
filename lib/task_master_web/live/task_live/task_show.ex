@@ -100,7 +100,7 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
       <:actions>
         <section class="flex gap-1">
           <.link patch={~p"/#{@current_user.id}/tasks/#{@task}/show/edit"} phx-click={JS.push_focus()}>
-            <.button class="btn-primary"><.icon name="hero-pencil" /></.button>
+            <.button class="btn-pencil"><.icon name="hero-pencil" /></.button>
           </.link>
           <.link
             phx-click={JS.push("delete", value: %{id: @task.id})}
