@@ -1,12 +1,21 @@
 <.header>
   <%= gettext("Contact") %>
   <:actions>
-    <.link
-      patch={~p"/#{@current_user.id}/contacts/#{@contact}/show/edit"}
-      phx-click={JS.push_focus()}
-    >
-      <.button><%= gettext("Edit") %></.button>
-    </.link>
+    <section class="flex gap-1">
+      <.link
+        patch={~p"/#{@current_user.id}/contacts/#{@contact}/show/edit"}
+        phx-click={JS.push_focus()}
+      >
+        <.button class="btn-pencil"><.icon name="hero-pencil" /></.button>
+      </.link>
+      <.link
+        phx-click={JS.push("delete", value: %{id: @contact.id})}
+        data-confirm={gettext("Are you sure?")}
+        class="btn-danger"
+      >
+        <.icon name="hero-trash" />
+      </.link>
+    </section>
   </:actions>
 </.header>
 
@@ -25,7 +34,7 @@
   <:item title={gettext("Notes")}><%= @contact.notes %></:item>
 </.list>
 
-<.back navigate={~p"/#{@current_user.id}/contacts"}><%= gettext("Back") %></.back>
+<.back navigate={~p"/#{@current_user.id}/contacts"} />
 
 <.modal
   :if={@live_action == :edit}

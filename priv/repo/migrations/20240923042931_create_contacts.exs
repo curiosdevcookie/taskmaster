@@ -6,8 +6,8 @@ defmodule TaskMaster.Repo.Migrations.CreateContacts do
       add :id, :uuid, primary_key: true
       add :first_name, :citext
       add :last_name, :citext
-      add :company, :citext
-      add :area_of_expertise, :citext
+      add :company, :citext, null: false
+      add :area_of_expertise, :citext, null: false
       add :email, :citext
       add :phone, :string
       add :mobile, :string

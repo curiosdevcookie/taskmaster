@@ -564,14 +564,14 @@ defmodule TaskMasterWeb.CoreComponents do
       <.back navigate={~p"/posts"}>Back to posts</.back>
   """
   attr :navigate, :any, required: true
-  slot :inner_block, required: true
+  slot :inner_block, required: false
 
   def back(assigns) do
     ~H"""
     <div class="lg:mt-16 sm:mt-10">
       <.link
         navigate={@navigate}
-        class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+        class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700 border border-zinc-900 rounded px-3 py-2"
       >
         <.icon name="hero-arrow-left-solid" class="h-3 w-3" />
         <%= render_slot(@inner_block) %>

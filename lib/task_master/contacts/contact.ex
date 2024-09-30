@@ -41,6 +41,6 @@ defmodule TaskMaster.Contacts.Contact do
       :notes,
       :organization_id
     ])
-    |> validate_required([])
+    |> validate_required([:company, :area_of_expertise])
   end
 end

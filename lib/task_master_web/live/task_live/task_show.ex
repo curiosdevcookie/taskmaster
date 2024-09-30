@@ -138,7 +138,7 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
       </:item>
     </.list>
 
-    <.back navigate={~p"/#{@current_user.id}/tasks"}><%= gettext("Back") %></.back>
+    <.back navigate={~p"/#{@current_user.id}/tasks"} />
 
     <.modal
       :if={@live_action == :edit}
