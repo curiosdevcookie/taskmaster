@@ -134,7 +134,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
       Ecto.NoResultsError ->
         socket =
           socket
-          |> put_flash(:error, "User not found")
+          |> put_flash(:error, gettext("User not found"))
           |> redirect(to: ~p"/")
 
         {:ok, socket}

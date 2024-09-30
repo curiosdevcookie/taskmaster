@@ -155,7 +155,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
   def handle_event("add_participant", %{"participant" => user_id}, socket) do
     case Accounts.get_user!(user_id) do
       nil ->
-        {:noreply, put_flash(socket, :error, "Selected user not found")}
+        {:noreply, put_flash(socket, :error, gettext("Selected user not found"))}
 
       user ->
         updated_participants = [user | socket.assigns.participants] |> Enum.uniq_by(& &1.id)
@@ -164,7 +164,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
          socket
          |> assign(:participants, updated_participants)
          |> assign(:selected_participant_id, nil)
-         |> put_flash(:info, "Participant added successfully")}
+         |> put_flash(:info, gettext("Participant added successfully"))}
     end
   end
 

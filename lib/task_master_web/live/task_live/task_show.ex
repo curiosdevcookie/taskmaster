@@ -88,9 +88,9 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
     end
   end
 
-  defp page_title(:show), do: "Show Task"
-  defp page_title(:edit), do: "Edit Task"
-  defp page_title(:new_subtask), do: "New Subtask"
+  defp page_title(:show), do: gettext("Show Task")
+  defp page_title(:edit), do: gettext("Edit Task")
+  defp page_title(:new_subtask), do: gettext("New Subtask")
 
   @impl true
   def render(assigns) do

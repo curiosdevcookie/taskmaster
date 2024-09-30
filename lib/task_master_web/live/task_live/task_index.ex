@@ -200,11 +200,15 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
         Logger.warning("Cannot complete task: not all subtasks are completed")
 
         {:noreply,
-         put_flash(socket, :error, "Cannot complete task: not all subtasks are completed")}
+         put_flash(
+           socket,
+           :error,
+           gettext("Cannot complete task: not all subtasks are completed")
+         )}
 
       {:error, changeset} ->
         Logger.error("Failed to update task status: #{inspect(changeset)}")
-        {:noreply, put_flash(socket, :error, "Failed to update task status")}
+        {:noreply, put_flash(socket, :error, gettext("Failed to update task status"))}
     end
   end
 

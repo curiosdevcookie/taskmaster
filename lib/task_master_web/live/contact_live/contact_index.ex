@@ -20,18 +20,22 @@ defmodule TaskMasterWeb.ContactLive.ContactIndex do
 
   @impl true
   def handle_params(params, _url, socket) do
-    {:noreply, apply_action(socket, socket.assigns.live_action, params)}
+    socket
+    |> apply_action(socket.assigns.live_action, params)
+    |> noreply()
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
     |> assign(:page_title, "Edit Contact")
+    |> assign(:page_title, page_title(socket.assigns.live_action))
     |> assign(:contact, Contacts.get_contact!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Contact")
+    |> assign(:page_title, page_title(socket.assigns.live_action))
     |> assign(:contact, %Contact{})
   end
 
@@ -53,4 +57,8 @@ defmodule TaskMasterWeb.ContactLive.ContactIndex do
 
     {:noreply, stream_delete(socket, :contacts, contact)}
   end
+
+  defp page_title(:show), do: gettext("Show Contact")
+  defp page_title(:new), do: gettext("New Contact")
+  defp page_title(:edit), do: gettext("Edit Contact")
 end

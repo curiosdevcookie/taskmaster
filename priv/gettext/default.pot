@@ -22,16 +22,14 @@ msgstr ""
 msgid "close"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_component.ex:22
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:15
+#: lib/task_master_web/live/contact_live/contact_component.ex:21
 #: lib/task_master_web/live/user_registration_live.ex:39
 #, elixir-autogen, elixir-format
 msgid "First name"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_component.ex:26
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:21
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:19
+#: lib/task_master_web/live/contact_live/contact_component.ex:25
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:27
 #: lib/task_master_web/live/user_login_live.ex:18
 #: lib/task_master_web/live/user_registration_live.ex:42
 #: lib/task_master_web/live/user_settings_live.ex:35
@@ -39,8 +37,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_component.ex:23
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:16
+#: lib/task_master_web/live/contact_live/contact_component.ex:22
 #: lib/task_master_web/live/user_registration_live.ex:40
 #, elixir-autogen, elixir-format
 msgid "Last name"
@@ -313,25 +310,25 @@ msgid "You can reset your password by visiting the URL below:"
 msgstr ""
 
 #: lib/task_master_web/live/avatar_live/avatar_index.ex:78
+#: lib/task_master_web/live/contact_live/contact_index.html.heex:31
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:13
 #: lib/task_master_web/live/task_live/task_show.ex:107
 #, elixir-autogen, elixir-format
 msgid "Are you sure?"
 msgstr ""
 
 #: lib/task_master_web/live/avatar_live/avatar_index.ex:73
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:9
 #, elixir-autogen, elixir-format
 msgid "Edit"
 msgstr ""
 
 #: lib/task_master_web/live/avatar_live/avatar_index.ex:71
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:33
+#: lib/task_master_web/live/contact_live/contact_index.html.heex:22
 #, elixir-autogen, elixir-format
 msgid "Show"
 msgstr ""
 
 #: lib/task_master_web/live/avatar_live/avatar_index.ex:80
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:43
 #, elixir-autogen, elixir-format
 msgid "Delete"
 msgstr ""
@@ -343,7 +340,7 @@ msgid "Listing Tasks"
 msgstr ""
 
 #: lib/task_master_web/live/task_live/task_index.ex:57
-#: lib/task_master_web/live/task_live/task_index.ex:271
+#: lib/task_master_web/live/task_live/task_index.html.heex:16
 #, elixir-autogen, elixir-format
 msgid "New Task"
 msgstr ""
@@ -355,7 +352,7 @@ msgid "Choose a value"
 msgstr ""
 
 #: lib/task_master_web/live/avatar_live/avatar_component.ex:135
-#: lib/task_master_web/live/contact_live/contact_component.ex:36
+#: lib/task_master_web/live/contact_live/contact_component.ex:37
 #: lib/task_master_web/live/task_live/task_component.ex:103
 #, elixir-autogen, elixir-format
 msgid "Save"
@@ -405,6 +402,7 @@ msgid "Title"
 msgstr ""
 
 #: lib/task_master_web/live/task_live/task_index.ex:51
+#: lib/task_master_web/live/task_live/task_show.ex:92
 #, elixir-autogen, elixir-format
 msgid "Edit Task"
 msgstr ""
@@ -442,13 +440,6 @@ msgstr ""
 #: lib/task_master_web/helpers/enum_translator.ex:22
 #, elixir-autogen, elixir-format
 msgid "Progressing"
-msgstr ""
-
-#: lib/task_master_web/live/avatar_live/avatar_show.ex:57
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:29
-#: lib/task_master_web/live/task_live/task_show.ex:141
-#, elixir-autogen, elixir-format
-msgid "Back"
 msgstr ""
 
 #: lib/task_master_web/components/core_components.ex:147
@@ -613,6 +604,7 @@ msgstr ""
 
 #: lib/task_master_web/live/task_live/task_index.ex:66
 #: lib/task_master_web/live/task_live/task_index.ex:171
+#: lib/task_master_web/live/task_live/task_show.ex:93
 #, elixir-autogen, elixir-format
 msgid "New Subtask"
 msgstr ""
@@ -645,7 +637,7 @@ msgstr ""
 msgid "User created successfully."
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_index.ex:266
+#: lib/task_master_web/live/task_live/task_index.html.heex:11
 #, elixir-autogen, elixir-format
 msgid "Open Tasks"
 msgstr ""
@@ -668,11 +660,12 @@ msgid "Task deleted successfully"
 msgstr ""
 
 #: lib/task_master_web/live/task_live/task_component.ex:216
+#: lib/task_master_web/live/task_live/task_index.ex:206
 #, elixir-autogen, elixir-format
 msgid "Cannot complete task: not all subtasks are completed"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_index.ex:290
+#: lib/task_master_web/live/task_live/task_index.html.heex:35
 #, elixir-autogen, elixir-format
 msgid "Completed Tasks"
 msgstr ""
@@ -694,22 +687,21 @@ msgstr ""
 msgid "min"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:18
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:18
+#: lib/task_master_web/live/contact_live/contact_index.html.heex:16
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:26
 #, elixir-autogen, elixir-format
 msgid "Area of Expertise"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_component.ex:32
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:27
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:25
+#: lib/task_master_web/live/contact_live/contact_component.ex:31
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:33
 #, elixir-autogen, elixir-format
 msgid "City"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_component.ex:24
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:17
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:17
+#: lib/task_master_web/live/contact_live/contact_component.ex:23
+#: lib/task_master_web/live/contact_live/contact_index.html.heex:15
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:25
 #, elixir-autogen, elixir-format
 msgid "Company"
 msgstr ""
@@ -729,12 +721,12 @@ msgstr ""
 msgid "Failed to delete task"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:15
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:23
 #, elixir-autogen, elixir-format
 msgid "First Name"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:16
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:24
 #, elixir-autogen, elixir-format
 msgid "Last Name"
 msgstr ""
@@ -744,67 +736,109 @@ msgstr ""
 msgid "Listing Contacts"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_component.ex:28
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:23
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:21
+#: lib/task_master_web/live/contact_live/contact_component.ex:27
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:29
 #, elixir-autogen, elixir-format
 msgid "Mobile"
 msgstr ""
 
+#: lib/task_master_web/live/contact_live/contact_index.ex:62
 #: lib/task_master_web/live/contact_live/contact_index.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "New Contact"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_component.ex:33
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:28
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:26
+#: lib/task_master_web/live/contact_live/contact_component.ex:32
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:34
 #, elixir-autogen, elixir-format
 msgid "Notes"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_component.ex:27
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:22
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:20
+#: lib/task_master_web/live/contact_live/contact_component.ex:26
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:28
 #, elixir-autogen, elixir-format
 msgid "Phone"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_component.ex:29
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:24
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:22
+#: lib/task_master_web/live/contact_live/contact_component.ex:28
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:30
 #, elixir-autogen, elixir-format
 msgid "Street"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:23
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:31
 #, elixir-autogen, elixir-format
 msgid "Street Number"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_component.ex:30
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:25
+#: lib/task_master_web/live/contact_live/contact_component.ex:29
 #, elixir-autogen, elixir-format
 msgid "Street number"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:3
-#, elixir-autogen, elixir-format
-msgid "This is a contact record from your database."
-msgstr ""
-
-#: lib/task_master_web/live/contact_live/contact_component.ex:25
+#: lib/task_master_web/live/contact_live/contact_component.ex:24
 #, elixir-autogen, elixir-format
 msgid "Area of expertise"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_show.html.heex:24
+#: lib/task_master_web/live/contact_live/contact_show.html.heex:32
 #, elixir-autogen, elixir-format
 msgid "Postal Code"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_component.ex:31
-#: lib/task_master_web/live/contact_live/contact_index.html.heex:26
+#: lib/task_master_web/live/contact_live/contact_component.ex:30
 #, elixir-autogen, elixir-format
 msgid "Postal code"
+msgstr ""
+
+#: lib/task_master_web/live/contact_live/contact_index.ex:63
+#: lib/task_master_web/live/contact_live/contact_show.ex:20
+#, elixir-autogen, elixir-format
+msgid "Edit Contact"
+msgstr ""
+
+#: lib/task_master_web/live/contact_live/contact_index.ex:61
+#: lib/task_master_web/live/contact_live/contact_show.ex:19
+#, elixir-autogen, elixir-format
+msgid "Show Contact"
+msgstr ""
+
+#: lib/task_master_web/live/task_live/task_show.ex:91
+#, elixir-autogen, elixir-format
+msgid "Show Task"
+msgstr ""
+
+#: lib/task_master_web/live/contact_live/contact_component.ex:94
+#, elixir-autogen, elixir-format
+msgid "Contact created successfully"
+msgstr ""
+
+#: lib/task_master_web/live/contact_live/contact_component.ex:76
+#, elixir-autogen, elixir-format
+msgid "Contact updated successfully"
+msgstr ""
+
+#: lib/task_master_web/live/task_live/task_index.ex:211
+#, elixir-autogen, elixir-format
+msgid "Failed to update task status"
+msgstr ""
+
+#: lib/task_master_web/live/avatar_live/avatar_component.ex:39
+#, elixir-autogen, elixir-format
+msgid "No file uploaded"
+msgstr ""
+
+#: lib/task_master_web/live/task_live/task_component.ex:167
+#, elixir-autogen, elixir-format
+msgid "Participant added successfully"
+msgstr ""
+
+#: lib/task_master_web/live/task_live/task_component.ex:158
+#, elixir-autogen, elixir-format
+msgid "Selected user not found"
+msgstr ""
+
+#: lib/task_master_web/live/user_settings_live.ex:137
+#, elixir-autogen, elixir-format
+msgid "User not found"
 msgstr ""

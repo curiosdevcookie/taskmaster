@@ -36,7 +36,7 @@ defmodule TaskMasterWeb.AvatarLive.AvatarComponent do
 
     case uploaded_entries(socket, :avatar) do
       [] ->
-        {:noreply, put_flash(socket, :error, "No file uploaded")}
+        {:noreply, put_flash(socket, :error, gettext("No file uploaded"))}
 
       _entries ->
         uploads_dir = Application.app_dir(:task_master, "priv/static/uploads")

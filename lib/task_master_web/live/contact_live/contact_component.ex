@@ -73,7 +73,7 @@ defmodule TaskMasterWeb.ContactLive.ContactComponent do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Contact updated successfully")
+         |> put_flash(:info, gettext("Contact updated successfully"))
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -91,7 +91,7 @@ defmodule TaskMasterWeb.ContactLive.ContactComponent do
 
         {:noreply,
          socket
-         |> put_flash(:info, "Contact created successfully")
+         |> put_flash(:info, gettext("Contact created successfully"))
          |> push_patch(to: socket.assigns.patch)}
 
       {:error, %Ecto.Changeset{} = changeset} ->

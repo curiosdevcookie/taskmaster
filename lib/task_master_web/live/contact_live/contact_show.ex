@@ -16,6 +16,6 @@ defmodule TaskMasterWeb.ContactLive.ContactShow do
      |> assign(:contact, Contacts.get_contact!(id))}
   end
 
-  defp page_title(:show), do: "Show Contact"
-  defp page_title(:edit), do: "Edit Contact"
+  defp page_title(:show), do: gettext("Show Contact")
+  defp page_title(:edit), do: gettext("Edit Contact")
 end
