@@ -1,6 +1,7 @@
 defmodule TaskMaster.Contacts.Contact do
   use Ecto.Schema
   import Ecto.Changeset
+  import TaskMasterWeb.Gettext
 
   @primary_key {:id, Ecto.UUID, autogenerate: true}
   @foreign_key_type :binary_id
@@ -23,7 +24,6 @@ defmodule TaskMaster.Contacts.Contact do
     timestamps()
   end
 
-  @doc false
   def changeset(contact, attrs) do
     contact
     |> cast(attrs, [
@@ -42,5 +42,12 @@ defmodule TaskMaster.Contacts.Contact do
       :organization_id
     ])
     |> validate_required([:company, :area_of_expertise, :organization_id])
+    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/,
+        message: gettext("must have the @ sign and no spaces")
+      )
+    |> validate_length(:phone, max: 20)
+    |> validate_length(:mobile, max: 20)
+    |> validate_length(:postal_code, max: 10)
+    |> unique_constraint([:email, :organization_id])
   end
 end

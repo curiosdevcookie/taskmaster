@@ -88,7 +88,7 @@ msgstr[1] "sollten maximal %{count} Elemente haben"
 msgid "should be at most %{count} character(s)"
 msgid_plural "should be at most %{count} character(s)"
 msgstr[0] "sollte maximal %{count} Zeichen haben"
-msgstr[1] "sollten maximal %{count} Zeichen haben"
+msgstr[1] "sollte maximal %{count} Zeichen haben"
 
 msgid "should be at most %{count} byte(s)"
 msgid_plural "should be at most %{count} byte(s)"
