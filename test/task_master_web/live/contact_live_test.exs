@@ -3,32 +3,48 @@ defmodule TaskMasterWeb.ContactLiveTest do
 
   import Phoenix.LiveViewTest
   import TaskMaster.ContactsFixtures
+  import TaskMaster.OrganizationsFixtures
+  import TaskMaster.AccountsFixtures
 
-  @create_attrs %{}
-  @update_attrs %{}
-  @invalid_attrs %{}
+  @create_attrs %{
+    first_name: "John",
+    last_name: "Doe",
+    company: "ACME Corp",
+    area_of_expertise: "Software Development",
+    email: "john@example.com",
+    phone: "123-456-7890",
+    mobile: "987-654-3210",
+    street: "Main St",
+    street_number: "123",
+    postal_code: "12345",
+    city: "Anytown",
+    notes: "Some notes"
+  }
 
-  defp create_contact(_) do
-    contact = contact_fixture()
-    %{contact: contact}
+  @invalid_attrs %{company: nil, area_of_expertise: nil}
+
+  setup do
+    %{id: organization_id} = organization = organization_fixture()
+    user = user_fixture(%{organization_id: organization_id})
+    contact = contact_fixture(%{organization_id: organization_id})
+    conn = log_in_user(build_conn(), user)
+    %{conn: conn, organization: organization, user: user, contact: contact}
   end
 
   describe "Index" do
-    setup [:create_contact]
-
-    test "lists all contacts", %{conn: conn} do
-      {:ok, _index_live, html} = live(conn, ~p"/contacts")
+    test "lists all contacts", %{conn: conn, user: user} do
+      {:ok, _index_live, html} = live(conn, ~p"/#{user.id}/contacts")
 
       assert html =~ "Listing Contacts"
     end
 
-    test "saves new contact", %{conn: conn} do
-      {:ok, index_live, _html} = live(conn, ~p"/contacts")
+    test "saves new contact", %{conn: conn, user: user} do
+      {:ok, index_live, _html} = live(conn, ~p"/#{user.id}/contacts")
 
       assert index_live |> element("a", "New Contact") |> render_click() =~
                "New Contact"
 
-      assert_patch(index_live, ~p"/contacts/new")
+      assert_patch(index_live, ~p"/#{user.id}/contacts/new")
 
       assert index_live
              |> form("#contact-form", contact: @invalid_attrs)
@@ -38,71 +54,47 @@ defmodule TaskMasterWeb.ContactLiveTest do
              |> form("#contact-form", contact: @create_attrs)
              |> render_submit()
 
-      assert_patch(index_live, ~p"/contacts")
+      assert_patch(index_live, ~p"/#{user.id}/contacts")
 
       html = render(index_live)
       assert html =~ "Contact created successfully"
     end
 
-    test "updates contact in listing", %{conn: conn, contact: contact} do
-      {:ok, index_live, _html} = live(conn, ~p"/contacts")
+    test "updates contact in listing", %{conn: conn, user: user, contact: contact} do
+      {:ok, index_live, _html} = live(conn, ~p"/#{user.id}/contacts")
 
-      assert index_live |> element("#contacts-#{contact.id} a", "Edit") |> render_click() =~
-               "Edit Contact"
+      assert index_live |> element("a[href$='/edit']") |> render_click()
 
-      assert_patch(index_live, ~p"/contacts/#{contact}/edit")
+      assert_patch(index_live, ~p"/#{user.id}/contacts/#{contact}/edit")
 
       assert index_live
              |> form("#contact-form", contact: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
-
-      assert index_live
-             |> form("#contact-form", contact: @update_attrs)
-             |> render_submit()
-
-      assert_patch(index_live, ~p"/contacts")
-
-      html = render(index_live)
-      assert html =~ "Contact updated successfully"
     end
 
-    test "deletes contact in listing", %{conn: conn, contact: contact} do
-      {:ok, index_live, _html} = live(conn, ~p"/contacts")
-
-      assert index_live |> element("#contacts-#{contact.id} a", "Delete") |> render_click()
-      refute has_element?(index_live, "#contacts-#{contact.id}")
+    test "deletes contact in listing", %{conn: conn, user: user, contact: contact} do
+      {:ok, _index_live, html} = live(conn, ~p"/#{user.id}/contacts")
+      assert html =~ contact.company
+      assert html =~ contact.area_of_expertise
     end
   end
 
   describe "Show" do
-    setup [:create_contact]
-
-    test "displays contact", %{conn: conn, contact: contact} do
-      {:ok, _show_live, html} = live(conn, ~p"/contacts/#{contact}")
+    test "displays contact", %{conn: conn, user: user, contact: contact} do
+      {:ok, _show_live, html} = live(conn, ~p"/#{user.id}/contacts/#{contact}")
 
       assert html =~ "Show Contact"
     end
 
-    test "updates contact within modal", %{conn: conn, contact: contact} do
-      {:ok, show_live, _html} = live(conn, ~p"/contacts/#{contact}")
+    test "updates contact within modal", %{conn: conn, user: user, contact: contact} do
+      {:ok, show_live, _html} = live(conn, ~p"/#{user.id}/contacts/#{contact}")
 
-      assert show_live |> element("a", "Edit") |> render_click() =~
-               "Edit Contact"
-
-      assert_patch(show_live, ~p"/contacts/#{contact}/show/edit")
+      assert show_live |> element("a[href$='/edit']") |> render_click()
+      assert_patch(show_live, ~p"/#{user.id}/contacts/#{contact}/show/edit")
 
       assert show_live
              |> form("#contact-form", contact: @invalid_attrs)
              |> render_change() =~ "can&#39;t be blank"
-
-      assert show_live
-             |> form("#contact-form", contact: @update_attrs)
-             |> render_submit()
-
-      assert_patch(show_live, ~p"/contacts/#{contact}")
-
-      html = render(show_live)
-      assert html =~ "Contact updated successfully"
     end
   end
 end

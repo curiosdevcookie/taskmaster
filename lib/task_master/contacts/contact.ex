@@ -18,7 +18,7 @@ defmodule TaskMaster.Contacts.Contact do
     field :city, :string
     field :notes, :string
 
-    belongs_to :organization, TaskMaster.Contacts.Organization, type: :binary_id
+    belongs_to :organization, TaskMaster.Accounts.Organization, type: :binary_id
 
     timestamps()
   end
@@ -41,6 +41,6 @@ defmodule TaskMaster.Contacts.Contact do
       :notes,
       :organization_id
     ])
-    |> validate_required([:company, :area_of_expertise])
+    |> validate_required([:company, :area_of_expertise, :organization_id])
   end
 end

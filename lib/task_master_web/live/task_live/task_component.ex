@@ -141,7 +141,6 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
       socket.assigns.task
       |> Tasks.change_task(task_params)
       |> Map.put(:action, :validate)
-      |> dbg()
 
     {:noreply, assign_form(socket, changeset)}
   end
