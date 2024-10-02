@@ -76,6 +76,7 @@ defmodule TaskMasterWeb.AvatarLive.AvatarIndex do
         <.link
           phx-click={JS.push("delete", value: %{id: avatar.id}) |> hide("##{id}")}
           data-confirm={gettext("Are you sure?")}
+          class="btn-danger"
         >
           <%= gettext("Delete") %>
         </.link>

@@ -6,7 +6,7 @@ defmodule TaskMasterWeb.ContactLive.ContactIndex do
 
   @impl true
   def mount(_params, _session, socket) do
-    current_user = socket.assigns.current_user |> dbg()
+    current_user = socket.assigns.current_user
     contacts = Contacts.list_contacts(current_user.organization_id)
 
     socket
@@ -27,14 +27,12 @@ defmodule TaskMasterWeb.ContactLive.ContactIndex do
 
   defp apply_action(socket, :edit, %{"id" => id}) do
     socket
-    |> assign(:page_title, "Edit Contact")
     |> assign(:page_title, page_title(socket.assigns.live_action))
     |> assign(:contact, Contacts.get_contact!(id))
   end
 
   defp apply_action(socket, :new, _params) do
     socket
-    |> assign(:page_title, "New Contact")
     |> assign(:page_title, page_title(socket.assigns.live_action))
     |> assign(:contact, %Contact{})
   end
@@ -51,12 +49,22 @@ defmodule TaskMasterWeb.ContactLive.ContactIndex do
   end
 
   @impl true
-  def handle_event("delete", %{"id" => id}, socket) do
-    contact = Contacts.get_contact!(id)
-    {:ok, _} = Contacts.delete_contact(contact)
 
-    {:noreply, stream_delete(socket, :contacts, contact)}
+  def handle_event("delete", %{"id" => id}, socket) do
+  contact = Contacts.get_contact!(id)
+  case Contacts.delete_contact(contact) do
+    {:ok, _} ->
+      socket
+      # |> put_flash(:info, gettext("Contact deleted successfully"))
+      |> stream_delete(:contacts, contact)
+      |> noreply()
+
+    {:error, _reason} ->
+      socket
+      |> put_flash(:error, gettext("Failed to delete contact"))
+      |> noreply()
   end
+end
 
   defp page_title(:show), do: gettext("Show Contact")
   defp page_title(:new), do: gettext("New Contact")

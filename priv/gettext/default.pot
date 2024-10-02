@@ -328,7 +328,7 @@ msgstr ""
 msgid "Show"
 msgstr ""
 
-#: lib/task_master_web/live/avatar_live/avatar_index.ex:80
+#: lib/task_master_web/live/avatar_live/avatar_index.ex:81
 #, elixir-autogen, elixir-format
 msgid "Delete"
 msgstr ""
@@ -593,6 +593,7 @@ msgid "does not match password"
 msgstr ""
 
 #: lib/task_master/accounts/user.ex:98
+#: lib/task_master/contacts/contact.ex:46
 #, elixir-autogen, elixir-format
 msgid "must have the @ sign and no spaces"
 msgstr ""
@@ -603,7 +604,7 @@ msgid "is not valid"
 msgstr ""
 
 #: lib/task_master_web/live/task_live/task_index.ex:66
-#: lib/task_master_web/live/task_live/task_index.ex:171
+#: lib/task_master_web/live/task_live/task_index.ex:170
 #: lib/task_master_web/live/task_live/task_show.ex:93
 #, elixir-autogen, elixir-format
 msgid "New Subtask"
@@ -614,14 +615,14 @@ msgstr ""
 msgid "Organization name"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_component.ex:230
-#: lib/task_master_web/live/task_live/task_component.ex:238
+#: lib/task_master_web/live/task_live/task_component.ex:229
+#: lib/task_master_web/live/task_live/task_component.ex:237
 #, elixir-autogen, elixir-format
 msgid "Task created successfully"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_component.ex:198
-#: lib/task_master_web/live/task_live/task_component.ex:207
+#: lib/task_master_web/live/task_live/task_component.ex:197
+#: lib/task_master_web/live/task_live/task_component.ex:206
 #: lib/task_master_web/live/task_live/task_show.ex:60
 #, elixir-autogen, elixir-format
 msgid "Task updated successfully"
@@ -647,8 +648,8 @@ msgstr ""
 msgid "Parent Task"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_component.ex:259
-#: lib/task_master_web/live/task_live/task_component.ex:268
+#: lib/task_master_web/live/task_live/task_component.ex:258
+#: lib/task_master_web/live/task_live/task_component.ex:267
 #, elixir-autogen, elixir-format
 msgid "Subtask created successfully"
 msgstr ""
@@ -659,8 +660,8 @@ msgstr ""
 msgid "Task deleted successfully"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_component.ex:216
-#: lib/task_master_web/live/task_live/task_index.ex:206
+#: lib/task_master_web/live/task_live/task_component.ex:215
+#: lib/task_master_web/live/task_live/task_index.ex:205
 #, elixir-autogen, elixir-format
 msgid "Cannot complete task: not all subtasks are completed"
 msgstr ""
@@ -742,7 +743,7 @@ msgstr ""
 msgid "Mobile"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_index.ex:62
+#: lib/task_master_web/live/contact_live/contact_index.ex:70
 #: lib/task_master_web/live/contact_live/contact_index.html.heex:5
 #, elixir-autogen, elixir-format
 msgid "New Contact"
@@ -791,13 +792,13 @@ msgstr ""
 msgid "Postal code"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_index.ex:63
+#: lib/task_master_web/live/contact_live/contact_index.ex:71
 #: lib/task_master_web/live/contact_live/contact_show.ex:20
 #, elixir-autogen, elixir-format
 msgid "Edit Contact"
 msgstr ""
 
-#: lib/task_master_web/live/contact_live/contact_index.ex:61
+#: lib/task_master_web/live/contact_live/contact_index.ex:69
 #: lib/task_master_web/live/contact_live/contact_show.ex:19
 #, elixir-autogen, elixir-format
 msgid "Show Contact"
@@ -818,7 +819,7 @@ msgstr ""
 msgid "Contact updated successfully"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_index.ex:211
+#: lib/task_master_web/live/task_live/task_index.ex:210
 #, elixir-autogen, elixir-format
 msgid "Failed to update task status"
 msgstr ""
@@ -828,12 +829,12 @@ msgstr ""
 msgid "No file uploaded"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_component.ex:167
+#: lib/task_master_web/live/task_live/task_component.ex:166
 #, elixir-autogen, elixir-format
 msgid "Participant added successfully"
 msgstr ""
 
-#: lib/task_master_web/live/task_live/task_component.ex:158
+#: lib/task_master_web/live/task_live/task_component.ex:157
 #, elixir-autogen, elixir-format
 msgid "Selected user not found"
 msgstr ""
@@ -841,4 +842,14 @@ msgstr ""
 #: lib/task_master_web/live/user_settings_live.ex:137
 #, elixir-autogen, elixir-format
 msgid "User not found"
+msgstr ""
+
+#: lib/task_master_web/live/contact_live/contact_index.ex:58
+#, elixir-autogen, elixir-format
+msgid "Contact deleted successfully"
+msgstr ""
+
+#: lib/task_master_web/live/contact_live/contact_index.ex:64
+#, elixir-autogen, elixir-format
+msgid "Failed to delete contact"
 msgstr ""

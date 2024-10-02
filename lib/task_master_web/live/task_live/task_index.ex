@@ -162,7 +162,6 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   @impl true
   def handle_event("add_subtask", %{"parent_id" => parent_id}, socket) do
     org_id = socket.assigns.current_user.organization_id
-    parent_id |> dbg()
     parent_task = Tasks.get_task!(parent_id, org_id)
 
     {:noreply,
@@ -198,13 +197,12 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
 
       {:error, :subtasks_not_completed} ->
         Logger.warning("Cannot complete task: not all subtasks are completed")
-
         {:noreply,
-         put_flash(
-           socket,
-           :error,
-           gettext("Cannot complete task: not all subtasks are completed")
-         )}
+        put_flash(
+          socket,
+          :error,
+          gettext("Cannot complete task: not all subtasks are completed")
+        )}
 
       {:error, changeset} ->
         Logger.error("Failed to update task status: #{inspect(changeset)}")
