@@ -54,7 +54,7 @@ defmodule TaskMasterWeb.AvatarLive.AvatarShow do
       <img src={@avatar.path} alt="Avatar" class="w-32 h-32 rounded-full object-cover mx-auto" />
     </div>
 
-    <.back navigate={~p"/#{@current_user.id}/avatars"}><%= gettext("Back") %></.back>
+    <.back navigate={~p"/#{@current_user.id}/avatars"} />
 
     <.modal
       :if={@live_action == :edit}

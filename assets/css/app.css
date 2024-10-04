@@ -22,18 +22,10 @@
   }
 
   .btn-danger {
-    @apply py-2 px-4 border bg-orange-600 border-orange-700 text-white font-semibold rounded-lg hover:ring-2 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-opacity-75 leading-6;
+    @apply py-1 px-3 border border-orange-700 text-orange-700 font-semibold rounded-lg hover:ring-2 focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-opacity-75 leading-6;
+  }
+  .btn-pencil {
+    @apply py-1 px-3 border border-brand-700 text-brand-700 font-semibold rounded-lg hover:ring-2 focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-opacity-75 leading-6;
   }
 
-  .btn-chevron-base {
-    @apply pl-4 pr-2 rounded-3xl justify-center text-center text-sm font-semibold leading-4;
-  }
-
-  .btn-patent-family {
-    @apply pl-2 h-6 rounded-3xl justify-center text-center text-xs font-semibold;
-  }
-
-  .btn-warning {
-    @apply p-2 bg-red-600 bg-opacity-10 border border-red-600 text-red-600 font-semibold rounded-lg hover:ring-2 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-75 leading-6;
-  }
 }

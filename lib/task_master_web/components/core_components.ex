@@ -459,8 +459,8 @@ defmodule TaskMasterWeb.CoreComponents do
   ## Examples
 
       <.table id="users" rows={@users}>
-        <:col :let={user} label={gettext("id"><%= user.id %></:col>
-        <:col :let={user} label={gettext("username"><%= user.username %></:col>
+        <:col :let={user} label="id"><%= user.id %></:col>
+        <:col :let={user} label="username"><%= user.username %></:col>
       </.table>
   """
   attr :id, :string, required: true
@@ -547,7 +547,7 @@ defmodule TaskMasterWeb.CoreComponents do
     ~H"""
     <div class="mt-14">
       <dl class="-my-4 divide-y divide-zinc-100">
-        <div :for={item <- @item} class="flex gap-4 sm:py-2 lg:py-4 text-sm leading-6 sm:gap-8">
+        <div :for={item <- @item} class="flex gap-4 sm:py-2 lg:py-3 text-sm leading-6 sm:gap-8">
           <dt class="w-1/4 flex-none text-zinc-500"><%= item.title %></dt>
           <dd class="text-zinc-700"><%= render_slot(item) %></dd>
         </div>
@@ -564,14 +564,14 @@ defmodule TaskMasterWeb.CoreComponents do
       <.back navigate={~p"/posts"}>Back to posts</.back>
   """
   attr :navigate, :any, required: true
-  slot :inner_block, required: true
+  slot :inner_block, required: false
 
   def back(assigns) do
     ~H"""
     <div class="lg:mt-16 sm:mt-10">
       <.link
         navigate={@navigate}
-        class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+        class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700 border border-zinc-900 rounded px-3 py-2"
       >
         <.icon name="hero-arrow-left-solid" class="h-3 w-3" />
         <%= render_slot(@inner_block) %>

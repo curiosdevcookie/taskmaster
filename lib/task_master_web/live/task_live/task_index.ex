@@ -162,7 +162,6 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
   @impl true
   def handle_event("add_subtask", %{"parent_id" => parent_id}, socket) do
     org_id = socket.assigns.current_user.organization_id
-    parent_id |> dbg()
     parent_task = Tasks.get_task!(parent_id, org_id)
 
     {:noreply,
@@ -198,13 +197,16 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
 
       {:error, :subtasks_not_completed} ->
         Logger.warning("Cannot complete task: not all subtasks are completed")
-
         {:noreply,
-         put_flash(socket, :error, "Cannot complete task: not all subtasks are completed")}
+        put_flash(
+          socket,
+          :error,
+          gettext("Cannot complete task: not all subtasks are completed")
+        )}
 
       {:error, changeset} ->
         Logger.error("Failed to update task status: #{inspect(changeset)}")
-        {:noreply, put_flash(socket, :error, "Failed to update task status")}
+        {:noreply, put_flash(socket, :error, gettext("Failed to update task status"))}
     end
   end
 
@@ -248,79 +250,5 @@ defmodule TaskMasterWeb.TaskLive.TaskIndex do
       {Atom.to_string(field), Atom.to_string(order)}
     end)
     |> Enum.into(%{})
-  end
-
-  @impl true
-  def render(assigns) do
-    ~H"""
-    <section class="flex gap-1 my-4">
-      <.sort_button_list
-        sort_criteria={@sort_criteria}
-        current_sort_criteria={@current_sort_criteria}
-      />
-    </section>
-    <div class="flex flex-col gap-1 h-[calc(100vh-6rem)]">
-      <div class="h-[80%] overflow-hidden pb-20">
-        <.header class="mb-2">
-          <p>
-            <%= gettext("Open Tasks") %>
-          </p>
-
-          <:actions>
-            <.link patch={~p"/#{@current_user.id}/tasks/new"}>
-              <.button class="btn-primary"><%= gettext("New Task") %></.button>
-            </.link>
-          </:actions>
-        </.header>
-
-        <div class="h-full overflow-y-auto">
-          <.task_list
-            parent_tasks={@open_parent_tasks}
-            subtasks={@subtasks}
-            current_user={@current_user}
-            navigate_fn={fn parent_task -> ~p"/#{@current_user.id}/tasks/#{parent_task}" end}
-            patch_fn={
-              fn parent_task -> ~p"/#{@current_user.id}/tasks/#{parent_task.id}/new_subtask" end
-            }
-          />
-        </div>
-      </div>
-      <div class="h-[30%] overflow-hidden pb-20">
-        <.footer class="mb-4">
-          <p><%= gettext("Completed Tasks") %></p>
-        </.footer>
-
-        <div class="h-full overflow-y-auto">
-          <.task_list
-            parent_tasks={@completed_parent_tasks}
-            subtasks={@subtasks}
-            current_user={@current_user}
-            navigate_fn={fn parent_task -> ~p"/#{@current_user.id}/tasks/#{parent_task}" end}
-            patch_fn={
-              fn parent_task -> ~p"/#{@current_user.id}/tasks/#{parent_task.id}/new_subtask" end
-            }
-          />
-        </div>
-      </div>
-    </div>
-
-    <.modal
-      :if={@live_action in [:new, :edit, :new_subtask]}
-      id="task-modal"
-      show
-      on_cancel={JS.patch(~p"/#{@current_user.id}/tasks")}
-    >
-      <.live_component
-        module={TaskMasterWeb.TaskLive.TaskComponent}
-        id={@task.id || :new}
-        title={@page_title}
-        action={@live_action}
-        task={@task}
-        parent_id={{@task.parent_task_id, @task.id}}
-        current_user={@current_user}
-        patch={~p"/#{@current_user.id}/tasks"}
-      />
-    </.modal>
-    """
   end
 end

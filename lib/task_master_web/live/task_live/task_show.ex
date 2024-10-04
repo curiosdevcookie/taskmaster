@@ -88,9 +88,9 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
     end
   end
 
-  defp page_title(:show), do: "Show Task"
-  defp page_title(:edit), do: "Edit Task"
-  defp page_title(:new_subtask), do: "New Subtask"
+  defp page_title(:show), do: gettext("Show Task")
+  defp page_title(:edit), do: gettext("Edit Task")
+  defp page_title(:new_subtask), do: gettext("New Subtask")
 
   @impl true
   def render(assigns) do
@@ -100,7 +100,7 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
       <:actions>
         <section class="flex gap-1">
           <.link patch={~p"/#{@current_user.id}/tasks/#{@task}/show/edit"} phx-click={JS.push_focus()}>
-            <.button class="btn-primary"><.icon name="hero-pencil" /></.button>
+            <.button class="btn-pencil"><.icon name="hero-pencil" /></.button>
           </.link>
           <.link
             phx-click={JS.push("delete", value: %{id: @task.id})}
@@ -138,7 +138,7 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
       </:item>
     </.list>
 
-    <.back navigate={~p"/#{@current_user.id}/tasks"}><%= gettext("Back") %></.back>
+    <.back navigate={~p"/#{@current_user.id}/tasks"} />
 
     <.modal
       :if={@live_action == :edit}

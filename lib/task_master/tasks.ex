@@ -234,7 +234,6 @@ defmodule TaskMaster.Tasks do
       subtask.participants
     end)
     |> Enum.uniq_by(& &1.id)
-    |> dbg()
   end
 
   defp get_parent_task_status(parent_task_id) do
