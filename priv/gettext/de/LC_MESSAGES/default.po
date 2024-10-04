@@ -817,7 +817,7 @@ msgstr "Kontakt erfolgreich erstellt!"
 #: lib/task_master_web/live/contact_live/contact_component.ex:76
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Contact updated successfully"
-msgstr "Passwort erfolgreich aktualisiert!"
+msgstr "Kontakt erfolgreich aktualisiert!"
 
 #: lib/task_master_web/live/task_live/task_index.ex:210
 #, elixir-autogen, elixir-format
@@ -847,7 +847,7 @@ msgstr "User nicht gefunden."
 #: lib/task_master_web/live/contact_live/contact_index.ex:58
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Contact deleted successfully"
-msgstr "Kontakt erfolgreich erstellt!"
+msgstr "Kontakt erfolgreich gelöscht!"
 
 #: lib/task_master_web/live/contact_live/contact_index.ex:64
 #, elixir-autogen, elixir-format, fuzzy
