@@ -135,7 +135,6 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
 
   @impl true
   def handle_event("validate", %{"task" => task_params}, socket) do
-    task_params
 
     changeset =
       socket.assigns.task

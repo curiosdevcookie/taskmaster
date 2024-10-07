@@ -65,8 +65,7 @@ msgid "Already registered?"
 msgstr "Bereits registriert?"
 
 #: lib/task_master_web/components/layouts/root.html.heex:127
-#: lib/task_master_web/live/user_confirmation_instructions_live.ex:25
-#: lib/task_master_web/live/user_confirmation_live.ex:22
+#: lib/task_master_web/live/user_confirmation_live.ex:21
 #: lib/task_master_web/live/user_forgot_password_live.ex:24
 #: lib/task_master_web/live/user_login_live.ex:8
 #: lib/task_master_web/live/user_login_live.ex:29
@@ -132,8 +131,7 @@ msgid "New password"
 msgstr "Neues Passwort"
 
 #: lib/task_master_web/components/layouts/root.html.heex:119
-#: lib/task_master_web/live/user_confirmation_instructions_live.ex:24
-#: lib/task_master_web/live/user_confirmation_live.ex:21
+#: lib/task_master_web/live/user_confirmation_live.ex:20
 #: lib/task_master_web/live/user_forgot_password_live.ex:23
 #: lib/task_master_web/live/user_reset_password_live.ex:36
 #, elixir-autogen, elixir-format
@@ -150,32 +148,24 @@ msgstr "Passwort"
 msgid "Log out"
 msgstr "Ausloggen"
 
+#: lib/task_master_web/live/user_confirmation_instructions_live.ex:11
 #: lib/task_master_web/live/user_confirmation_live.ex:9
 #, elixir-autogen, elixir-format
 msgid "Confirm Account"
 msgstr "Account bestätigen"
 
-#: lib/task_master_web/live/user_confirmation_live.ex:15
+#: lib/task_master_web/live/user_confirmation_live.ex:14
 #, elixir-autogen, elixir-format
 msgid "Confirm account"
 msgstr "Account bestätigen"
 
-#: lib/task_master_web/live/user_confirmation_instructions_live.ex:44
+#: lib/task_master_web/live/user_confirmation_instructions_live.ex:13
+#: lib/task_master_web/live/user_confirmation_instructions_live.ex:49
 #, elixir-autogen, elixir-format
 msgid "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly."
 msgstr "Wenn Deine E-Mail-Adresse in unserem System ist und noch nicht bestätigt wurde, erhältst Du in Kürze eine E-Mail mit Anweisungen."
 
-#: lib/task_master_web/live/user_confirmation_instructions_live.ex:10
-#, elixir-autogen, elixir-format
-msgid "No confirmation instructions received?"
-msgstr "Keine Bestätigungsanweisungen erhalten?"
-
-#: lib/task_master_web/live/user_confirmation_instructions_live.ex:18
-#, elixir-autogen, elixir-format
-msgid "Resend confirmation instructions"
-msgstr "Bestätigungsanweisungen erneut senden"
-
-#: lib/task_master_web/live/user_confirmation_instructions_live.ex:11
+#: lib/task_master_web/live/user_confirmation_instructions_live.ex:20
 #, elixir-autogen, elixir-format
 msgid "We'll send a new confirmation link to your inbox"
 msgstr "Wir senden Dir einen neuen Bestätigungslink"
@@ -242,12 +232,12 @@ msgstr "Der Link zum Zurücksetzen des Passworts ist ungültig oder abgelaufen."
 msgid "Reset password"
 msgstr "Zurücksetzen des Passworts"
 
-#: lib/task_master_web/live/user_confirmation_live.ex:55
+#: lib/task_master_web/live/user_confirmation_live.ex:54
 #, elixir-autogen, elixir-format
 msgid "User confirmation link is invalid or it has expired."
 msgstr "Der Bestätigungslink ist ungültig oder abgelaufen."
 
-#: lib/task_master_web/live/user_confirmation_live.ex:40
+#: lib/task_master_web/live/user_confirmation_live.ex:39
 #, elixir-autogen, elixir-format
 msgid "User confirmed successfully."
 msgstr "Nutzer erfolgreich bestätigt."
@@ -271,7 +261,7 @@ msgstr "Du musst Dich anmelden, um auf diese Seite zugreifen zu können."
 #: lib/task_master/accounts/user_notifier.ex:25
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Confirmation instructions"
-msgstr "Keine Bestätigungsanweisungen erhalten?"
+msgstr "Bestätigungsanweisungen"
 
 #: lib/task_master/accounts/user_notifier.ex:33
 #, elixir-autogen, elixir-format
@@ -615,14 +605,14 @@ msgstr "Neue Unteraufgabe"
 msgid "Organization name"
 msgstr "Organisationsname"
 
-#: lib/task_master_web/live/task_live/task_component.ex:229
-#: lib/task_master_web/live/task_live/task_component.ex:237
+#: lib/task_master_web/live/task_live/task_component.ex:228
+#: lib/task_master_web/live/task_live/task_component.ex:236
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Task created successfully"
 msgstr "Aufgabe erfolgreich erstellt"
 
-#: lib/task_master_web/live/task_live/task_component.ex:197
-#: lib/task_master_web/live/task_live/task_component.ex:206
+#: lib/task_master_web/live/task_live/task_component.ex:196
+#: lib/task_master_web/live/task_live/task_component.ex:205
 #: lib/task_master_web/live/task_live/task_show.ex:60
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Task updated successfully"
@@ -648,8 +638,8 @@ msgstr "Offene Aufgaben"
 msgid "Parent Task"
 msgstr "Übergeordnete Aufgabe"
 
-#: lib/task_master_web/live/task_live/task_component.ex:258
-#: lib/task_master_web/live/task_live/task_component.ex:267
+#: lib/task_master_web/live/task_live/task_component.ex:257
+#: lib/task_master_web/live/task_live/task_component.ex:266
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Subtask created successfully"
 msgstr "Unteraufgabe erfolgreich erstellt"
@@ -660,8 +650,8 @@ msgstr "Unteraufgabe erfolgreich erstellt"
 msgid "Task deleted successfully"
 msgstr "Aufgabe erfolgreich gelöscht"
 
-#: lib/task_master_web/live/task_live/task_component.ex:215
-#: lib/task_master_web/live/task_live/task_index.ex:205
+#: lib/task_master_web/live/task_live/task_component.ex:214
+#: lib/task_master_web/live/task_live/task_index.ex:204
 #, elixir-autogen, elixir-format
 msgid "Cannot complete task: not all subtasks are completed"
 msgstr "Aufgabe kann nicht abgeschlossen werden: nicht alle Unteraufgaben sind abgeschlossen"
@@ -819,7 +809,7 @@ msgstr "Kontakt erfolgreich erstellt!"
 msgid "Contact updated successfully"
 msgstr "Kontakt erfolgreich aktualisiert!"
 
-#: lib/task_master_web/live/task_live/task_index.ex:210
+#: lib/task_master_web/live/task_live/task_index.ex:209
 #, elixir-autogen, elixir-format
 msgid "Failed to update task status"
 msgstr "Update der Aufgabe ist fehlgeschlagen."
@@ -829,12 +819,12 @@ msgstr "Update der Aufgabe ist fehlgeschlagen."
 msgid "No file uploaded"
 msgstr "Es wurde kein Bild hochgeladen."
 
-#: lib/task_master_web/live/task_live/task_component.ex:166
+#: lib/task_master_web/live/task_live/task_component.ex:165
 #, elixir-autogen, elixir-format
 msgid "Participant added successfully"
 msgstr "Teilnehmende erfolgreich hinzugefügt."
 
-#: lib/task_master_web/live/task_live/task_component.ex:157
+#: lib/task_master_web/live/task_live/task_component.ex:156
 #, elixir-autogen, elixir-format
 msgid "Selected user not found"
 msgstr "Ausgewählte User nicht gefunden."
@@ -844,12 +834,17 @@ msgstr "Ausgewählte User nicht gefunden."
 msgid "User not found"
 msgstr "User nicht gefunden."
 
-#: lib/task_master_web/live/contact_live/contact_index.ex:58
-#, elixir-autogen, elixir-format, fuzzy
-msgid "Contact deleted successfully"
-msgstr "Kontakt erfolgreich gelöscht!"
-
 #: lib/task_master_web/live/contact_live/contact_index.ex:64
 #, elixir-autogen, elixir-format, fuzzy
 msgid "Failed to delete contact"
 msgstr "Aufgabe konnte nicht gelöscht werden"
+
+#: lib/task_master_web/live/user_confirmation_instructions_live.ex:27
+#, elixir-autogen, elixir-format
+msgid "Resend"
+msgstr "Erneut senden"
+
+#: lib/task_master_web/live/user_confirmation_instructions_live.ex:19
+#, elixir-autogen, elixir-format
+msgid "No email received?"
+msgstr "Keine E-Mail erhalten?"

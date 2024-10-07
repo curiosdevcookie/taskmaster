@@ -7,7 +7,6 @@ defmodule TaskMasterWeb.UserConfirmationLive do
     ~H"""
     <div class="mx-auto max-w-sm">
       <.header class="text-center"><%= gettext("Confirm Account") %></.header>
-
       <.simple_form for={@form} id="confirmation_form" phx-submit="confirm_account">
         <input type="hidden" name={@form[:token].name} value={@form[:token].value} />
         <:actions>

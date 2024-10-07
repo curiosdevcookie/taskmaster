@@ -89,7 +89,7 @@ defmodule TaskMasterWeb.UserRegistrationLive do
         {:noreply,
          socket
          |> put_flash(:info, gettext("User created successfully."))
-         |> redirect(to: ~p"/users/log_in")}
+         |> redirect(to: ~p"/users/confirm")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign_form(socket, changeset)}
