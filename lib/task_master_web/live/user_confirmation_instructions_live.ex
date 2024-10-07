@@ -21,12 +21,12 @@ defmodule TaskMasterWeb.UserConfirmationInstructionsLive do
         </.footer>
 
         <.simple_form for={@form} id="resend_confirmation_form" phx-submit="send_instructions">
-          <section class="flex flex-col gap-4">
+          <div class="flex flex-col gap-4">
             <.input field={@form[:email]} type="email" placeholder="Email" required />
             <.button class="btn-primary place-self-end" phx-disable-with="Sending...">
               <%= gettext("Resend") %>
             </.button>
-          </section>
+          </div>
         </.simple_form>
       </section>
     </div>

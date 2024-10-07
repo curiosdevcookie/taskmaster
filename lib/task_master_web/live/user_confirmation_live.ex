@@ -15,11 +15,6 @@ defmodule TaskMasterWeb.UserConfirmationLive do
           </.button>
         </:actions>
       </.simple_form>
-
-      <p class="text-center mt-4">
-        <.link href={~p"/users/register"}><%= gettext("Register") %></.link>
-        | <.link href={~p"/users/log_in"}><%= gettext("Log in") %></.link>
-      </p>
     </div>
     """
   end
@@ -37,7 +32,7 @@ defmodule TaskMasterWeb.UserConfirmationLive do
         {:noreply,
          socket
          |> put_flash(:info, gettext("User confirmed successfully."))
-         |> redirect(to: ~p"/")}
+         |> redirect(to: ~p"/users/log_in")}
 
       :error ->
         # If there is a current user and the account was already confirmed,
