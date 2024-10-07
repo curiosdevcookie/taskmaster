@@ -5,25 +5,30 @@ defmodule TaskMasterWeb.UserConfirmationInstructionsLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
-      <.header class="text-center">
-        <%= gettext("No confirmation instructions received?") %>
-        <:subtitle><%= gettext("We'll send a new confirmation link to your inbox") %></:subtitle>
-      </.header>
+    <div class="mx-auto max-w-sm sm:mt-10 sm:p-8 flex flex-col gap-10">
+      <section class="mx-auto max-w-sm">
+        <.header class="text-center">
+          <%= gettext("Confirm Account") %><span> 🎉</span>
+          <h3 class="text-center text-xl text-gray-500 mt-10">
+            <%= gettext("If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly.") %>
+          </h3>
+        </.header>
+      </section>
+      <section>
+        <.footer class="text-center">
+          <%= gettext("No email received?") %>
+          <:subtitle><%= gettext("We'll send a new confirmation link to your inbox") %></:subtitle>
+        </.footer>
 
-      <.simple_form for={@form} id="resend_confirmation_form" phx-submit="send_instructions">
-        <.input field={@form[:email]} type="email" placeholder="Email" required />
-        <:actions>
-          <.button class="btn-primary w-full" phx-disable-with="Sending...">
-            <%= gettext("Resend confirmation instructions") %>
-          </.button>
-        </:actions>
-      </.simple_form>
-
-      <p class="text-center mt-4">
-        <.link href={~p"/users/register"}><%= gettext("Register") %></.link>
-        | <.link href={~p"/users/log_in"}><%= gettext("Log in") %></.link>
-      </p>
+        <.simple_form for={@form} id="resend_confirmation_form" phx-submit="send_instructions">
+          <div class="flex flex-col gap-4">
+            <.input field={@form[:email]} type="email" placeholder="Email" required />
+            <.button class="btn-primary place-self-end" phx-disable-with="Sending...">
+              <%= gettext("Resend") %>
+            </.button>
+          </div>
+        </.simple_form>
+      </section>
     </div>
     """
   end
@@ -48,6 +53,6 @@ defmodule TaskMasterWeb.UserConfirmationInstructionsLive do
     {:noreply,
      socket
      |> put_flash(:info, info)
-     |> redirect(to: ~p"/")}
+     |> redirect(to: ~p"/users/confirm")}
   end
 end
