@@ -116,7 +116,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
         <.item_slot label={gettext("Priority")}>
           <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@parent_task.priority) %>
         </.item_slot>
-        <.item_slot label={gettext("Indoor")}>
+        <.item_slot label={gettext("Where?")}>
           <%= TaskMasterWeb.Helpers.IconHelper.boolean_icon(@parent_task.indoor) %>
         </.item_slot>
         <.item_slot label={gettext("Who?")}>
@@ -154,7 +154,7 @@ defmodule TaskMasterWeb.Components.TaskComponents do
         <.item_slot label={gettext("Priority")}>
           <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@subtask.priority) %>
         </.item_slot>
-        <.item_slot label={gettext("Indoor")}>
+        <.item_slot label={gettext("Where?")}>
           <%= TaskMasterWeb.Helpers.IconHelper.boolean_icon(@subtask.indoor) %>
         </.item_slot>
         <.item_slot label={gettext("Who?")}>

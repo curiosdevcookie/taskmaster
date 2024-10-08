@@ -65,7 +65,6 @@ msgid "Already registered?"
 msgstr "Bereits registriert?"
 
 #: lib/task_master_web/components/layouts/root.html.heex:127
-#: lib/task_master_web/live/user_confirmation_live.ex:21
 #: lib/task_master_web/live/user_forgot_password_live.ex:24
 #: lib/task_master_web/live/user_login_live.ex:8
 #: lib/task_master_web/live/user_login_live.ex:29
@@ -131,7 +130,6 @@ msgid "New password"
 msgstr "Neues Passwort"
 
 #: lib/task_master_web/components/layouts/root.html.heex:119
-#: lib/task_master_web/live/user_confirmation_live.ex:20
 #: lib/task_master_web/live/user_forgot_password_live.ex:23
 #: lib/task_master_web/live/user_reset_password_live.ex:36
 #, elixir-autogen, elixir-format
@@ -232,12 +230,12 @@ msgstr "Der Link zum Zurücksetzen des Passworts ist ungültig oder abgelaufen."
 msgid "Reset password"
 msgstr "Zurücksetzen des Passworts"
 
-#: lib/task_master_web/live/user_confirmation_live.ex:54
+#: lib/task_master_web/live/user_confirmation_live.ex:49
 #, elixir-autogen, elixir-format
 msgid "User confirmation link is invalid or it has expired."
 msgstr "Der Bestätigungslink ist ungültig oder abgelaufen."
 
-#: lib/task_master_web/live/user_confirmation_live.ex:39
+#: lib/task_master_web/live/user_confirmation_live.ex:34
 #, elixir-autogen, elixir-format
 msgid "User confirmed successfully."
 msgstr "Nutzer erfolgreich bestätigt."
@@ -368,14 +366,6 @@ msgstr "Fälligkeit"
 #, elixir-autogen, elixir-format
 msgid "Duration"
 msgstr "Dauer"
-
-#: lib/task_master_web/components/task_components.ex:119
-#: lib/task_master_web/components/task_components.ex:157
-#: lib/task_master_web/live/task_live/task_component.ex:59
-#: lib/task_master_web/live/task_live/task_show.ex:129
-#, elixir-autogen, elixir-format
-msgid "Indoor"
-msgstr "Indoor"
 
 #: lib/task_master_web/components/task_components.ex:116
 #: lib/task_master_web/components/task_components.ex:154
@@ -848,3 +838,11 @@ msgstr "Erneut senden"
 #, elixir-autogen, elixir-format
 msgid "No email received?"
 msgstr "Keine E-Mail erhalten?"
+
+#: lib/task_master_web/components/task_components.ex:119
+#: lib/task_master_web/components/task_components.ex:157
+#: lib/task_master_web/live/task_live/task_component.ex:59
+#: lib/task_master_web/live/task_live/task_show.ex:129
+#, elixir-autogen, elixir-format
+msgid "Where?"
+msgstr "Wo?"

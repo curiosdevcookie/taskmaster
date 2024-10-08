@@ -126,7 +126,7 @@ defmodule TaskMasterWeb.TaskLive.TaskShow do
       <:item title={gettext("Priority")}>
         <%= TaskMasterWeb.Helpers.EnumTranslator.translate_enum_value(@task.priority) %>
       </:item>
-      <:item title={gettext("Indoor")}>
+      <:item title={gettext("Where?")}>
         <%= TaskMasterWeb.Helpers.IconHelper.boolean_icon(@task.indoor) %>
       </:item>
       <:item title={gettext("Who?")}>
