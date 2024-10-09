@@ -49,15 +49,21 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
+  host = System.get_env("PHX_HOST") || "taskmaster.studio"
+  check_origin = [
+    "https://#{host}",
+    "https://test.#{host}"
+  ]
+
   config :task_master, TaskMasterWeb.Endpoint,
-    url: [host: System.get_env("PHX_HOST") || "localhost", port: 443],
+    url: [host: host, scheme: "https"],
     http: [
       ip: {0, 0, 0, 0},
       port: String.to_integer(System.get_env("PORT") || "8080")
     ],
     secret_key_base: secret_key_base,
     static_url: [path: "/"],
-    check_origin: [System.get_env("PHX_CHECK_ORIGIN") || "https://taskmaster.studio"]
+    check_origin: check_origin
 
   config :task_master, TaskMaster.Repo,
     socket_options: [:inet, :inet6],
