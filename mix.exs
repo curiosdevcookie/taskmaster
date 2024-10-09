@@ -19,7 +19,7 @@ defmodule TaskMaster.MixProject do
   def application do
     [
       mod: {TaskMaster.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :swoosh]
     ]
   end
 
@@ -35,6 +35,7 @@ defmodule TaskMaster.MixProject do
       {:bcrypt_elixir, "~> 3.0"},
       {:phoenix, "~> 1.7.7"},
       {:phoenix_ecto, "~> 4.4"},
+      {:gen_smtp, "~> 1.2"},
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.3"},
