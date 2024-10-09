@@ -103,27 +103,12 @@ if config_env() == :prod do
   # Also, you may need to configure the Swoosh API client of your choice if you
   # are not using SMTP. Here is an example of the configuration:
   #
-
-  smtp_relay = System.get_env("SMTP_RELAY") ||
-  raise "environment variable SMTP_RELAY is missing."
-
-  smtp_username = System.get_env("SMTP_USERNAME") ||
-    raise "environment variable SMTP_USERNAME is missing."
-
-  smtp_password = System.get_env("SMTP_PASSWORD") ||
-    raise "environment variable SMTP_PASSWORD is missing."
-
   config :task_master, TaskMaster.Mailer,
-    adapter: Swoosh.Adapters.SMTP,
-    relay: smtp_relay,
-    username: smtp_username,
-    password: smtp_password,
-    ssl: false,
-    tls: :always,
-    auth: :always,
-    port: String.to_integer(System.get_env("SMTP_PORT") || "587"),
-    retries: 2,
-    no_mx_lookups: true
+    adapter: Swoosh.Adapters.Mailgun,
+    api_key: System.get_env("MAILGUN_API_KEY"),
+    domain: System.get_env("MAILGUN_DOMAIN"),
+    base_url: "https://api.mailgun.net/v3"
+
   #
   # For this example you need include a HTTP client required by Swoosh API client.
   # Swoosh supports Hackney and Finch out of the box:

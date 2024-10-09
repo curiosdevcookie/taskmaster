@@ -9,7 +9,7 @@ defmodule TaskMaster.Accounts.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"TaskMaster", "contact@example.com"})
+      |> from({"TaskMaster", "taskmaster@taskmaster.studio"})
       |> subject(subject)
       |> text_body(body)
 
