@@ -118,12 +118,12 @@ if config_env() == :prod do
     relay: smtp_relay,
     username: smtp_username,
     password: smtp_password,
-    ssl: true,
-    tls: :always,
+    ssl: false,
+    tls: :never,
     auth: :always,
-    port: String.to_integer(System.get_env("SMTP_PORT") || "465"),
+    port: String.to_integer(System.get_env("SMTP_PORT") || "25"),
     retries: 2,
-    no_mx_lookups: false
+    no_mx_lookups: true
   #
   # For this example you need include a HTTP client required by Swoosh API client.
   # Swoosh supports Hackney and Finch out of the box:
