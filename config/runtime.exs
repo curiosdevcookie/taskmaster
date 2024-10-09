@@ -104,11 +104,20 @@ if config_env() == :prod do
   # are not using SMTP. Here is an example of the configuration:
   #
 
+  smtp_relay = System.get_env("SMTP_RELAY") ||
+  raise "environment variable SMTP_RELAY is missing."
+
+  smtp_username = System.get_env("SMTP_USERNAME") ||
+    raise "environment variable SMTP_USERNAME is missing."
+
+  smtp_password = System.get_env("SMTP_PASSWORD") ||
+    raise "environment variable SMTP_PASSWORD is missing."
+
   config :task_master, TaskMaster.Mailer,
     adapter: Swoosh.Adapters.SMTP,
-    relay: System.get_env("SMTP_RELAY"),
-    username: System.get_env("SMTP_USERNAME"),
-    password: System.get_env("SMTP_PASSWORD"),
+    relay: smtp_relay,
+    username: smtp_username,
+    password: smtp_password,
     ssl: true,
     tls: :always,
     auth: :always,
