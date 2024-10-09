@@ -38,7 +38,7 @@ services:
       - internal
     container_name: taskmaster
     volumes:
-      - app_data:/app/lib/task_master-0.1.0/priv/static/uploads
+      - app_data:/app/lib/task_master-0.1.0/priv/static
     restart: unless-stopped
     logging:
       driver: loki
