@@ -56,7 +56,7 @@ if config_env() == :prod do
   ]
 
   config :task_master, TaskMasterWeb.Endpoint,
-    url: [host: host, scheme: "https"],
+    url: [host: System.get_env("PHX_HOST") || "taskmaster.studio", port: nil, scheme: "https"],
     http: [
       ip: {0, 0, 0, 0},
       port: String.to_integer(System.get_env("PORT") || "8080")
