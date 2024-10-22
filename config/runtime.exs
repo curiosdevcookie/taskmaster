@@ -55,8 +55,7 @@ if config_env() == :prod do
   config :task_master, TaskMasterWeb.Endpoint,
     url: [host: host, scheme: "https"],
     http: [
-      ip: {0, 0, 0, 0, 0, 0, 0, 0},
-      port: port
+      ip: {0, 0, 0, 0, 0, 0, 0, 0}
     ],
     secret_key_base: secret_key_base
 
