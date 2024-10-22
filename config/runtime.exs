@@ -49,11 +49,11 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
+  host = System.get_env("PHX_HOST") || "taskmaster.studio"
 
   config :task_master, TaskMasterWeb.Endpoint,
-    url: [host: System.get_env("PHX_HOST") || "taskmaster.studio", scheme: "https"],
+    url: [host: host, scheme: "https"],
     http: [
       ip: {0, 0, 0, 0, 0, 0, 0, 0},
       port: port
@@ -70,14 +70,14 @@ if config_env() == :prod do
   # To get SSL working, you will need to add the `https` key
   # to your endpoint configuration:
   #
-  config :task_master, TaskMasterWeb.Endpoint,
-    force_ssl: [hsts: true],
-    https: [
-      port: 443,
-      cipher_suite: :strong,
-      keyfile: System.get_env("SSL_KEY_PATH"),
-      certfile: System.get_env("SSL_CERT_PATH")
-    ]
+  # config :task_master, TaskMasterWeb.Endpoint,
+  #   force_ssl: [hsts: true],
+  #   https: [
+  #     port: 443,
+  #     cipher_suite: :strong,
+  #     keyfile: System.get_env("SSL_KEY_PATH"),
+  #     certfile: System.get_env("SSL_CERT_PATH")
+  #   ]
 
   #
   # The `cipher_suite` is set to `:strong` to support only the
