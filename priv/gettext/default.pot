@@ -844,5 +844,5 @@ msgstr ""
 #: lib/task_master_web/live/task_live/task_component.ex:59
 #: lib/task_master_web/live/task_live/task_show.ex:129
 #, elixir-autogen, elixir-format
-msgid "Where?"
+msgid "Indoor?"
 msgstr ""

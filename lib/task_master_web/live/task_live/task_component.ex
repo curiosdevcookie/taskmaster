@@ -56,7 +56,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
             TaskMasterWeb.Helpers.EnumTranslator.translate_enum(TaskMaster.Tasks.Task, :priority)
           }
         />
-        <.input field={@form[:indoor]} type="checkbox" label={gettext("Where?")} />
+        <.input field={@form[:indoor]} type="checkbox" label={gettext("Indoor?")} />
 
         <div class="mb-4">
           <div class="mt-2 flex flex-wrap gap-2">
