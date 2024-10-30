@@ -1,5 +1,7 @@
 # TaskMaster
 
+Try out taskmaster at taskmaster.studio!
+
 ## Specification and database design
 
 The application is a simple task manager. A user can:
