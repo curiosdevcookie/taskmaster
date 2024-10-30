@@ -90,6 +90,7 @@ defmodule TaskMaster.Tasks do
         {:ok, task}
 
       error ->
+        IO.inspect(error, label: "Error during task creation")
         error
     end
   end

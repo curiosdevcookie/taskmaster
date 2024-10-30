@@ -253,24 +253,30 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
         notify_parent({:saved, task})
 
         {:noreply,
-         socket
-         |> put_flash(:info, gettext("Subtask created successfully"))
-         |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
+        socket
+        |> put_flash(:info, gettext("Subtask created successfully"))
+        |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
 
       %TaskMaster.Tasks.Task{} = task ->
         IO.puts("Subtask created successfully: #{inspect(task)}")
         notify_parent({:saved, task})
 
         {:noreply,
-         socket
-         |> put_flash(:info, gettext("Subtask created successfully"))
-         |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
+        socket
+        |> put_flash(:info, gettext("Subtask created successfully"))
+        |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         IO.puts("Error creating subtask: #{inspect(changeset)}")
+
+        socket =
+          socket
+          |> put_flash(:error, gettext("Failed to create subtask. Please check the fields and try again."))
+
         {:noreply, assign_form(socket, changeset)}
     end
   end
+
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
