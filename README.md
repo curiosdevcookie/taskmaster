@@ -1,6 +1,6 @@
 # TaskMaster
 
-Try out taskmaster at taskmaster.studio!
+Try out taskmaster at [taskmaster.studio](https://taskmaster.studio/)!
 
 ## Specification and database design
 
