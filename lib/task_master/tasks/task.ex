@@ -38,7 +38,8 @@ defmodule TaskMaster.Tasks.Task do
       :status,
       :indoor,
       :created_by,
-      :organization_id
+      :organization_id,
+      :parent_task_id
     ])
     |> validate_required([:title, :status, :priority, :indoor, :created_by, :organization_id])
   end
