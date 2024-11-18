@@ -25,6 +25,23 @@ defmodule TaskMasterWeb.UserSettingsLive do
           current_user={@current_user}
         />
       </div>
+
+      <div>
+      <.simple_form
+      for={@nick_name_form}
+      id="nick_name_form"
+      phx-submit="update_nick_name"
+      phx-change="validate_nick_name"
+    >
+      <.input field={@nick_name_form[:nick_name]} type="text" label={gettext("Nickname")} required />
+          <:actions>
+            <.button class="btn-primary" phx-disable-with="Updating...">
+              <%= gettext("Change Nickname") %>
+            </.button>
+          </:actions>
+        </.simple_form>
+      </div>
+
       <div>
         <.simple_form
           for={@email_form}
@@ -115,6 +132,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
       user = Accounts.get_user!(current_user_id)
       email_changeset = Accounts.change_user_email(user)
       password_changeset = Accounts.change_user_password(user)
+      nick_name_changeset = Accounts.change_user_nick_name(user)
 
       avatar = Accounts.get_active_avatar(user) || %TaskMaster.Accounts.Avatar{}
 
@@ -128,6 +146,7 @@ defmodule TaskMasterWeb.UserSettingsLive do
         |> assign(:password_form, to_form(password_changeset))
         |> assign(:avatar, avatar)
         |> assign(:trigger_submit, false)
+        |> assign(:nick_name_form, to_form(nick_name_changeset))
 
       {:ok, socket}
     rescue
@@ -252,6 +271,34 @@ defmodule TaskMasterWeb.UserSettingsLive do
 
       {:error, changeset} ->
         {:noreply, assign(socket, password_form: to_form(changeset))}
+    end
+  end
+
+  @impl true
+  def handle_event("validate_nick_name", params, socket) do
+    %{"user" => user_params} = params
+    nick_name_form =
+      socket.assigns.current_user
+      |> Accounts.change_user_nick_name(user_params)
+      |> Map.put(:action, :validate)
+      |> to_form()
+      {:noreply, assign(socket, nick_name_form: nick_name_form)}
+    end
+
+  @impl true
+  def handle_event("update_nick_name", params, socket) do
+    %{"user" => user_params} = params
+    user = socket.assigns.current_user
+
+    case Accounts.update_user_nick_name(user, user_params) do
+      {:ok, _user} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, gettext("Nickname updated successfully"))
+         |> push_navigate(to: ~p"/#{user.id}/users/settings")}
+
+      {:error, changeset} ->
+        {:noreply, assign(socket, nick_name_form: to_form(changeset))}
     end
   end
 end

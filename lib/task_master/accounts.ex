@@ -192,6 +192,15 @@ defmodule TaskMaster.Accounts do
     User.email_changeset(user, attrs, validate_email: false)
   end
 
+  def change_user_nick_name(user, attrs \\ %{}) do
+    User.nick_name_changeset(user, attrs)
+  end
+
+  def update_user_nick_name(user, attrs) do
+    changeset = User.nick_name_changeset(user, attrs)
+    Repo.update(changeset)
+  end
+
   @doc """
   Emulates that the email will change without actually changing
   it in the database.
