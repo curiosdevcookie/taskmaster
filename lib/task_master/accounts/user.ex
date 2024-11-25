@@ -161,6 +161,21 @@ defmodule TaskMaster.Accounts.User do
   end
 
   @doc """
+  A user changeset for changing the nick_name.
+
+  It requires the current password to be provided and it should match the
+  password being set.
+  """
+
+  def nick_name_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:nick_name])
+    |> validate_required([:nick_name])
+    |> unique_constraint(:nick_name)
+  end
+
+
+  @doc """
   A user changeset for changing the password.
 
   ## Options
