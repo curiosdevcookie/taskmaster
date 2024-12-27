@@ -84,6 +84,8 @@ defmodule TaskMasterWeb.Router do
         live "/avatars/:id", AvatarLive.AvatarShow, :show
         live "/avatars/:id/show/edit", AvatarLive.AvatarShow, :edit
 
+        live "/highscore", HighScoreLive, :index
+
         live "/contacts", ContactLive.ContactIndex, :index
         live "/contacts/new", ContactLive.ContactIndex, :new
         live "/contacts/:id/edit", ContactLive.ContactIndex, :edit

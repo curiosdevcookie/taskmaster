@@ -603,4 +603,11 @@ defmodule TaskMaster.Accounts do
         error
     end
   end
+
+  def get_users_with_stars(org_id) do
+    User
+    |> Organization.for_org(org_id)
+    |> Ecto.Query.order_by(desc: :stars, asc: :nick_name)
+    |> Repo.all()
+  end
 end
