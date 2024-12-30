@@ -14,8 +14,20 @@ defmodule TaskMasterWeb.HighScoreLive do
   def mount(_params, _session, socket) do
     all_users = Accounts.get_users_with_stars(socket.assigns.current_user.organization_id)
 
+    if connected?(socket) do
+      TaskMasterWeb.Endpoint.subscribe("task_updates")
+    end
+
     socket
     |> assign(:all_users, all_users)
     |> ok()
+  end
+
+  def handle_info(%Phoenix.Socket.Broadcast{event: "task_updated", payload: updated_task}, socket) do
+    all_users = Accounts.get_users_with_stars(socket.assigns.current_user.organization_id)
+
+    socket
+    |> assign(:all_users, all_users)
+    |> noreply()
   end
 end
