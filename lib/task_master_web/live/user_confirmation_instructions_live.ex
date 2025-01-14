@@ -10,7 +10,9 @@ defmodule TaskMasterWeb.UserConfirmationInstructionsLive do
         <.header class="text-center">
           <%= gettext("Confirm Account") %><span> 🎉</span>
           <h3 class="text-center text-xl text-gray-500 mt-10">
-            <%= gettext("If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly.") %>
+            <%= gettext(
+              "If your email is in our system and it has not been confirmed yet, you will receive an email with instructions shortly."
+            ) %>
           </h3>
         </.header>
       </section>
@@ -22,7 +24,7 @@ defmodule TaskMasterWeb.UserConfirmationInstructionsLive do
 
         <.simple_form for={@form} id="resend_confirmation_form" phx-submit="send_instructions">
           <div class="flex flex-col gap-4">
-            <.input field={@form[:email]} type="email" placeholder="Email" required />
+            <.input field={@form[:email]} type="email" placeholder="Email" />
             <.button class="btn-primary place-self-end" phx-disable-with="Sending...">
               <%= gettext("Resend") %>
             </.button>

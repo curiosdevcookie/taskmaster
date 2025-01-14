@@ -34,7 +34,7 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
         <% end %>
         <input type="hidden" name="task[created_by]" value={@current_user.id} />
         <input type="hidden" name="task[organization_id]" value={@current_user.organization_id} />
-        <.input field={@form[:title]} type="text" label={gettext("Title")} />
+        <.input field={@form[:title]} type="text" label={gettext("Title")} required />
         <.input field={@form[:description]} type="text" label={gettext("Description")} />
         <.input field={@form[:due_date]} type="date" label={gettext("Due date")} />
         <.input
@@ -135,7 +135,6 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
 
   @impl true
   def handle_event("validate", %{"task" => task_params}, socket) do
-
     changeset =
       socket.assigns.task
       |> Tasks.change_task(task_params)
@@ -253,30 +252,32 @@ defmodule TaskMasterWeb.TaskLive.TaskComponent do
         notify_parent({:saved, task})
 
         {:noreply,
-        socket
-        |> put_flash(:info, gettext("Subtask created successfully"))
-        |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
+         socket
+         |> put_flash(:info, gettext("Subtask created successfully"))
+         |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
 
       %TaskMaster.Tasks.Task{} = task ->
         IO.puts("Subtask created successfully: #{inspect(task)}")
         notify_parent({:saved, task})
 
         {:noreply,
-        socket
-        |> put_flash(:info, gettext("Subtask created successfully"))
-        |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
+         socket
+         |> put_flash(:info, gettext("Subtask created successfully"))
+         |> push_navigate(to: ~p"/#{socket.assigns.current_user.id}/tasks")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         IO.puts("Error creating subtask: #{inspect(changeset)}")
 
         socket =
           socket
-          |> put_flash(:error, gettext("Failed to create subtask. Please check the fields and try again."))
+          |> put_flash(
+            :error,
+            gettext("Failed to create subtask. Please check the fields and try again.")
+          )
 
         {:noreply, assign_form(socket, changeset)}
     end
   end
-
 
   defp assign_form(socket, %Ecto.Changeset{} = changeset) do
     assign(socket, :form, to_form(changeset))
