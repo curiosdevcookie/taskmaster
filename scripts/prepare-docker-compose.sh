@@ -9,6 +9,7 @@ services:
 
   backend:
     image: docker.io/postgres:13
+    privileged: true
     env_file: .env
     environment:
       PGDATA: /var/lib/postgresql/data/pgdata
@@ -28,6 +29,7 @@ services:
 
   frontend:
     image: $APP_DEPLOY_IMAGE
+    privileged: true
     env_file: .env
     environment:
       PHX_CHECK_ORIGIN: https://\${PHX_HOST}
@@ -60,6 +62,7 @@ services:
       - "traefik.http.routers.\${TRAEFIK_LABEL}.tls.certresolver=leresolver"
   migration:
     image: $APP_DEPLOY_IMAGE
+    privileged: true
     env_file: .env
     depends_on:
       - backend
